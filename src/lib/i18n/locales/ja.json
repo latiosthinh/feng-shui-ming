@@ -1,0 +1,60 @@
+{
+  "common": {
+    "appName": "風水起名",
+    "generate": "名前を生成",
+    "regenerate": "再生成",
+    "loading": "生成中...",
+    "error": "エラーが発生しました",
+    "favorites": "お気に入り",
+    "noFavorites": "お気に入りの名前はありません",
+    "removeFavorite": "お気に入りから削除"
+  },
+  "form": {
+    "title": "起名フォーム",
+    "surname": "姓",
+    "optional": "任意",
+    "surnamePlaceholder": "空白でランダム生成",
+    "gender": "性別",
+    "male": "男",
+    "female": "女",
+    "neutral": "中性",
+    "birthDate": "生年月日",
+    "birthTime": "出生時刻",
+    "preferences": "好みのテーマ",
+    "submit": "名前を生成",
+    "nature": "自然",
+    "virtue": "美徳",
+    "strength": "力",
+    "wisdom": "知恵",
+    "beauty": "美",
+    "peace": "平和"
+  },
+  "results": {
+    "meaning": "意味",
+    "fengShui": "風水分析",
+    "nickname": "家族のニックネーム",
+    "fiveGrid": "五格分析",
+    "wuXing": "五行分析",
+    "tianGe": "天格",
+    "renGe": "人格",
+    "diGe": "地格",
+    "waiGe": "外格",
+    "zongGe": "総格",
+    "auspicious": "吉",
+    "neutral": "平",
+    "inauspicious": "凶",
+    "recommendations": "推奨",
+    "thinking": "考え中...",
+    "analysisComplete": "分析完了",
+    "error": "生成エラー"
+  },
+  "validation": {
+    "surnameRequired": "姓を入力してください",
+    "surnameTooLong": "姓は10文字以内です",
+    "surnameInvalid": "姓は文字と漢字のみ含めます",
+    "genderRequired": "性別を選択してください",
+    "birthDateInvalid": "日付は YYYY-MM-DD 形式です",
+    "birthTimeInvalid": "時刻は HH:MM 形式です",
+    "preferencesMax": "最大5つの好みを選択できます"
+  }
+}

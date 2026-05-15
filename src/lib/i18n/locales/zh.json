@@ -1,0 +1,60 @@
+{
+  "common": {
+    "appName": "风水起名",
+    "generate": "生成名字",
+    "regenerate": "重新生成",
+    "loading": "正在生成...",
+    "error": "出错了",
+    "favorites": "收藏夹",
+    "noFavorites": "还没有收藏的名字",
+    "removeFavorite": "移除收藏"
+  },
+  "form": {
+    "title": "起名表单",
+    "surname": "姓氏",
+    "optional": "可选",
+    "surnamePlaceholder": "留空则随机生成",
+    "gender": "性别",
+    "male": "男",
+    "female": "女",
+    "neutral": "中性",
+    "birthDate": "出生日期",
+    "birthTime": "出生时间",
+    "preferences": "偏好主题",
+    "submit": "生成名字",
+    "nature": "自然",
+    "virtue": "美德",
+    "strength": "力量",
+    "wisdom": "智慧",
+    "beauty": "美丽",
+    "peace": "和平"
+  },
+  "results": {
+    "meaning": "含义",
+    "fengShui": "风水分析",
+    "nickname": "家庭昵称",
+    "fiveGrid": "五格分析",
+    "wuXing": "五行分析",
+    "tianGe": "天格",
+    "renGe": "人格",
+    "diGe": "地格",
+    "waiGe": "外格",
+    "zongGe": "总格",
+    "auspicious": "吉",
+    "neutral": "平",
+    "inauspicious": "凶",
+    "recommendations": "建议",
+    "thinking": "正在思考...",
+    "analysisComplete": "分析完成",
+    "error": "生成出错"
+  },
+  "validation": {
+    "surnameRequired": "请输入姓氏",
+    "surnameTooLong": "姓氏不能超过10个字符",
+    "surnameInvalid": "姓氏只能包含字母和汉字",
+    "genderRequired": "请选择性别",
+    "birthDateInvalid": "日期格式必须为 YYYY-MM-DD",
+    "birthTimeInvalid": "时间格式必须为 HH:MM",
+    "preferencesMax": "最多选择5个偏好"
+  }
+}

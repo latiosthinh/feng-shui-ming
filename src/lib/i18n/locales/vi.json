@@ -1,0 +1,60 @@
+{
+  "common": {
+    "appName": "Phong Thủy Đặt Tên",
+    "generate": "Tạo tên",
+    "regenerate": "Tạo lại",
+    "loading": "Đang tạo...",
+    "error": "Đã xảy ra lỗi",
+    "favorites": "Yêu thích",
+    "noFavorites": "Chưa có tên yêu thích",
+    "removeFavorite": "Xóa khỏi yêu thích"
+  },
+  "form": {
+    "title": "Biểu mẫu đặt tên",
+    "surname": "Họ",
+    "optional": "Tùy chọn",
+    "surnamePlaceholder": "Để trống để tạo ngẫu nhiên",
+    "gender": "Giới tính",
+    "male": "Nam",
+    "female": "Nữ",
+    "neutral": "Trung tính",
+    "birthDate": "Ngày sinh",
+    "birthTime": "Giờ sinh",
+    "preferences": "Chủ đề ưa thích",
+    "submit": "Tạo tên",
+    "nature": "Thiên nhiên",
+    "virtue": "Đức hạnh",
+    "strength": "Sức mạnh",
+    "wisdom": "Trí tuệ",
+    "beauty": "Vẻ đẹp",
+    "peace": "Hòa bình"
+  },
+  "results": {
+    "meaning": "Ý nghĩa",
+    "fengShui": "Phân tích phong thủy",
+    "nickname": "Biệt danh gia đình",
+    "fiveGrid": "Phân tích ngũ cách",
+    "wuXing": "Phân tích ngũ hành",
+    "tianGe": "Thiên cách",
+    "renGe": "Nhân cách",
+    "diGe": "Địa cách",
+    "waiGe": "Ngoại cách",
+    "zongGe": "Tổng cách",
+    "auspicious": "Cát",
+    "neutral": "Bình",
+    "inauspicious": "Hung",
+    "recommendations": "Khuyến nghị",
+    "thinking": "Đang suy nghĩ...",
+    "analysisComplete": "Phân tích hoàn tất",
+    "error": "Lỗi tạo tên"
+  },
+  "validation": {
+    "surnameRequired": "Vui lòng nhập họ",
+    "surnameTooLong": "Họ không quá 10 ký tự",
+    "surnameInvalid": "Họ chỉ chứa chữ cái và chữ Hán",
+    "genderRequired": "Vui lòng chọn giới tính",
+    "birthDateInvalid": "Ngày phải theo định dạng YYYY-MM-DD",
+    "birthTimeInvalid": "Giờ phải theo định dạng HH:MM",
+    "preferencesMax": "Tối đa 5 chủ đề ưa thích"
+  }
+}
