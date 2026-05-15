@@ -2,8 +2,10 @@ import "server-only"
 import { readFileSync } from "fs"
 import { join } from "path"
 
+const PROMPTS_DIR = join(process.cwd(), "src", "lib", "agent", "prompts")
+
 function load(filename: string): string {
-  return readFileSync(join(__dirname, filename), "utf-8").trim()
+  return readFileSync(join(PROMPTS_DIR, filename), "utf-8").trim()
 }
 
 export const SYSTEM_PROMPT = load("system.md")
