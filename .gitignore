@@ -1,0 +1,10 @@
+.next/
+node_modules/
+package-lock.json
+.env.local
+.env*.local
+*.log
+.DS_Store
+*.tsbuildinfo
+coverage/
+data/name-database.json
