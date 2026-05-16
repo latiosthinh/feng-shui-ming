@@ -18,6 +18,8 @@ export interface NameGenerationRequest {
   locale: Locale
   familyMembers?: FamilyMember[]
   nameCount?: number
+  nameLength?: number
+  previousNames?: { native: string; romanization: string }[]
 }
 
 export interface NameGenerationResponse {
@@ -31,6 +33,7 @@ export interface GeneratedName {
   romanization: string
   meaning: string
   culturalSignificance: string
+  nickname?: string
 }
 
 export interface NameAnalysis {
