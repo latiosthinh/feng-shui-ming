@@ -3,6 +3,7 @@ import { useState, useEffect, useRef, useCallback, useTransition, useMemo } from
 import { generateNamesAction } from '@/lib/agent/actions/generate-names'
 import { getRandomNamesAction } from '@/lib/agent/actions/random-names'
 import type { NameGenerationRequest, NameGenerationResponse } from '@/lib/agent/types'
+import type { FengShuiAnalysis } from '@/lib/fengshui/types'
 import { useTranslation } from '@/lib/i18n/hooks'
 import { NameCard } from './NameCard'
 import { NameCardSkeleton } from './NameCardSkeleton'
@@ -31,6 +32,7 @@ type CardState =
         culturalSignificance: string
         nickname?: string
       }
+      analysis?: FengShuiAnalysis
     }
 
 type StreamPhase = 'thinking' | 'thinking-seeded' | 'arriving' | 'polishing'
@@ -52,6 +54,14 @@ function isStreamingEnabled(): boolean {
   return true
 }
 
+function defaultAnalysis(): FengShuiAnalysis {
+  return {
+    fiveGrid: { tianGe: 0, renGe: 0, diGe: 0, waiGe: 0, zongGe: 0, overall: 'neutral' },
+    wuXing: [],
+    recommendations: [],
+  }
+}
+
 export function StreamingResults({
   request,
   onComplete,
@@ -64,7 +74,7 @@ export function StreamingResults({
 
   const [cards, setCards] = useState<CardState[]>(() =>
     initialResponse
-      ? initialResponse.names.map((n) => ({ kind: 'real' as const, name: n }))
+      ? initialResponse.names.map((n) => ({ kind: 'real' as const, name: n, analysis: initialResponse.analysis }))
       : Array.from({ length: nameCount }, () => ({ kind: 'skeleton' as const })),
   )
   const [response, setResponse] = useState<NameGenerationResponse | null>(initialResponse || null)
@@ -80,10 +90,6 @@ export function StreamingResults({
   const completedRef = useRef(false)
   const abortRef = useRef<AbortController | null>(null)
   const [isPending, startTransition] = useTransition()
-
-  const triggerDownload = useCallback(() => {
-    window.open('/api/download-names', '_blank')
-  }, [])
 
   useEffect(() => {
     if (initialResponse) return
@@ -183,27 +189,16 @@ export function StreamingResults({
                 setCards((prev) => {
                   const next = [...prev]
                   if (msg.index < next.length) {
-                    next[msg.index] = { kind: 'real', name }
+                    next[msg.index] = { kind: 'real', name, analysis: name.analysis || undefined }
                   }
                   return next
                 })
-                } else if (msg.type === 'done') {
+              } else if (msg.type === 'done') {
                 completedRef.current = true
                 setLoading(false)
                 const finalResponse: NameGenerationResponse = {
                   names: [],
-                  analysis: {
-                    fiveGrid: {
-                      tianGe: 0,
-                      renGe: 0,
-                      diGe: 0,
-                      waiGe: 0,
-                      zongGe: 0,
-                      overall: 'neutral',
-                    },
-                    wuXing: [],
-                    recommendations: [],
-                  },
+                  analysis: defaultAnalysis(),
                   nickname: locale === 'vi' ? 'Bé yêu' : '宝宝',
                 }
                 setResponse(finalResponse)
@@ -281,20 +276,20 @@ export function StreamingResults({
               <div key={index} className="transition-opacity duration-300 opacity-100">
                 <NameCard
                   name={card.name}
-                  analysis={
-                    response?.analysis || {
-                      fiveGrid: {
-                        tianGe: 0,
-                        renGe: 0,
-                        diGe: 0,
-                        waiGe: 0,
-                        zongGe: 0,
-                        overall: 'neutral',
-                      },
-                      wuXing: [],
-                      recommendations: [],
-                    }
-                  }
+                  analysis={card.analysis || response?.analysis || defaultAnalysis()}
+                  surname={request.surname}
+                  birthDate={request.birthDate}
+                  birthTime={request.birthTime}
+                />
+              </div>
+            )
+          }
+          if (card.kind === 'seed') {
+            return (
+              <div key={index} className="transition-opacity duration-300 opacity-60">
+                <NameCard
+                  name={card.name}
+                  analysis={defaultAnalysis()}
                   surname={request.surname}
                   birthDate={request.birthDate}
                   birthTime={request.birthTime}
@@ -303,15 +298,8 @@ export function StreamingResults({
             )
           }
           return (
-            <div
-              key={index}
-              className={`transition-opacity duration-300 ${card.kind === 'seed' ? 'opacity-60' : 'opacity-100'}`}
-            >
-              {card.kind === 'seed' ? (
-                <NameCardSkeleton phase="seed" />
-              ) : (
-                <NameCardSkeleton phase="skeleton" />
-              )}
+            <div key={index} className="transition-opacity duration-300 opacity-100">
+              <NameCardSkeleton phase="skeleton" />
             </div>
           )
         })}

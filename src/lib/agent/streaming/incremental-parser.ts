@@ -96,6 +96,7 @@ export function createIncrementalNameParser(): IncrementalParser {
     // Trim processed content: keep only from last unmatched `{` or end
     if (braceDepth > 0 && objectStart >= 0) {
       buffer = buffer.slice(objectStart)
+      objectStart = 0
     } else {
       buffer = ''
       objectStart = -1

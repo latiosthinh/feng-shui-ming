@@ -22,7 +22,7 @@ jobs:
       - run: pnpm format:check
       - run: pnpm lint
       - run: pnpm build
-      - run: pnpm vitest run --reporter=verbose 2>/dev/null || echo "No vitest config or tests found; skipping test step"
+      - run: pnpm vitest run --reporter=verbose
         env:
           MIMO_API_KEY: ${{ secrets.MIMO_API_KEY || 'sk-test' }}
           MIMO_API_BASE_URL: http://localhost:9999

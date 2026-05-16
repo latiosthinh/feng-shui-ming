@@ -10,7 +10,7 @@ export async function* streamMimoCompletion(
   signal?: AbortSignal,
 ): AsyncIterable<string> {
   let gotFirstByte = false
-  let lastError: Error | undefined
+  let retried = false
 
   const attempt = async (): Promise<Response> => {
     const controller = new AbortController()
@@ -38,11 +38,6 @@ export async function* streamMimoCompletion(
         signal: combined,
       })
       return res
-    } catch (err) {
-      if (err instanceof TypeError && !gotFirstByte) {
-        lastError = err as Error
-      }
-      throw err
     } finally {
       clearTimeout(timeout)
     }
@@ -52,7 +47,8 @@ export async function* streamMimoCompletion(
   try {
     res = await attempt()
   } catch (err) {
-    if (!gotFirstByte && lastError && !signal?.aborted) {
+    if (!retried && !gotFirstByte && err instanceof TypeError && !signal?.aborted) {
+      retried = true
       await sleep(2000)
       res = await attempt()
     } else {
@@ -60,7 +56,8 @@ export async function* streamMimoCompletion(
     }
   }
 
-  if (res && !res.ok && res.status >= 500 && !gotFirstByte) {
+  if (res && !res.ok && res.status >= 500 && !retried && !gotFirstByte) {
+    retried = true
     await sleep(2000)
     res = await attempt()
   }

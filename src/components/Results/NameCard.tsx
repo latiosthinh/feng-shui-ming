@@ -75,58 +75,8 @@ const LABELS = {
       color: 'bg-amber-50 text-amber-700 border-amber-200 hover:bg-amber-100',
     },
   ],
-  ja: [
-    {
-      type: 'fengshui' as const,
-      label: '風水',
-      emoji: '☯',
-      color: 'bg-green-50 text-green-700 border-green-200 hover:bg-green-100',
-    },
-    {
-      type: 'numerology' as const,
-      label: '数理',
-      emoji: '🔢',
-      color: 'bg-blue-50 text-blue-700 border-blue-200 hover:bg-blue-100',
-    },
-    {
-      type: 'bazi' as const,
-      label: '八字',
-      emoji: '📅',
-      color: 'bg-purple-50 text-purple-700 border-purple-200 hover:bg-purple-100',
-    },
-    {
-      type: 'horoscope' as const,
-      label: '星座',
-      emoji: '⭐',
-      color: 'bg-amber-50 text-amber-700 border-amber-200 hover:bg-amber-100',
-    },
-  ],
-  ko: [
-    {
-      type: 'fengshui' as const,
-      label: '풍수',
-      emoji: '☯',
-      color: 'bg-green-50 text-green-700 border-green-200 hover:bg-green-100',
-    },
-    {
-      type: 'numerology' as const,
-      label: '수리',
-      emoji: '🔢',
-      color: 'bg-blue-50 text-blue-700 border-blue-200 hover:bg-blue-100',
-    },
-    {
-      type: 'bazi' as const,
-      label: '팔자',
-      emoji: '📅',
-      color: 'bg-purple-50 text-purple-700 border-purple-200 hover:bg-purple-100',
-    },
-    {
-      type: 'horoscope' as const,
-      label: '별자리',
-      emoji: '⭐',
-      color: 'bg-amber-50 text-amber-700 border-amber-200 hover:bg-amber-100',
-    },
-  ],
+  ja: [],
+  ko: [],
 }
 
 export function NameCard({ name, analysis, surname, birthDate, birthTime }: NameCardProps) {
@@ -135,7 +85,7 @@ export function NameCard({ name, analysis, surname, birthDate, birthTime }: Name
   const [showAnalysis, setShowAnalysis] = useState(false)
   const [toast, setToast] = useState<string | null>(null)
   const buttons = LABELS[locale] || LABELS.zh
-  const auspiciousness: AuspiciousnessScore | undefined = (analysis as any)?.auspiciousness
+  const auspiciousness: AuspiciousnessScore | undefined = analysis.auspiciousness
 
   const AUSPICIOUS_LABELS: Record<string, Record<string, { label: string; color: string }>> = {
     zh: {

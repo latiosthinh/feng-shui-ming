@@ -15,57 +15,12 @@ const AUSPICIOUS_WEIGHT = 0.6
 const WUXING_WEIGHT = 0.4
 
 function scoreFiveGrid(fiveGrid: FiveGridScore): number {
-  const gridValues = [
-    fiveGrid.tianGe,
-    fiveGrid.renGe,
-    fiveGrid.diGe,
-    fiveGrid.waiGe,
-    fiveGrid.zongGe,
-  ]
-  const gridOverall = fiveGrid.overall
-
-  let score = 0
-  for (const val of gridValues) {
-    if (val >= 81) {
-      score += 0.3
-      continue
-    }
-    if (val >= 61) {
-      score += 0.6
-      continue
-    }
-    if (val >= 41) {
-      score += 0.7
-      continue
-    }
-    if (val >= 31) {
-      score += 0.8
-      continue
-    }
-    if (val >= 21) {
-      score += 0.6
-      continue
-    }
-    if (val >= 11) {
-      score += 0.7
-      continue
-    }
-    if (val >= 6) {
-      score += 0.8
-      continue
-    }
-    if (val >= 1) {
-      score += 0.9
-      continue
-    }
-    score += 0
+  const classificationScore: Record<string, number> = {
+    auspicious: 0.9,
+    neutral: 0.5,
+    inauspicious: 0.2,
   }
-  score /= gridValues.length
-
-  if (gridOverall === 'auspicious') score = score * 0.8 + 0.2
-  else if (gridOverall === 'inauspicious') score *= 0.6
-
-  return Math.max(0, Math.min(1, score))
+  return classificationScore[fiveGrid.overall] ?? 0.5
 }
 
 function scoreWuXing(balance: {

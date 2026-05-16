@@ -14,7 +14,6 @@ interface AnalysisLabels {
   timeLabel: string
   emptyResult: string
   timeoutMsg: string
-  retryFailed: string
 }
 
 const labelSets: Record<string, AnalysisLabels> = {
@@ -24,7 +23,6 @@ const labelSets: Record<string, AnalysisLabels> = {
     timeLabel: "Giờ",
     emptyResult: "Kết quả phân tích trống",
     timeoutMsg: "Phân tích đã hết thời gian. Vui lòng thử lại.",
-    retryFailed: "Phân tích thất bại sau khi thử lại. Vui lòng thử lại sau.",
   },
   default: {
     notProvided: "未提供",
@@ -32,7 +30,6 @@ const labelSets: Record<string, AnalysisLabels> = {
     timeLabel: "时间",
     emptyResult: "分析结果为空",
     timeoutMsg: "分析超时，请重试",
-    retryFailed: "分析失败，请重试",
   },
 }
 
@@ -63,11 +60,10 @@ export async function analyzeNameAction(
   const controller = new AbortController()
   const timeout = setTimeout(() => controller.abort(), 90000)
 
-  let lastError: Error | undefined
-  let gotFirstByte = false
+  let retried = false
 
-  const attempt = async (): Promise<Response> => {
-    const res = await fetch(`${API_URL}/chat/completions`, {
+  const attempt = async (): Promise<Response> =>
+    fetch(`${API_URL}/chat/completions`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -81,8 +77,6 @@ export async function analyzeNameAction(
       }),
       signal: controller.signal,
     })
-    return res
-  }
 
   try {
     let res: Response | null = null
@@ -90,8 +84,8 @@ export async function analyzeNameAction(
     try {
       res = await attempt()
     } catch (err) {
-      if (err instanceof TypeError && !gotFirstByte && !controller.signal.aborted) {
-        lastError = err as Error
+      if (!retried && err instanceof TypeError && !controller.signal.aborted) {
+        retried = true
         await sleep(2000)
         res = await attempt()
       } else {
@@ -99,7 +93,8 @@ export async function analyzeNameAction(
       }
     }
 
-    if (res && !res.ok && res.status >= 500 && !gotFirstByte) {
+    if (res && !res.ok && res.status >= 500 && !retried) {
+      retried = true
       await sleep(2000)
       res = await attempt()
     }
