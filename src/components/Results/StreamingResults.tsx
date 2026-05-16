@@ -1,5 +1,5 @@
 'use client'
-import { useState, useEffect, useRef, useCallback } from 'react'
+import { useState, useEffect, useRef, useCallback, useTransition, useMemo } from 'react'
 import { generateNamesAction } from '@/lib/agent/actions/generate-names'
 import { getRandomNamesAction } from '@/lib/agent/actions/random-names'
 import type { NameGenerationRequest, NameGenerationResponse } from '@/lib/agent/types'
@@ -70,9 +70,16 @@ export function StreamingResults({
   const [response, setResponse] = useState<NameGenerationResponse | null>(initialResponse || null)
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(!initialResponse)
-  const [streamPhase, setStreamPhase] = useState<StreamPhase>('thinking')
+
+  const streamPhase = useMemo<StreamPhase>(() => {
+    if (cards.some(c => c.kind === 'real')) return loading ? 'arriving' : 'polishing'
+    if (cards.some(c => c.kind === 'seed')) return 'thinking-seeded'
+    return 'thinking'
+  }, [cards, loading])
   const execRef = useRef(0)
   const completedRef = useRef(false)
+  const abortRef = useRef<AbortController | null>(null)
+  const [isPending, startTransition] = useTransition()
 
   const triggerDownload = useCallback(() => {
     window.open('/api/download-names', '_blank')
@@ -82,10 +89,15 @@ export function StreamingResults({
     if (initialResponse) return
     const execId = ++execRef.current
     completedRef.current = false
+
+    abortRef.current?.abort()
+    abortRef.current = null
+
+    startTransition(() => {
+      setCards(Array.from({ length: nameCount }, () => ({ kind: 'skeleton' })))
+    })
     setLoading(true)
-    setCards(Array.from({ length: nameCount }, () => ({ kind: 'skeleton' })))
     setError(null)
-    setStreamPhase('thinking')
 
     // Seed from DB (instant)
     const seedPromise = getRandomNamesAction(
@@ -106,7 +118,6 @@ export function StreamingResults({
             : c,
         ),
       )
-      setStreamPhase('thinking-seeded')
     })
 
     const doStream = isStreamingEnabled()
@@ -117,6 +128,7 @@ export function StreamingResults({
 
     // Try streaming
     const ctrl = new AbortController()
+    abortRef.current = ctrl
     let started = false
 
     const softTimeout = setTimeout(() => {
@@ -143,7 +155,6 @@ export function StreamingResults({
 
         started = true
         if (execId !== execRef.current) return
-        setStreamPhase('arriving')
 
         const reader = res.body!.getReader()
         const decoder = new TextDecoder()
@@ -176,11 +187,9 @@ export function StreamingResults({
                   }
                   return next
                 })
-                setStreamPhase('arriving')
-              } else if (msg.type === 'done') {
+                } else if (msg.type === 'done') {
                 completedRef.current = true
                 setLoading(false)
-                setStreamPhase('polishing')
                 const finalResponse: NameGenerationResponse = {
                   names: [],
                   analysis: {
@@ -227,7 +236,6 @@ export function StreamingResults({
           setResponse(res)
           setCards(res.names.map((n) => ({ kind: 'real' as const, name: n })))
           setLoading(false)
-          setStreamPhase('polishing')
         })
         .catch((err) => {
           if (id !== execRef.current) return
@@ -262,7 +270,11 @@ export function StreamingResults({
           {!loading && <RegenerateButton onRegenerate={onRegenerate} isLoading={isRegenerating} />}
         </div>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div
+        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+        aria-live="polite"
+        aria-label={loading ? (locale === 'vi' ? 'Đang tạo tên' : '正在生成名字') : (locale === 'vi' ? 'Kết quả tên' : '名字结果')}
+      >
         {cards.map((card, index) => {
           if (card.kind === 'real') {
             return (

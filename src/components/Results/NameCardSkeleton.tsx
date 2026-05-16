@@ -6,7 +6,11 @@ interface NameCardSkeletonProps {
 
 export function NameCardSkeleton({ phase = 'skeleton' }: NameCardSkeletonProps) {
   return (
-    <div className="bg-white rounded-2xl shadow-lg p-6 space-y-4 overflow-hidden">
+    <div
+      className="bg-white rounded-2xl shadow-lg p-6 space-y-4 overflow-hidden"
+      role="status"
+      aria-label={phase === 'seed' ? 'Đang tải kết quả tạm thời' : 'Đang tạo tên'}
+    >
       <div className="flex items-start justify-between">
         <div className="space-y-2 flex-1">
           <div

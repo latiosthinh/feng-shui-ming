@@ -1,3 +1,4 @@
+import 'server-only'
 import type { FengShuiAnalysis, WuXingElement } from './types'
 import { calculateFiveGrid } from './five-grid'
 import { calculateBazi } from './bazi'

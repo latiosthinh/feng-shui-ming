@@ -11,8 +11,6 @@ interface LanguageOption {
 
 const languages: LanguageOption[] = [
   { locale: "zh", label: "Chinese", nativeName: "中文" },
-  { locale: "ja", label: "Japanese", nativeName: "日本語" },
-  { locale: "ko", label: "Korean", nativeName: "한국어" },
   { locale: "vi", label: "Vietnamese", nativeName: "Tiếng Việt" },
 ]
 

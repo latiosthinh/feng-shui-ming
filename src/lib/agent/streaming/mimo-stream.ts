@@ -9,9 +9,10 @@ export async function* streamMimoCompletion(
   userPrompt: string,
   signal?: AbortSignal,
 ): AsyncIterable<string> {
-  let bytesReceived = 0
+  let gotFirstByte = false
+  let lastError: Error | undefined
 
-  const attempt = async (retry: boolean): Promise<Response> => {
+  const attempt = async (): Promise<Response> => {
     const controller = new AbortController()
     const combined = signal ? combineSignals(signal, controller.signal) : controller.signal
 
@@ -37,23 +38,37 @@ export async function* streamMimoCompletion(
         signal: combined,
       })
       return res
+    } catch (err) {
+      if (err instanceof TypeError && !gotFirstByte) {
+        lastError = err as Error
+      }
+      throw err
     } finally {
       clearTimeout(timeout)
     }
   }
 
-  let res = await attempt(false)
-  if (!res.ok && bytesReceived === 0) {
-    const errText = await res.text().catch(() => 'unknown')
-    res = await attempt(true)
-    if (!res.ok) {
-      const err2 = await res.text().catch(() => 'unknown')
-      throw new Error(`MIMO API error after retry: ${res.status}: ${err2}`)
+  let res: Response | null = null
+  try {
+    res = await attempt()
+  } catch (err) {
+    if (!gotFirstByte && lastError && !signal?.aborted) {
+      await sleep(2000)
+      res = await attempt()
+    } else {
+      throw err
     }
   }
-  if (!res.ok) {
-    const err = await res.text().catch(() => 'unknown')
-    throw new Error(`MIMO API error ${res.status}: ${err}`)
+
+  if (res && !res.ok && res.status >= 500 && !gotFirstByte) {
+    await sleep(2000)
+    res = await attempt()
+  }
+
+  if (!res || !res.ok) {
+    const status = res?.status ?? 'connection'
+    const errText = res ? await res.text().catch(() => 'unknown') : 'fetch failed'
+    throw new Error(`MIMO API error ${status}: ${errText}`)
   }
 
   if (!res.body) {
@@ -69,7 +84,8 @@ export async function* streamMimoCompletion(
       const { done, value } = await reader.read()
       if (done) break
 
-      bytesReceived += value.length
+      if (!gotFirstByte && value.length > 0) gotFirstByte = true
+
       buffer += decoder.decode(value, { stream: true })
       const lines = buffer.split('\n')
       buffer = lines.pop() || ''
@@ -104,6 +120,10 @@ export async function* streamMimoCompletion(
   } finally {
     reader.releaseLock()
   }
+}
+
+function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms))
 }
 
 function combineSignals(...signals: AbortSignal[]): AbortSignal {

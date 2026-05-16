@@ -23,7 +23,7 @@ export const metadata: Metadata = {
     title: 'FengShuiMing - Asian Baby Name Generator',
     description: 'Generate meaningful Asian baby names with Feng Shui analysis',
     type: 'website',
-    locale: 'en_US',
+    locale: 'zh_CN',
     alternateLocale: ['zh_CN', 'ja_JP', 'ko_KR', 'vi_VN'],
   },
   twitter: {

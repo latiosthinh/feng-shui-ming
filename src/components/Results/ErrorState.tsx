@@ -10,7 +10,7 @@ export function ErrorState({ error, onRetry }: ErrorStateProps) {
   const { t } = useTranslation()
 
   return (
-    <div className="bg-red-50 border border-red-200 rounded-2xl p-6 text-center space-y-4 animate-fade-in">
+    <div className="bg-red-50 border border-red-200 rounded-2xl p-6 text-center space-y-4 animate-fade-in" role="alert" aria-live="assertive">
       <div className="text-4xl">⚠️</div>
       <h3 className="text-lg font-semibold text-red-700">{t.results.error}</h3>
       <p className="text-red-600 text-sm">{error}</p>
