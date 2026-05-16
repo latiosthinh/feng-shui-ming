@@ -1,4 +1,5 @@
 import 'server-only'
+import { Solar } from 'lunar-javascript'
 import type { BaziInfo, WuXingElement } from './types'
 
 const HEAVENLY_STEMS = ['甲', '乙', '丙', '丁', '戊', '己', '庚', '辛', '壬', '癸'] as const
@@ -44,88 +45,37 @@ const BRANCH_ELEMENT: WuXingElement[] = [
   'water',
 ]
 
-const HOUR_BRANCH_MAP: Record<number, number> = {
-  23: 0,
-  0: 0,
-  1: 1,
-  2: 1,
-  3: 2,
-  4: 2,
-  5: 3,
-  6: 3,
-  7: 4,
-  8: 4,
-  9: 5,
-  10: 5,
-  11: 6,
-  12: 6,
-  13: 7,
-  14: 7,
-  15: 8,
-  16: 8,
-  17: 9,
-  18: 9,
-  19: 10,
-  20: 10,
-  21: 11,
-  22: 11,
-}
-
-// Reference: Jan 1, 1900 = day stem index 0 (甲子)
-const REFERENCE_DATE = new Date(1900, 0, 1)
-const REFERENCE_DAY_STEM = 0
-const REFERENCE_DAY_BRANCH = 0
-
-function daysBetween(a: Date, b: Date): number {
-  const ms = a.getTime() - b.getTime()
-  return Math.round(ms / 86400000)
-}
-
-function dayPillarIndex(date: Date): { stem: number; branch: number } {
-  const diff = daysBetween(date, REFERENCE_DATE)
-  const stem = (((REFERENCE_DAY_STEM + diff) % 10) + 10) % 10
-  const branch = (((REFERENCE_DAY_BRANCH + diff) % 12) + 12) % 12
-  return { stem, branch }
-}
-
-function monthPillarIndex(yearStem: number, month: number): { stem: number; branch: number } {
-  // Month branch: 寅=1, 卯=2, ..., 丑=12
-  const branch = (month + 1) % 12
-  // Month stem = (yearStem % 5 * 2 + monthIndex) % 10
-  const stem = ((yearStem % 5) * 2 + month) % 10
-  return { stem, branch }
-}
-
-function hourPillarIndex(dayStem: number, hour: number): { stem: number; branch: number } {
-  const branch = HOUR_BRANCH_MAP[hour] ?? 0
-  const stem = ((dayStem % 5) * 2 + branch) % 10
-  return { stem, branch }
-}
-
 export function calculateBazi(birthDate: Date, birthTime?: string): BaziInfo {
   const year = birthDate.getFullYear()
   const month = birthDate.getMonth() + 1
   const day = birthDate.getDate()
   const hour = birthTime ? parseInt(birthTime.split(':')[0] || '12', 10) : 12
+  const minute = birthTime ? parseInt(birthTime.split(':')[1] || '0', 10) : 0
 
-  // Year pillar
-  const yearStemIndex = (((year - 4) % 10) + 10) % 10
-  const yearBranchIndex = (((year - 4) % 12) + 12) % 12
+  const solar = Solar.fromYmdHms(year, month, day, hour, minute, 0)
+  const lunar = solar.getLunar()
 
-  // Month pillar
-  const monthPillar = monthPillarIndex(yearStemIndex, month)
+  // Year pillar: solar-term-aware (立春 boundary)
+  const yearStemIndex = lunar.getYearGanIndexByLiChun()
+  const yearBranchIndex = lunar.getYearZhiIndexByLiChun()
 
-  // Day pillar
-  const dayPillar = dayPillarIndex(new Date(year, month - 1, day))
+  // Month pillar: solar-term-based
+  const monthStemIndex = lunar.getMonthGanIndex()
+  const monthBranchIndex = lunar.getMonthZhiIndex()
 
-  // Hour pillar
-  const hourPillar = hourPillarIndex(dayPillar.stem, hour)
+  // Day pillar: 60-day cycle from lunar library
+  const dayStemIndex = lunar.getDayGanIndex()
+  const dayBranchIndex = lunar.getDayZhiIndex()
+
+  // Hour pillar: based on day stem and hour
+  const hourStemIndex = lunar.getTimeGanIndex()
+  const hourBranchIndex = lunar.getTimeZhiIndex()
 
   const pillars = [
-    { stem: yearStemIndex, branch: yearBranchIndex, label: 'year' as const },
-    { stem: monthPillar.stem, branch: monthPillar.branch, label: 'month' as const },
-    { stem: dayPillar.stem, branch: dayPillar.branch, label: 'day' as const },
-    { stem: hourPillar.stem, branch: hourPillar.branch, label: 'hour' as const },
+    { stem: yearStemIndex, branch: yearBranchIndex },
+    { stem: monthStemIndex, branch: monthBranchIndex },
+    { stem: dayStemIndex, branch: dayBranchIndex },
+    { stem: hourStemIndex, branch: hourBranchIndex },
   ]
 
   const elements: WuXingElement[] = []
@@ -157,19 +107,19 @@ export function calculateBazi(birthDate: Date, birthTime?: string): BaziInfo {
       element: STEM_ELEMENT[yearStemIndex],
     },
     month: {
-      heavenlyStem: HEAVENLY_STEMS[monthPillar.stem],
-      earthlyBranch: EARTHLY_BRANCHES[monthPillar.branch],
-      element: STEM_ELEMENT[monthPillar.stem],
+      heavenlyStem: HEAVENLY_STEMS[monthStemIndex],
+      earthlyBranch: EARTHLY_BRANCHES[monthBranchIndex],
+      element: STEM_ELEMENT[monthStemIndex],
     },
     day: {
-      heavenlyStem: HEAVENLY_STEMS[dayPillar.stem],
-      earthlyBranch: EARTHLY_BRANCHES[dayPillar.branch],
-      element: STEM_ELEMENT[dayPillar.stem],
+      heavenlyStem: HEAVENLY_STEMS[dayStemIndex],
+      earthlyBranch: EARTHLY_BRANCHES[dayBranchIndex],
+      element: STEM_ELEMENT[dayStemIndex],
     },
     hour: {
-      heavenlyStem: HEAVENLY_STEMS[hourPillar.stem],
-      earthlyBranch: EARTHLY_BRANCHES[hourPillar.branch],
-      element: STEM_ELEMENT[hourPillar.stem],
+      heavenlyStem: HEAVENLY_STEMS[hourStemIndex],
+      earthlyBranch: EARTHLY_BRANCHES[hourBranchIndex],
+      element: STEM_ELEMENT[hourStemIndex],
     },
     missingElements: missing,
     dominantElement: dominant,

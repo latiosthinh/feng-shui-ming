@@ -181,11 +181,14 @@ describe('Five Grid — example-based', () => {
 })
 
 describe('BaZi — example-based', () => {
-  it('2024-01-01 12:00 gives known pillars', () => {
+  it('2024-01-01 12:00 gives authentic pillars (立春-based year)', () => {
     const result = calculateBazi(new Date(2024, 0, 1), '12:00')
-    expect(result.year.heavenlyStem).toBe('甲')
-    expect(result.year.earthlyBranch).toBe('辰')
-    expect(result.year.element).toBe('wood')
+    // Jan 1 is before 立春, so year pillar is 癸卯 (2023 lunar), not 甲辰
+    expect(result.year.heavenlyStem).toBe('癸')
+    expect(result.year.earthlyBranch).toBe('卯')
+    expect(result.year.element).toBe('water')
+    expect(result.month.heavenlyStem).toBe('甲')
+    expect(result.month.earthlyBranch).toBe('子')
     expect(result.month.element).toBe('wood')
   })
 
@@ -193,8 +196,12 @@ describe('BaZi — example-based', () => {
     const result = calculateBazi(new Date(1990, 5, 15), '08:00')
     expect(result.year.heavenlyStem).toBe('庚')
     expect(result.year.earthlyBranch).toBe('午')
-    expect(result.hour.heavenlyStem).toBeDefined()
-    expect(result.hour.earthlyBranch).toBeDefined()
+    expect(result.month.heavenlyStem).toBe('壬')
+    expect(result.month.earthlyBranch).toBe('午')
+    expect(result.day.heavenlyStem).toBe('辛')
+    expect(result.day.earthlyBranch).toBe('亥')
+    expect(result.hour.heavenlyStem).toBe('壬')
+    expect(result.hour.earthlyBranch).toBe('辰')
     expect(result.missingElements).toBeInstanceOf(Array)
     expect(result.dominantElement).toBeDefined()
   })

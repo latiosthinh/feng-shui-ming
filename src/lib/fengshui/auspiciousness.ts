@@ -3,6 +3,7 @@ import type { WuXingElement } from './types'
 
 export interface AuspiciousnessScore {
   rating: 'excellent' | 'good' | 'fair' | 'poor'
+  /** Score in 0–1 range (plan originally specified 0–100; tests lock in 0–1) */
   score: number
   details: {
     fiveGridScore: number
