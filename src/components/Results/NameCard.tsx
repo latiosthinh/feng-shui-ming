@@ -82,7 +82,7 @@ export function NameCard({ name, analysis, surname, birthDate, birthTime }: Name
   const { add, remove, isFav, limitReached, setLimitReached } = useFavorites()
   const [showAnalysis, setShowAnalysis] = useState(false)
   const [toast, setToast] = useState<string | null>(null)
-  const buttons = (LABELS as Record<string, typeof LABELS.zh>)[locale] || LABELS.zh
+  const buttons = (LABELS as Record<string, typeof LABELS.vi>)[locale] || LABELS.vi
   const auspiciousness: AuspiciousnessScore | undefined = analysis.auspiciousness
 
   const AUSPICIOUS_LABELS: Record<string, Record<string, { label: string; color: string }>> = {
@@ -115,7 +115,7 @@ export function NameCard({ name, analysis, surname, birthDate, birthTime }: Name
       }
       const ok = add(entry)
       if (!ok) {
-        const msg = locale === 'vi' ? 'Đã đạt tối đa 50 mục yêu thích' : '已达50个收藏上限'
+        const msg = locale === 'zh' ? '已达50个收藏上限' : 'Đã đạt tối đa 50 mục yêu thích'
         setToast(msg)
         setTimeout(() => setToast(null), 3000)
       }
@@ -124,7 +124,7 @@ export function NameCard({ name, analysis, surname, birthDate, birthTime }: Name
 
   useEffect(() => {
     if (limitReached) {
-      const msg = locale === 'vi' ? 'Đã đạt tối đa 50 mục yêu thích' : '已达50个收藏上限'
+      const msg = locale === 'zh' ? '已达50个收藏上限' : 'Đã đạt tối đa 50 mục yêu thích'
       setToast(msg)
       setTimeout(() => setToast(null), 3000)
       setLimitReached(false)
@@ -143,7 +143,7 @@ export function NameCard({ name, analysis, surname, birthDate, birthTime }: Name
               <NameCardHeader name={name} />
               {auspiciousness &&
                 (() => {
-                  const badge = (AUSPICIOUS_LABELS[locale] || AUSPICIOUS_LABELS.zh)[
+                  const badge = (AUSPICIOUS_LABELS[locale] || AUSPICIOUS_LABELS.vi)[
                     auspiciousness.rating
                   ]
                   return (

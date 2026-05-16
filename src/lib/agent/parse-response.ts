@@ -6,10 +6,10 @@ function defaultFiveGrid() {
 }
 
 function fallbackResponse(text: string, locale?: string): NameGenerationResponse {
-  const defaultNickname = locale === 'vi' ? 'Bé yêu' : '宝宝'
+  const defaultNickname = locale === 'zh' ? '宝宝' : 'Bé yêu'
   if (!text) {
     const msg =
-      locale === 'vi' ? 'API chưa trả về kết quả. Vui lòng thử lại.' : 'API 未返回结果，请稍后重试'
+      locale === 'zh' ? 'API 未返回结果，请稍后重试' : 'API chưa trả về kết quả. Vui lòng thử lại.'
     return {
       names: [{ native: msg, romanization: '', meaning: '', culturalSignificance: '' }],
       analysis: { fiveGrid: defaultFiveGrid(), wuXing: [], recommendations: [] },
@@ -44,7 +44,7 @@ export function parseResponse(content: string, locale?: string, surname?: string
     const fiveGrid =
       names.length > 0 && surname ? calculateFiveGrid(surname, names[0].native) : defaultFiveGrid()
 
-    const defaultNickname = locale === 'vi' ? 'Bé yêu' : '宝宝'
+    const defaultNickname = locale === 'zh' ? '宝宝' : 'Bé yêu'
     return {
       names,
       analysis: { fiveGrid, wuXing: [], recommendations: [] },

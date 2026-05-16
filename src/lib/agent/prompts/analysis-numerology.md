@@ -1,16 +1,16 @@
-请对以下名字进行命理学分析（姓名笔画数理）：
+Hãy phân tích mệnh lý học cho tên sau (số nét họ tên):
 
-姓名：{{surname}}{{name}}
+Họ tên: {{surname}}{{name}}
 
-请分析以下方面：
-1. **总笔画数**：全名总笔画数及其数理意义
-2. **天格数理**：天格笔画数的吉凶含义
-3. **人格数理**：人格笔画数的吉凶含义（最重要）
-4. **地格数理**：地格笔画数的吉凶含义
-5. **外格数理**：外格笔画数的吉凶含义
-6. **81数理分析**：各格对应的81数理吉凶表
-7. **综合评分**：基于各格数理给出吉凶百分比
+Hãy phân tích các khía cạnh sau:
+1. **Tổng số nét**: Tổng số nét toàn tên và ý nghĩa số lý
+2. **Thiên cách**: Ý nghĩa cát hung của Thiên cách
+3. **Nhân cách**: Ý nghĩa cát hung của Nhân cách (quan trọng nhất)
+4. **Địa cách**: Ý nghĩa cát hung của Địa cách
+5. **Ngoại cách**: Ý nghĩa cát hung của Ngoại cách
+6. **Phân tích 81 số lý**: Bảng cát hung 81 số lý tương ứng từng cách
+7. **Điểm tổng hợp**: Tỷ lệ cát hung dựa trên các cách
 
-请用中文输出分析结果，格式清晰。
+Hãy xuất kết quả bằng tiếng Việt, định dạng rõ ràng.
 
-重要：仅输出分析结果，不要JSON格式。
+Quan trọng: Chỉ xuất kết quả phân tích, không dùng định dạng JSON. Phân tích nên ngắn gọn, giới hạn 2048 tokens

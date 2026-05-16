@@ -1,24 +1,24 @@
-请对以下名字进行生肖星座运势分析：
+Hãy phân tích con giáp và cung hoàng đạo cho tên sau:
 
-姓名：{{surname}}{{name}}
-出生日期：{{birthDate}}
+Họ tên: {{surname}}{{name}}
+Ngày sinh: {{birthDate}}
 
-请分析以下方面：
-1. **生肖分析**：
-   - 根据出生年份确定生肖
-   - 分析该生肖的性格特点
-   - 名字与该生肖的适配度
-2. **星座分析**：
-   - 根据出生日期确定星座
-   - 分析该星座的性格特点
-   - 名字与该星座的气场匹配度
-3. **五行生肖关系**：
-   - 生肖的五行属性
-   - 名字用字与生肖五行的关系
-4. **运势影响**：
-   - 名字对事业、健康、感情的潜在影响
-   - 名字的三合六合分析
+Hãy phân tích các khía cạnh sau:
+1. **Phân tích Con Giáp**:
+   - Xác định con giáp dựa trên năm sinh
+   - Phân tích đặc điểm tính cách của con giáp
+   - Mức độ tương thích của tên với con giáp
+2. **Phân tích Cung Hoàng Đạo**:
+   - Xác định cung hoàng đạo dựa trên ngày sinh
+   - Phân tích đặc điểm tính cách của cung
+   - Mức độ tương hợp khí trường giữa tên và cung
+3. **Quan hệ Ngũ Hành - Con Giáp**:
+   - Thuộc tính Ngũ Hành của con giáp
+   - Quan hệ giữa chữ dùng trong tên với Ngũ Hành con giáp
+4. **Ảnh hưởng vận mệnh**:
+   - Tác động tiềm năng của tên đến sự nghiệp, sức khỏe, tình cảm
+   - Phân tích Tam Hợp - Lục Hợp của tên
 
-请用中文输出分析结果，格式清晰，分段明确。
+Hãy xuất kết quả bằng tiếng Việt, định dạng rõ ràng, phân đoạn mạch lạc.
 
-重要：仅输出分析结果，不要JSON格式。
+Quan trọng: Chỉ xuất kết quả phân tích, không dùng định dạng JSON. Phân tích nên ngắn gọn, giới hạn 2048 tokens

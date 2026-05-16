@@ -23,8 +23,8 @@ export const metadata: Metadata = {
     title: 'FengShuiMing - Asian Baby Name Generator',
     description: 'Generate meaningful Asian baby names with Feng Shui analysis',
     type: 'website',
-    locale: 'zh_CN',
-    alternateLocale: ['zh_CN', 'ja_JP', 'ko_KR', 'vi_VN'],
+    locale: 'vi_VN',
+    alternateLocale: ['zh_CN'],
   },
   twitter: {
     card: 'summary_large_image',
@@ -33,10 +33,8 @@ export const metadata: Metadata = {
   },
   alternates: {
     languages: {
-      'zh-CN': '/zh',
-      'ja-JP': '/ja',
-      'ko-KR': '/ko',
       'vi-VN': '/vi',
+      'zh-CN': '/zh',
     },
   },
 }
@@ -57,7 +55,7 @@ export default function RootLayout({
   }
 
   return (
-    <html lang="zh">
+    <html lang="vi">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen bg-gradient-to-br from-purple-50 via-white to-amber-50`}
       >

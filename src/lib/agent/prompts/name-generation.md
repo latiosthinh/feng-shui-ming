@@ -1,25 +1,32 @@
-请为以下信息生成{{nameCount}}个吉祥的名字。每个名字应风格多样，各不相同，避免相似。
+Hãy tạo {{nameCount}} cái tên may mắn bằng tiếng Việt dựa trên thông tin sau. Mỗi tên cần phong cách đa dạng, khác biệt rõ ràng. Tên phải có {{nameLength}} chữ (tên đệm + tên chính).
 
-姓氏：{{surname}}
-性别：{{gender}}
-出生日期：{{birthDate}}
-出生时间：{{birthTime}}
-偏好主题：{{preferences}}
+Họ: {{surname}}
+Giới tính: {{gender}}
+Ngày sinh: {{birthDate}}
+Giờ sinh: {{birthTime}}
+Sở thích: {{preferences}}
 
 {{familyInfo}}
+{{excludedNames}}
 
-请严格按照以下JSON数组格式输出（仅输出JSON）：
+Vui lòng xuất kết quả theo định dạng mảng JSON sau (chỉ xuất JSON):
 [
-  {
-    "native": "汉字姓名",
-    "romanization": "拼音/罗马音",
-    "meaning": "名字的含义和寓意（简洁）",
-    "culturalSignificance": "文化意义和背景（简洁）"
-  }
+{
+"native": "Tên bằng chữ Quốc ngữ có dấu (chỉ tên, không bao gồm họ, {{nameLength}} chữ, ví dụ: Văn An, Thị Hoa, Đức Minh)",
+"romanization": "Tên không dấu (chỉ tên, không họ, không dấu, ví dụ: Van An, Thi Hoa)",
+"meaning": "Ý nghĩa của tên (ngắn gọn, tiếng Việt)",
+"culturalSignificance": "Ý nghĩa văn hóa (ngắn gọn, tiếng Việt)",
+"nickname": "Tên thân mật ở nhà (ngắn gọn, tiếng Việt, khác biệt với tên chính)"
+}
 ]
 
-注意：
-- 姓氏为"无"时，自由选择常见姓氏
-- 名字应风格多样，各产明显区别
-- 避免生成相似的名字
-- 每个名字的meaning和culturalSignificance用中文描述
+Lưu ý:
+
+- native và romanization CHỈ chứa tên, KHÔNG bao gồm họ
+- native là tên thuần Việt có dấu (chữ Quốc ngữ), KHÔNG phải chữ Hán
+- native phải có {{nameLength}} chữ (ví dụ: "Văn An" cho 2 chữ, "Thị Hồng Nhung" cho 3 chữ)
+- Họ là {{surname}} (ví dụ: Nguyễn, Trần, Lê, Phạm, Hoàng, etc.)
+- Tên cần phong cách đa dạng, khác biệt rõ ràng
+- Tránh tạo các tên tương tự
+- nickname phải khác với tên chính, nickname phải đáng yêu, ngắn gọn, ví dụ: Mây, Sữa, Mia, Cám, Bông, Bon, Mon, Nari, etc
+- meaning, culturalSignificance và nickname mô tả bằng tiếng Việt

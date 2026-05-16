@@ -199,7 +199,7 @@ export function StreamingResults({
                 const finalResponse: NameGenerationResponse = {
                   names: [],
                   analysis: defaultAnalysis(),
-                  nickname: locale === 'vi' ? 'Bé yêu' : '宝宝',
+                  nickname: locale === 'zh' ? '宝宝' : 'Bé yêu',
                 }
                 setResponse(finalResponse)
               } else if (msg.type === 'error') {
@@ -258,7 +258,7 @@ export function StreamingResults({
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h3 className="text-xl font-bold text-gray-800">
-          {locale === 'vi' ? 'Kết quả' : '生成结果'}
+          {locale === 'zh' ? '生成结果' : 'Kết quả'}
         </h3>
         <div className="flex items-center gap-2">
           {loading && <StreamStatusBanner phase={streamPhase} />}
@@ -268,7 +268,7 @@ export function StreamingResults({
       <div
         className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
         aria-live="polite"
-        aria-label={loading ? (locale === 'vi' ? 'Đang tạo tên' : '正在生成名字') : (locale === 'vi' ? 'Kết quả tên' : '名字结果')}
+        aria-label={loading ? (locale === 'zh' ? '正在生成名字' : 'Đang tạo tên') : (locale === 'zh' ? '名字结果' : 'Kết quả tên')}
       >
         {cards.map((card, index) => {
           if (card.kind === 'real') {
@@ -309,7 +309,7 @@ export function StreamingResults({
 }
 
 function translateError(msg: string, locale: string): string {
-  if (locale !== 'vi') return msg
+  if (locale === 'zh') return msg
   if (msg.includes('timed out') || msg.includes('timeout'))
     return 'Yêu cầu đã hết thời gian. Vui lòng thử lại.'
   if (msg.includes('after 2 attempts')) return 'Không thể tạo tên. Vui lòng thử lại sau.'

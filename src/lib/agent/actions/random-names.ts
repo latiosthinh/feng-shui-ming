@@ -16,7 +16,7 @@ export async function getRandomNamesAction(
   surname?: string,
   count: number = 5,
   gender: string = 'neutral',
-  locale: string = 'zh',
+  locale: string = 'vi',
   dbOnly: boolean = false,
 ): Promise<NameGenerationResponse> {
   const dbNames = getDbNames(3)
@@ -27,16 +27,14 @@ export async function getRandomNamesAction(
     if (llmCount > 0) {
       const s = surname || ''
       const localeNames: Record<string, string> = {
-        zh: '中文',
-        ja: '日本語',
-        ko: '한국어',
         vi: 'Tiếng Việt',
+        zh: '中文',
       }
-      const localeName = localeNames[locale] || '中文'
+      const localeName = localeNames[locale] || 'Tiếng Việt'
 
       const prompt = surname
-        ? `为姓氏"${s}"生成${llmCount}个风格多样的${localeName}名字。仅输出JSON：[{"native":"","romanization":"","meaning":"","culturalSignificance":""}]`
-        : `随机生成${llmCount}个风格多样的${localeName}名字，自由选择常见姓氏。仅输出JSON：[{"native":"","romanization":"","meaning":"","culturalSignificance":""}]`
+        ? `Tạo ${llmCount} cái tên ${localeName} đa dạng phong cách cho họ "${s}". Chỉ xuất JSON: [{"native":"","romanization":"","meaning":"","culturalSignificance":""}]`
+        : `Tạo ngẫu nhiên ${llmCount} cái tên ${localeName} đa dạng phong cách, tự do chọn họ phổ biến. Chỉ xuất JSON: [{"native":"","romanization":"","meaning":"","culturalSignificance":""}]`
 
       const res = await fetch(`${API_URL}/chat/completions`, {
         method: 'POST',
@@ -75,7 +73,7 @@ export async function getRandomNamesAction(
   return {
     names: allNames.slice(0, count),
     analysis: defaultAnalysis(),
-    nickname: '宝宝',
+    nickname: locale === 'zh' ? '宝宝' : 'Bé yêu',
   }
 }
 

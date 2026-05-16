@@ -31,9 +31,9 @@ export function getAnalysisPrompt(type: string, locale?: Locale): string {
   return load(`analysis-${type}.md`, locale)
 }
 
-export const SYSTEM_PROMPT = load("system.vi.md")
-export const NAME_GENERATION_PROMPT = load("name-generation.vi.md")
-export const ANALYSIS_FENGSHUI = load("analysis-fengshui.vi.md")
-export const ANALYSIS_NUMEROLOGY = load("analysis-numerology.vi.md")
-export const ANALYSIS_BAZI = load("analysis-bazi.vi.md")
-export const ANALYSIS_HOROSCOPE = load("analysis-horoscope.vi.md")
+export const SYSTEM_PROMPT = load("system.md")
+export const NAME_GENERATION_PROMPT = load("name-generation.md")
+export const ANALYSIS_FENGSHUI = load("analysis-fengshui.md")
+export const ANALYSIS_NUMEROLOGY = load("analysis-numerology.md")
+export const ANALYSIS_BAZI = load("analysis-bazi.md")
+export const ANALYSIS_HOROSCOPE = load("analysis-horoscope.md")

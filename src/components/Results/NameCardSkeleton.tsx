@@ -5,12 +5,12 @@ interface NameCardSkeletonProps {
 }
 
 export function NameCardSkeleton({ locale }: NameCardSkeletonProps) {
-  const isZh = locale !== 'vi'
+  const isVi = locale !== 'zh'
   return (
     <div
       className="bg-white rounded-2xl shadow-lg p-6 space-y-4 overflow-hidden"
       role="status"
-      aria-label={isZh ? '正在生成名字' : 'Đang tạo tên'}
+      aria-label={isVi ? 'Đang tạo tên' : '正在生成名字'}
     >
       <div className="flex items-start justify-between">
         <div className="space-y-2 flex-1">

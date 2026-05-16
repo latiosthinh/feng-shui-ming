@@ -17,19 +17,19 @@ interface AnalysisLabels {
 }
 
 const labelSets: Record<string, AnalysisLabels> = {
+  zh: {
+    notProvided: "未提供",
+    dateLabel: "日期",
+    timeLabel: "时间",
+    emptyResult: "分析结果为空",
+    timeoutMsg: "分析超时，请重试",
+  },
   vi: {
     notProvided: "Không cung cấp",
     dateLabel: "Ngày",
     timeLabel: "Giờ",
     emptyResult: "Kết quả phân tích trống",
     timeoutMsg: "Phân tích đã hết thời gian. Vui lòng thử lại.",
-  },
-  default: {
-    notProvided: "未提供",
-    dateLabel: "日期",
-    timeLabel: "时间",
-    emptyResult: "分析结果为空",
-    timeoutMsg: "分析超时，请重试",
   },
 }
 
@@ -45,7 +45,7 @@ export async function analyzeNameAction(
   birthTime?: string,
   locale?: Locale,
 ): Promise<string> {
-  const labels = (locale === "vi") ? labelSets.vi : labelSets.default
+  const labels = (locale === "zh") ? labelSets.zh : labelSets.vi
 
   const birthInfo = [birthDate ? `${labels.dateLabel}：${birthDate}` : null, birthTime ? `${labels.timeLabel}：${birthTime}` : null]
     .filter(Boolean).join("，") || labels.notProvided

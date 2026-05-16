@@ -1,14 +1,14 @@
-请对以下名字进行风水分析（五格剖象法 + 五行分析）：
+Hãy phân tích phong thủy cho tên sau (Ngũ Cách + Ngũ Hành):
 
-姓名：{{surname}}{{name}}
+Họ tên: {{surname}}{{name}}
 
-请分析以下方面：
-1. **五格剖象**：天格、人格、地格、外格、总格的笔画数和吉凶判断（吉/凶）
-2. **笔画数理**：每个字的笔画数及81数理分析
-3. **五行分析**：名字中每个字的五行属性，以及整体五行平衡
-4. **三才配置**：天格、人格、地格的三才关系分析
-5. **综合评价**：总格对人生运势的影响，给出综合评分和建议
+Hãy phân tích các khía cạnh sau:
+1. **Ngũ Cách**: Thiên cách, Nhân cách, Địa cách, Ngoại cách, Tổng cách - số nét và phán đoán (Cát/Hung)
+2. **Số nét**: Số nét từng chữ và phân tích 81 số lý
+3. **Ngũ Hành**: Thuộc tính Ngũ Hành của từng chữ trong tên, cân bằng Ngũ Hành tổng thể
+4. **Tam Tài**: Quan hệ Tam Tài giữa Thiên cách, Nhân cách, Địa cách
+5. **Đánh giá tổng hợp**: Ảnh hưởng của Tổng cách đến vận mệnh, điểm số và kiến nghị
 
-请用中文输出分析结果，格式清晰，分段展示。
+Hãy xuất kết quả phân tích bằng tiếng Việt, định dạng rõ ràng, phân đoạn mạch lạc.
 
-重要：仅输出分析结果，不要JSON格式。
+Quan trọng: Chỉ xuất kết quả phân tích, không dùng định dạng JSON. Phân tích nên ngắn gọn, giới hạn 2048 tokens

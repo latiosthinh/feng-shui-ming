@@ -10,8 +10,8 @@ interface LanguageOption {
 }
 
 const languages: LanguageOption[] = [
-  { locale: "zh", label: "Chinese", nativeName: "中文" },
   { locale: "vi", label: "Vietnamese", nativeName: "Tiếng Việt" },
+  { locale: "zh", label: "Chinese", nativeName: "中文" },
 ]
 
 export function LanguageSelector() {
