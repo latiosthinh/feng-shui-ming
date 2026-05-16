@@ -75,8 +75,6 @@ const LABELS = {
       color: 'bg-amber-50 text-amber-700 border-amber-200 hover:bg-amber-100',
     },
   ],
-  ja: [],
-  ko: [],
 }
 
 export function NameCard({ name, analysis, surname, birthDate, birthTime }: NameCardProps) {
@@ -84,7 +82,7 @@ export function NameCard({ name, analysis, surname, birthDate, birthTime }: Name
   const { add, remove, isFav, limitReached, setLimitReached } = useFavorites()
   const [showAnalysis, setShowAnalysis] = useState(false)
   const [toast, setToast] = useState<string | null>(null)
-  const buttons = LABELS[locale] || LABELS.zh
+  const buttons = (LABELS as Record<string, typeof LABELS.zh>)[locale] || LABELS.zh
   const auspiciousness: AuspiciousnessScore | undefined = analysis.auspiciousness
 
   const AUSPICIOUS_LABELS: Record<string, Record<string, { label: string; color: string }>> = {

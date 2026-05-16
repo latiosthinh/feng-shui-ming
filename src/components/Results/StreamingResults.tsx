@@ -35,7 +35,7 @@ type CardState =
       analysis?: FengShuiAnalysis
     }
 
-type StreamPhase = 'thinking' | 'thinking-seeded' | 'arriving' | 'polishing'
+type StreamPhase = 'thinking' | 'thinking-seeded' | 'arriving'
 
 interface StreamingResultsProps {
   request: NameGenerationRequest
@@ -82,14 +82,14 @@ export function StreamingResults({
   const [loading, setLoading] = useState(!initialResponse)
 
   const streamPhase = useMemo<StreamPhase>(() => {
-    if (cards.some(c => c.kind === 'real')) return loading ? 'arriving' : 'polishing'
+    if (cards.some(c => c.kind === 'real')) return loading ? 'arriving' : 'thinking'
     if (cards.some(c => c.kind === 'seed')) return 'thinking-seeded'
     return 'thinking'
   }, [cards, loading])
   const execRef = useRef(0)
   const completedRef = useRef(false)
   const abortRef = useRef<AbortController | null>(null)
-  const [isPending, startTransition] = useTransition()
+  const [, startTransition] = useTransition()
 
   useEffect(() => {
     if (initialResponse) return
@@ -299,7 +299,7 @@ export function StreamingResults({
           }
           return (
             <div key={index} className="transition-opacity duration-300 opacity-100">
-              <NameCardSkeleton phase="skeleton" />
+              <NameCardSkeleton locale={locale} />
             </div>
           )
         })}
