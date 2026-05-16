@@ -1,11 +1,39 @@
-"use client"
-import { useState, useEffect, useRef } from "react"
-import { generateNamesAction } from "@/lib/agent/actions/generate-names"
-import type { NameGenerationRequest, NameGenerationResponse } from "@/lib/agent/types"
-import { NameCard } from "./NameCard"
-import { LoadingState } from "./LoadingState"
-import { ErrorState } from "./ErrorState"
-import { RegenerateButton } from "./RegenerateButton"
+'use client'
+import { useState, useEffect, useRef, useCallback } from 'react'
+import { generateNamesAction } from '@/lib/agent/actions/generate-names'
+import { getRandomNamesAction } from '@/lib/agent/actions/random-names'
+import type { NameGenerationRequest, NameGenerationResponse } from '@/lib/agent/types'
+import { useTranslation } from '@/lib/i18n/hooks'
+import { NameCard } from './NameCard'
+import { NameCardSkeleton } from './NameCardSkeleton'
+import { StreamStatusBanner } from './StreamStatusBanner'
+import { ErrorState } from './ErrorState'
+import { RegenerateButton } from './RegenerateButton'
+
+type CardState =
+  | { kind: 'skeleton' }
+  | {
+      kind: 'seed'
+      name: {
+        native: string
+        romanization: string
+        meaning: string
+        culturalSignificance: string
+        nickname?: string
+      }
+    }
+  | {
+      kind: 'real'
+      name: {
+        native: string
+        romanization: string
+        meaning: string
+        culturalSignificance: string
+        nickname?: string
+      }
+    }
+
+type StreamPhase = 'thinking' | 'thinking-seeded' | 'arriving' | 'polishing'
 
 interface StreamingResultsProps {
   request: NameGenerationRequest
@@ -15,6 +43,15 @@ interface StreamingResultsProps {
   initialResponse?: NameGenerationResponse
 }
 
+function isStreamingEnabled(): boolean {
+  if (typeof window === 'undefined') return true
+  try {
+    const stored = sessionStorage.getItem('fengshuiming-streaming')
+    if (stored === 'false') return false
+  } catch {}
+  return true
+}
+
 export function StreamingResults({
   request,
   onComplete,
@@ -22,32 +59,185 @@ export function StreamingResults({
   isRegenerating,
   initialResponse,
 }: StreamingResultsProps) {
+  const { t, locale } = useTranslation()
+  const nameCount = request.nameCount || 3
+
+  const [cards, setCards] = useState<CardState[]>(() =>
+    initialResponse
+      ? initialResponse.names.map((n) => ({ kind: 'real' as const, name: n }))
+      : Array.from({ length: nameCount }, () => ({ kind: 'skeleton' as const })),
+  )
   const [response, setResponse] = useState<NameGenerationResponse | null>(initialResponse || null)
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(!initialResponse)
+  const [streamPhase, setStreamPhase] = useState<StreamPhase>('thinking')
+  const execRef = useRef(0)
+  const completedRef = useRef(false)
+
+  const triggerDownload = useCallback(() => {
+    window.open('/api/download-names', '_blank')
+  }, [])
 
   useEffect(() => {
     if (initialResponse) return
-
-    let cancelled = false
+    const execId = ++execRef.current
+    completedRef.current = false
     setLoading(true)
+    setCards(Array.from({ length: nameCount }, () => ({ kind: 'skeleton' })))
+    setError(null)
+    setStreamPhase('thinking')
 
-    generateNamesAction(request)
-      .then((res) => {
-        if (cancelled) return
-        setResponse(res)
-        setLoading(false)
-      })
-      .catch((err) => {
-        if (cancelled) return
-        setError(err instanceof Error ? err.message : "生成出错")
-        setLoading(false)
-      })
+    // Seed from DB (instant)
+    const seedPromise = getRandomNamesAction(
+      request.surname,
+      nameCount,
+      request.gender,
+      request.locale,
+      true,
+    )
 
-    return () => {
-      cancelled = true
+    seedPromise.then((seedRes) => {
+      if (execId !== execRef.current) return
+      if (completedRef.current) return
+      setCards((prev) =>
+        prev.map((c, i) =>
+          c.kind === 'skeleton' && i < seedRes.names.length
+            ? { kind: 'seed' as const, name: seedRes.names[i] }
+            : c,
+        ),
+      )
+      setStreamPhase('thinking-seeded')
+    })
+
+    const doStream = isStreamingEnabled()
+    if (!doStream) {
+      fallbackBlocking(execId)
+      return
     }
-  }, [request, initialResponse])
+
+    // Try streaming
+    const ctrl = new AbortController()
+    let started = false
+
+    const softTimeout = setTimeout(() => {
+      if (!started) {
+        ctrl.abort()
+        if (execId === execRef.current && !completedRef.current) {
+          fallbackBlocking(execId)
+        }
+      }
+    }, 5000)
+
+    fetch('/api/generate-names', {
+      method: 'POST',
+      signal: ctrl.signal,
+      body: JSON.stringify(request),
+    })
+      .then(async (res) => {
+        clearTimeout(softTimeout)
+
+        if (!res.ok || !res.headers.get('Content-Type')?.includes('x-ndjson')) {
+          fallbackBlocking(execId)
+          return
+        }
+
+        started = true
+        if (execId !== execRef.current) return
+        setStreamPhase('arriving')
+
+        const reader = res.body!.getReader()
+        const decoder = new TextDecoder()
+        let buffer = ''
+
+        try {
+          while (true) {
+            const { done, value } = await reader.read()
+            if (done) break
+
+            buffer += decoder.decode(value, { stream: true })
+            const lines = buffer.split('\n')
+            buffer = lines.pop() || ''
+
+            for (const line of lines) {
+              if (!line.trim()) continue
+              let msg: any
+              try {
+                msg = JSON.parse(line)
+              } catch {
+                continue
+              }
+
+              if (msg.type === 'name') {
+                const name = msg.name
+                setCards((prev) => {
+                  const next = [...prev]
+                  if (msg.index < next.length) {
+                    next[msg.index] = { kind: 'real', name }
+                  }
+                  return next
+                })
+                setStreamPhase('arriving')
+              } else if (msg.type === 'done') {
+                completedRef.current = true
+                setLoading(false)
+                setStreamPhase('polishing')
+                const finalResponse: NameGenerationResponse = {
+                  names: [],
+                  analysis: {
+                    fiveGrid: {
+                      tianGe: 0,
+                      renGe: 0,
+                      diGe: 0,
+                      waiGe: 0,
+                      zongGe: 0,
+                      overall: 'neutral',
+                    },
+                    wuXing: [],
+                    recommendations: [],
+                  },
+                  nickname: locale === 'vi' ? 'Bé yêu' : '宝宝',
+                }
+                setResponse(finalResponse)
+              } else if (msg.type === 'error') {
+                if (!completedRef.current) {
+                  fallbackBlocking(execId)
+                }
+              }
+            }
+          }
+        } catch {
+          if (!completedRef.current) {
+            fallbackBlocking(execId)
+          }
+        }
+      })
+      .catch(() => {
+        clearTimeout(softTimeout)
+        if (!completedRef.current && execId === execRef.current) {
+          fallbackBlocking(execId)
+        }
+      })
+
+    function fallbackBlocking(id: number) {
+      if (id !== execRef.current || completedRef.current) return
+      completedRef.current = true
+      generateNamesAction(request)
+        .then((res) => {
+          if (id !== execRef.current) return
+          setResponse(res)
+          setCards(res.names.map((n) => ({ kind: 'real' as const, name: n })))
+          setLoading(false)
+          setStreamPhase('polishing')
+        })
+        .catch((err) => {
+          if (id !== execRef.current) return
+          completedRef.current = true
+          const msg = err instanceof Error ? err.message : String(err)
+          setError(translateError(msg, locale))
+          setLoading(false)
+        })
+    }
+  }, [request, initialResponse, nameCount, locale])
 
   const prevResponseRef = useRef(response)
   useEffect(() => {
@@ -61,37 +251,69 @@ export function StreamingResults({
     return <ErrorState error={error} onRetry={onRegenerate} />
   }
 
-  if (loading) {
-    return (
-      <div className="bg-white rounded-2xl shadow-lg p-6">
-        <LoadingState message="正在生成名字..." />
-      </div>
-    )
-  }
-
-  if (response) {
-    return (
-      <div className="space-y-6">
-        <div className="flex items-center justify-between">
-          <h3 className="text-xl font-bold text-gray-800">生成结果</h3>
-          <RegenerateButton onRegenerate={onRegenerate} isLoading={isRegenerating} />
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <h3 className="text-xl font-bold text-gray-800">
+          {locale === 'vi' ? 'Kết quả' : '生成结果'}
+        </h3>
+        <div className="flex items-center gap-2">
+          {loading && <StreamStatusBanner phase={streamPhase} />}
+          {!loading && <RegenerateButton onRegenerate={onRegenerate} isLoading={isRegenerating} />}
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {response.names.map((name, index) => (
-            <NameCard
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {cards.map((card, index) => {
+          if (card.kind === 'real') {
+            return (
+              <div key={index} className="transition-opacity duration-300 opacity-100">
+                <NameCard
+                  name={card.name}
+                  analysis={
+                    response?.analysis || {
+                      fiveGrid: {
+                        tianGe: 0,
+                        renGe: 0,
+                        diGe: 0,
+                        waiGe: 0,
+                        zongGe: 0,
+                        overall: 'neutral',
+                      },
+                      wuXing: [],
+                      recommendations: [],
+                    }
+                  }
+                  surname={request.surname}
+                  birthDate={request.birthDate}
+                  birthTime={request.birthTime}
+                />
+              </div>
+            )
+          }
+          return (
+            <div
               key={index}
-              name={name}
-              analysis={response.analysis}
-              nickname={response.nickname}
-              surname={request.surname}
-              birthDate={request.birthDate}
-              birthTime={request.birthTime}
-            />
-          ))}
-        </div>
+              className={`transition-opacity duration-300 ${card.kind === 'seed' ? 'opacity-60' : 'opacity-100'}`}
+            >
+              {card.kind === 'seed' ? (
+                <NameCardSkeleton phase="seed" />
+              ) : (
+                <NameCardSkeleton phase="skeleton" />
+              )}
+            </div>
+          )
+        })}
       </div>
-    )
-  }
+    </div>
+  )
+}
 
-  return null
+function translateError(msg: string, locale: string): string {
+  if (locale !== 'vi') return msg
+  if (msg.includes('timed out') || msg.includes('timeout'))
+    return 'Yêu cầu đã hết thời gian. Vui lòng thử lại.'
+  if (msg.includes('after 2 attempts')) return 'Không thể tạo tên. Vui lòng thử lại sau.'
+  if (msg.includes('MIMO API error')) return 'Lỗi dịch vụ. Vui lòng thử lại.'
+  if (msg.includes('fetch')) return 'Lỗi kết nối. Vui lòng kiểm tra mạng.'
+  return msg
 }
