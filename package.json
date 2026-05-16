@@ -8,10 +8,14 @@
     "start": "next start",
     "lint": "next lint",
     "format": "prettier --write \"src/**/*.{ts,tsx}\"",
-    "format:check": "prettier --check \"src/**/*.{ts,tsx}\""
+    "format:check": "prettier --check \"src/**/*.{ts,tsx}\"",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage"
   },
   "dependencies": {
     "@tailwindcss/postcss": "^4.3.0",
+    "lunar-javascript": "^1.7.7",
     "next": "^16.2.6",
     "react": "^19.2.6",
     "react-dom": "^19.2.6",
@@ -32,6 +36,7 @@
     "eslint-config-next": "^16.2.6",
     "eslint-config-prettier": "^10.0.0",
     "eslint-plugin-prettier": "^5.2.0",
+    "fast-check": "^4.8.0",
     "jsdom": "^26.0.0",
     "postcss": "^8.5.0",
     "prettier": "^3.5.0",

@@ -18,9 +18,20 @@ export interface BaziInfo {
   dominantElement: WuXingElement
 }
 
+export interface AuspiciousnessScore {
+  rating: "excellent" | "good" | "fair" | "poor"
+  score: number
+  details: {
+    fiveGridScore: number
+    wuxingScore: number
+    totalScore: number
+  }
+}
+
 export interface FengShuiAnalysis {
   fiveGrid: FiveGridScore
   wuXing: WuXingElement[]
   bazi?: BaziInfo
   recommendations: string[]
+  auspiciousness?: AuspiciousnessScore
 }
