@@ -82,10 +82,10 @@ export function StreamingResults({
   const [loading, setLoading] = useState(!initialResponse)
 
   const streamPhase = useMemo<StreamPhase>(() => {
-    if (cards.some(c => c.kind === 'real')) return loading ? 'arriving' : 'thinking'
+    if (cards.some(c => c.kind === 'real')) return 'arriving'
     if (cards.some(c => c.kind === 'seed')) return 'thinking-seeded'
     return 'thinking'
-  }, [cards, loading])
+  }, [cards])
   const execRef = useRef(0)
   const completedRef = useRef(false)
   const abortRef = useRef<AbortController | null>(null)

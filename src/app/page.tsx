@@ -3,8 +3,8 @@ import { LanguageSelector } from "@/components/LanguageSelector";
 import { NameForm } from "@/components/NameForm";
 import { ResultsContainer } from "@/components/Results/ResultsContainer";
 import { FavoritesList } from "@/components/Results/FavoritesList";
-import { useState, useCallback } from "react";
-import type { NameGenerationRequest, NameGenerationResponse } from "@/lib/agent/types";
+import { useState, useCallback, useRef } from "react";
+import type { NameGenerationRequest, NameGenerationResponse, GeneratedName } from "@/lib/agent/types";
 import { getRandomNamesAction } from "@/lib/agent/actions/random-names";
 import { useTranslation } from "@/lib/i18n/hooks";
 
@@ -13,8 +13,10 @@ export default function Home() {
   const [request, setRequest] = useState<NameGenerationRequest | null>(null);
   const [response, setResponse] = useState<NameGenerationResponse | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
+  const previousNamesRef = useRef<GeneratedName[]>([]);
 
   const handleSubmit = useCallback((req: NameGenerationRequest) => {
+    previousNamesRef.current = [];
     setRequest(req);
     setResponse(null);
     setIsGenerating(true);
@@ -35,12 +37,15 @@ export default function Home() {
   }, []);
 
   const handleComplete = useCallback((res: NameGenerationResponse) => {
+    previousNamesRef.current = [...previousNamesRef.current, ...res.names];
     setResponse(res);
     setIsGenerating(false);
   }, []);
 
   const handleRegenerate = useCallback(() => {
     if (request) {
+      const enriched = { ...request, previousNames: previousNamesRef.current };
+      setRequest(enriched);
       setResponse(null);
       setIsGenerating(true);
     }
@@ -66,7 +71,9 @@ export default function Home() {
             {locale === 'zh' ? '风水起名' : 'Đặt tên phong thủy'}
           </h2>
           <p className="text-gray-600 text-lg max-w-2xl mx-auto">
-            Generate meaningful Asian baby names with traditional Feng Shui analysis
+            {locale === 'zh'
+              ? '生成具有传统风水分析的亚洲婴儿名字'
+              : 'Tạo tên em bé châu Á với phân tích phong thủy truyền thống'}
           </p>
         </section>
 

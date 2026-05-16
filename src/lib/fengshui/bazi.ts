@@ -52,6 +52,7 @@ export function calculateBazi(birthDate: Date, birthTime?: string): BaziInfo {
   const hour = birthTime ? parseInt(birthTime.split(':')[0] || '12', 10) : 12
   const minute = birthTime ? parseInt(birthTime.split(':')[1] || '0', 10) : 0
 
+  // Times interpreted as China Standard Time (CST, UTC+8)
   const solar = Solar.fromYmdHms(year, month, day, hour, minute, 0)
   const lunar = solar.getLunar()
 

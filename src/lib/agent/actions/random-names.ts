@@ -32,9 +32,15 @@ export async function getRandomNamesAction(
       }
       const localeName = localeNames[locale] || 'Tiếng Việt'
 
-      const prompt = surname
+      const viPrompt = surname
         ? `Tạo ${llmCount} cái tên ${localeName} đa dạng phong cách cho họ "${s}". Chỉ xuất JSON: [{"native":"","romanization":"","meaning":"","culturalSignificance":""}]`
         : `Tạo ngẫu nhiên ${llmCount} cái tên ${localeName} đa dạng phong cách, tự do chọn họ phổ biến. Chỉ xuất JSON: [{"native":"","romanization":"","meaning":"","culturalSignificance":""}]`
+
+      const zhPrompt = surname
+        ? `为姓氏"${s}"生成${llmCount}个风格多样的${localeName}名字。仅输出JSON：[{"native":"","romanization":"","meaning":"","culturalSignificance":""}]`
+        : `随机生成${llmCount}个风格多样的${localeName}名字，自由选择常见姓氏。仅输出JSON：[{"native":"","romanization":"","meaning":"","culturalSignificance":""}]`
+
+      const prompt = locale === 'zh' ? zhPrompt : viPrompt
 
       const res = await fetch(`${API_URL}/chat/completions`, {
         method: 'POST',

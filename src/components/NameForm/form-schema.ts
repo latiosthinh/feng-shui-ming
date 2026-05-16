@@ -4,7 +4,7 @@ export const nameFormSchema = z.object({
   surname: z
     .string()
     .max(10, "Surname must be 10 characters or less")
-    .regex(/^[a-zA-Z\u4e00-\u9fff\u3040-\u309f\u30a0-\u30ff\uac00-\ud7af]*$/u, "Surname must contain only letters or CJK characters")
+    .regex(/^[a-zA-ZÀ-ɏḀ-ỿ\u4e00-\u9fff\u3040-\u309f\u30a0-\u30ff\uac00-\ud7af]*$/u, "Surname must contain only letters or CJK characters")
     .optional()
     .or(z.literal("")),
   gender: z.enum(["male", "female", "neutral"], {

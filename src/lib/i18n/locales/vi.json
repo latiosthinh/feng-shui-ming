@@ -55,6 +55,6 @@
     "genderRequired": "Vui lòng chọn giới tính",
     "birthDateInvalid": "Ngày phải theo định dạng YYYY-MM-DD",
     "birthTimeInvalid": "Giờ phải theo định dạng HH:MM",
-    "preferencesMax": "Tối đa 5 chủ đề ưa thích"
+    "preferencesMax": "Tối đa 6 chủ đề ưa thích"
   }
 }
