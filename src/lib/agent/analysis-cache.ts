@@ -1,11 +1,15 @@
-"use client"
+'use client'
 
-import type { NameAnalysis } from "@/lib/agent/types"
+import type { NameAnalysis } from '@/lib/agent/types'
 
-const CACHE_PREFIX = "fengshuiming-analysis:"
+const CACHE_PREFIX = 'fengshuiming-analysis:'
 
-export function getCachedAnalysis(name: string, surname: string, type: string): NameAnalysis | null {
-  if (typeof window === "undefined") return null
+export function getCachedAnalysis(
+  name: string,
+  surname: string,
+  type: string,
+): NameAnalysis | null {
+  if (typeof window === 'undefined') return null
   try {
     const key = `${CACHE_PREFIX}${name}:${surname}:${type}`
     const raw = localStorage.getItem(key)
@@ -17,7 +21,7 @@ export function getCachedAnalysis(name: string, surname: string, type: string): 
 }
 
 export function setCachedAnalysis(analysis: NameAnalysis): void {
-  if (typeof window === "undefined") return
+  if (typeof window === 'undefined') return
   try {
     const key = `${CACHE_PREFIX}${analysis.name}:${analysis.surname}:${analysis.type}`
     localStorage.setItem(key, JSON.stringify(analysis))
@@ -25,7 +29,7 @@ export function setCachedAnalysis(analysis: NameAnalysis): void {
 }
 
 export function clearNameCache(name: string, surname: string): void {
-  if (typeof window === "undefined") return
+  if (typeof window === 'undefined') return
   try {
     const prefix = `${CACHE_PREFIX}${name}:${surname}:`
     for (let i = localStorage.length - 1; i >= 0; i--) {

@@ -74,7 +74,11 @@ export function StreamingResults({
 
   const [cards, setCards] = useState<CardState[]>(() =>
     initialResponse
-      ? initialResponse.names.map((n) => ({ kind: 'real' as const, name: n, analysis: initialResponse.analysis }))
+      ? initialResponse.names.map((n) => ({
+          kind: 'real' as const,
+          name: n,
+          analysis: initialResponse.analysis,
+        }))
       : Array.from({ length: nameCount }, () => ({ kind: 'skeleton' as const })),
   )
   const [response, setResponse] = useState<NameGenerationResponse | null>(initialResponse || null)
@@ -82,8 +86,8 @@ export function StreamingResults({
   const [loading, setLoading] = useState(!initialResponse)
 
   const streamPhase = useMemo<StreamPhase>(() => {
-    if (cards.some(c => c.kind === 'real')) return 'arriving'
-    if (cards.some(c => c.kind === 'seed')) return 'thinking-seeded'
+    if (cards.some((c) => c.kind === 'real')) return 'arriving'
+    if (cards.some((c) => c.kind === 'seed')) return 'thinking-seeded'
     return 'thinking'
   }, [cards])
   const execRef = useRef(0)
@@ -199,7 +203,7 @@ export function StreamingResults({
                 const finalResponse: NameGenerationResponse = {
                   names: [],
                   analysis: defaultAnalysis(),
-                  nickname: locale === 'zh' ? '宝宝' : 'Bé yêu',
+                  nickname: response?.nickname || t.results.nickname,
                 }
                 setResponse(finalResponse)
               } else if (msg.type === 'error') {
@@ -257,9 +261,7 @@ export function StreamingResults({
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h3 className="text-xl font-bold text-gray-800">
-          {locale === 'zh' ? '生成结果' : 'Kết quả'}
-        </h3>
+        <h3 className="text-xl font-bold text-gray-800">{t.results.generating}</h3>
         <div className="flex items-center gap-2">
           {loading && <StreamStatusBanner phase={streamPhase} />}
           {!loading && <RegenerateButton onRegenerate={onRegenerate} isLoading={isRegenerating} />}
@@ -268,7 +270,7 @@ export function StreamingResults({
       <div
         className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
         aria-live="polite"
-        aria-label={loading ? (locale === 'zh' ? '正在生成名字' : 'Đang tạo tên') : (locale === 'zh' ? '名字结果' : 'Kết quả tên')}
+        aria-label={loading ? t.results.generatingNames : t.results.nameResults}
       >
         {cards.map((card, index) => {
           if (card.kind === 'real') {
@@ -299,7 +301,7 @@ export function StreamingResults({
           }
           return (
             <div key={index} className="transition-opacity duration-300 opacity-100">
-              <NameCardSkeleton locale={locale} />
+              <NameCardSkeleton />
             </div>
           )
         })}

@@ -1,4 +1,4 @@
-export type Locale = "zh" | "ja" | "ko" | "vi"
+export type Locale = 'zh' | 'ja' | 'ko' | 'vi'
 
 export interface TranslationKeys {
   common: {
@@ -10,6 +10,7 @@ export interface TranslationKeys {
     favorites: string
     noFavorites: string
     removeFavorite: string
+    exportFavorites: string
   }
   form: {
     title: string
@@ -30,6 +31,23 @@ export interface TranslationKeys {
     wisdom: string
     beauty: string
     peace: string
+    randomGenerate: string
+    advancedSettings: string
+    nameCount: string
+    familyMembers: string
+    addMember: string
+    remove: string
+    member: string
+    namePlaceholder: string
+    selectAll: string
+    deselectAll: string
+    father: string
+    mother: string
+    brother: string
+    sister: string
+    grandfather: string
+    grandmother: string
+    other: string
   }
   results: {
     meaning: string
@@ -49,6 +67,10 @@ export interface TranslationKeys {
     thinking: string
     analysisComplete: string
     error: string
+    generating: string
+    generatingNames: string
+    nameResults: string
+    maxFavorites: string
   }
   validation: {
     surnameRequired: string
@@ -58,5 +80,31 @@ export interface TranslationKeys {
     birthDateInvalid: string
     birthTimeInvalid: string
     preferencesMax: string
+  }
+  analysis: {
+    fengshui: string
+    numerology: string
+    bazi: string
+    horoscope: string
+    analyzing: string
+    clickToStart: string
+    detail: string
+    failed: string
+  }
+  nameCard: {
+    fengshui: string
+    numerology: string
+    bazi: string
+    horoscope: string
+    excellent: string
+    good: string
+    fair: string
+    poor: string
+  }
+  streamStatus: {
+    thinking: string
+    thinkingSeeded: string
+    arriving: string
+    polishing: string
   }
 }

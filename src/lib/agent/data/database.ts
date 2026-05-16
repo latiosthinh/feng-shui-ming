@@ -1,28 +1,40 @@
-import "server-only"
-import { readFileSync, writeFileSync, existsSync, mkdirSync } from "fs"
-import { join } from "path"
-import type { GeneratedName } from "@/lib/agent/types"
+import 'server-only'
+import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'fs'
+import { join } from 'path'
+import type { GeneratedName } from '@/lib/agent/types'
 
-const DB_PATH = join(process.cwd(), "data", "name-database.json")
+const DB_PATH = join(process.cwd(), 'data', 'name-database.json')
 
 function ensureDir() {
-  const dir = join(process.cwd(), "data")
+  const dir = join(process.cwd(), 'data')
   if (!existsSync(dir)) mkdirSync(dir, { recursive: true })
 }
 
-function readDb(): Array<{ native: string; romanization: string; meaning: string; culturalSignificance: string }> {
+function readDb(): Array<{
+  native: string
+  romanization: string
+  meaning: string
+  culturalSignificance: string
+}> {
   ensureDir()
   if (!existsSync(DB_PATH)) return []
   try {
-    return JSON.parse(readFileSync(DB_PATH, "utf-8"))
+    return JSON.parse(readFileSync(DB_PATH, 'utf-8'))
   } catch {
     return []
   }
 }
 
-function writeDb(data: Array<{ native: string; romanization: string; meaning: string; culturalSignificance: string }>) {
+function writeDb(
+  data: Array<{
+    native: string
+    romanization: string
+    meaning: string
+    culturalSignificance: string
+  }>,
+) {
   ensureDir()
-  writeFileSync(DB_PATH, JSON.stringify(data, null, 2), "utf-8")
+  writeFileSync(DB_PATH, JSON.stringify(data, null, 2), 'utf-8')
 }
 
 export function getRandomNames(count: number): GeneratedName[] {

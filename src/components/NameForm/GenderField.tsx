@@ -1,19 +1,19 @@
-"use client"
-import { useTranslation } from "@/lib/i18n/hooks"
+'use client'
+import { useTranslation } from '@/lib/i18n/hooks'
 
 interface GenderFieldProps {
   value: string
-  onChange: (value: "male" | "female" | "neutral") => void
+  onChange: (value: 'male' | 'female' | 'neutral') => void
   error?: string
 }
 
 export function GenderField({ value, onChange, error }: GenderFieldProps) {
   const { t } = useTranslation()
 
-  const options: { value: "male" | "female" | "neutral"; label: string; emoji: string }[] = [
-    { value: "male", label: t.form.male, emoji: "♂" },
-    { value: "female", label: t.form.female, emoji: "♀" },
-    { value: "neutral", label: t.form.neutral, emoji: "⚥" },
+  const options: { value: 'male' | 'female' | 'neutral'; label: string; emoji: string }[] = [
+    { value: 'male', label: t.form.male, emoji: '♂' },
+    { value: 'female', label: t.form.female, emoji: '♀' },
+    { value: 'neutral', label: t.form.neutral, emoji: '⚥' },
   ]
 
   return (
@@ -27,8 +27,8 @@ export function GenderField({ value, onChange, error }: GenderFieldProps) {
             onClick={() => onChange(opt.value)}
             className={`flex-1 py-3 px-4 rounded-xl border-2 transition-all text-sm font-medium ${
               value === opt.value
-                ? "border-purple-400 bg-purple-50 text-purple-700"
-                : "border-gray-200 text-gray-600 hover:border-purple-200"
+                ? 'border-purple-400 bg-purple-50 text-purple-700'
+                : 'border-gray-200 text-gray-600 hover:border-purple-200'
             }`}
           >
             <span className="mr-1">{opt.emoji}</span>

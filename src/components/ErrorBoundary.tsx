@@ -1,5 +1,5 @@
-"use client"
-import { Component, type ReactNode } from "react"
+'use client'
+import { Component, type ReactNode } from 'react'
 
 interface ErrorBoundaryProps {
   children: ReactNode
@@ -22,7 +22,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
   }
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
-    console.error("ErrorBoundary caught:", error, errorInfo)
+    console.error('ErrorBoundary caught:', error, errorInfo)
   }
 
   render() {

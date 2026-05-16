@@ -51,13 +51,27 @@ declare module 'lunar-javascript' {
   }
 
   export const Solar: {
-    fromYmdHms(year: number, month: number, day: number, hour: number, minute: number, second: number): SolarInstance
+    fromYmdHms(
+      year: number,
+      month: number,
+      day: number,
+      hour: number,
+      minute: number,
+      second: number,
+    ): SolarInstance
     fromYmd(year: number, month: number, day: number): SolarInstance
     fromDate(date: Date): SolarInstance
   }
 
   export const Lunar: {
-    fromYmdHms(year: number, month: number, day: number, hour: number, minute: number, second: number): Lunar
+    fromYmdHms(
+      year: number,
+      month: number,
+      day: number,
+      hour: number,
+      minute: number,
+      second: number,
+    ): Lunar
     fromDate(date: Date): Lunar
   }
 }

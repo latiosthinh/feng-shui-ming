@@ -1,16 +1,13 @@
 'use client'
+import { useTranslation } from '@/lib/i18n/hooks'
 
-interface NameCardSkeletonProps {
-  locale?: string
-}
-
-export function NameCardSkeleton({ locale }: NameCardSkeletonProps) {
-  const isVi = locale !== 'zh'
+export function NameCardSkeleton() {
+  const { t } = useTranslation()
   return (
     <div
       className="bg-white rounded-2xl shadow-lg p-6 space-y-4 overflow-hidden"
       role="status"
-      aria-label={isVi ? 'Đang tạo tên' : '正在生成名字'}
+      aria-label={t.results.generatingNames}
     >
       <div className="flex items-start justify-between">
         <div className="space-y-2 flex-1">

@@ -7,7 +7,8 @@
     "error": "오류가 발생했습니다",
     "favorites": "즐겨찾기",
     "noFavorites": "즐겨찾기한 이름이 없습니다",
-    "removeFavorite": "즐겨찾기 삭제"
+    "removeFavorite": "즐겨찾기 삭제",
+    "exportFavorites": "내보내기"
   },
   "form": {
     "title": "작명 폼",
@@ -27,7 +28,24 @@
     "strength": "힘",
     "wisdom": "지혜",
     "beauty": "아름다움",
-    "peace": "평화"
+    "peace": "평화",
+    "randomGenerate": "랜덤 작명",
+    "advancedSettings": "고급 설정",
+    "nameCount": "생성 수 (1-6)",
+    "familyMembers": "가족 정보",
+    "addMember": "+ 추가",
+    "remove": "삭제",
+    "member": "멤버",
+    "namePlaceholder": "이름",
+    "selectAll": "전체 선택",
+    "deselectAll": "전체 해제",
+    "father": "부",
+    "mother": "모",
+    "brother": "형제",
+    "sister": "자매",
+    "grandfather": "조부",
+    "grandmother": "조모",
+    "other": "기타"
   },
   "results": {
     "meaning": "의미",
@@ -46,7 +64,11 @@
     "recommendations": "추천",
     "thinking": "생각 중...",
     "analysisComplete": "분석 완료",
-    "error": "생성 오류"
+    "error": "생성 오류",
+    "generating": "생성 결과",
+    "generatingNames": "이름 생성 중",
+    "nameResults": "이름 결과",
+    "maxFavorites": "즐겨찾기는 최대 50개입니다"
   },
   "validation": {
     "surnameRequired": "성씨를 입력하세요",
@@ -56,5 +78,31 @@
     "birthDateInvalid": "날짜 형식은 YYYY-MM-DD입니다",
     "birthTimeInvalid": "시간 형식은 HH:MM입니다",
     "preferencesMax": "최대 5개의 선호를 선택할 수 있습니다"
+  },
+  "analysis": {
+    "fengshui": "풍수 분석",
+    "numerology": "명리 분석",
+    "bazi": "팔자 분석",
+    "horoscope": "별자리 & 띠",
+    "analyzing": "분석 중...",
+    "clickToStart": "위 버튼을 클릭하여 분석 시작",
+    "detail": "상세 분석",
+    "failed": "분석에 실패했습니다. 다시 시도하세요"
+  },
+  "nameCard": {
+    "fengshui": "풍수",
+    "numerology": "명리",
+    "bazi": "팔자",
+    "horoscope": "별자리",
+    "excellent": "대길",
+    "good": "길",
+    "fair": "평",
+    "poor": "흉"
+  },
+  "streamStatus": {
+    "thinking": "생각 중…",
+    "thinkingSeeded": "적절한 이름 선별 중…",
+    "arriving": "첫 이름 생성됨…",
+    "polishing": "완성 중…"
   }
 }

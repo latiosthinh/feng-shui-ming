@@ -1,10 +1,10 @@
-"use client"
-import { createContext, useState, useCallback, useEffect, useMemo } from "react"
-import type { Locale, TranslationKeys } from "./types"
-import zh from "./locales/zh.json"
-import ja from "./locales/ja.json"
-import ko from "./locales/ko.json"
-import vi from "./locales/vi.json"
+'use client'
+import { createContext, useState, useCallback, useEffect, useMemo } from 'react'
+import type { Locale, TranslationKeys } from './types'
+import zh from './locales/zh.json'
+import ja from './locales/ja.json'
+import ko from './locales/ko.json'
+import vi from './locales/vi.json'
 
 const translations: Record<Locale, TranslationKeys> = { zh, ja, ko, vi }
 
@@ -17,18 +17,18 @@ export interface I18nContextValue {
 export const I18nContext = createContext<I18nContextValue | null>(null)
 
 export function I18nProvider({ children }: { children: React.ReactNode }) {
-  const [locale, setLocaleState] = useState<Locale>("vi")
+  const [locale, setLocaleState] = useState<Locale>('vi')
 
   const setLocale = useCallback((newLocale: Locale) => {
     setLocaleState(newLocale)
-    if (typeof window !== "undefined") {
-      localStorage.setItem("fengshuiming-locale", newLocale)
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('fengshuiming-locale', newLocale)
     }
   }, [])
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      const stored = localStorage.getItem("fengshuiming-locale")
+    if (typeof window !== 'undefined') {
+      const stored = localStorage.getItem('fengshuiming-locale')
       if (stored && stored in translations) {
         setLocaleState(stored as Locale)
       }
@@ -41,7 +41,7 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
       setLocale,
       t: translations[locale],
     }),
-    [locale, setLocale]
+    [locale, setLocale],
   )
 
   return <I18nContext.Provider value={value}>{children}</I18nContext.Provider>

@@ -1,5 +1,5 @@
-"use client"
-import { useTranslation } from "@/lib/i18n/hooks"
+'use client'
+import { useTranslation } from '@/lib/i18n/hooks'
 
 interface LoadingStateProps {
   message?: string

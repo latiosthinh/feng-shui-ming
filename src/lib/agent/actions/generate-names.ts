@@ -1,9 +1,6 @@
 'use server'
 
-import type {
-  NameGenerationRequest,
-  NameGenerationResponse,
-} from '@/lib/agent/types'
+import type { NameGenerationRequest, NameGenerationResponse } from '@/lib/agent/types'
 import { getSystemPrompt } from '@/lib/agent/prompts'
 import { saveNames } from '@/lib/agent/data/database'
 import { buildPrompt } from '@/lib/agent/build-prompt'

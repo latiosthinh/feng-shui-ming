@@ -1,7 +1,7 @@
-"use client"
-import { useState } from "react"
-import { useTranslation } from "@/lib/i18n/hooks"
-import type { Locale } from "@/lib/i18n/types"
+'use client'
+import { useState } from 'react'
+import { useTranslation } from '@/lib/i18n/hooks'
+import type { Locale } from '@/lib/i18n/types'
 
 interface LanguageOption {
   locale: Locale
@@ -10,7 +10,7 @@ interface LanguageOption {
 }
 
 const languages: LanguageOption[] = [
-  { locale: "vi", label: "Vietnamese", nativeName: "Tiếng Việt" },
+  { locale: 'vi', label: 'Vietnamese', nativeName: 'Tiếng Việt' },
 ]
 
 export function LanguageSelector() {
@@ -29,7 +29,7 @@ export function LanguageSelector() {
       >
         <span className="text-lg">{currentLang?.nativeName}</span>
         <svg
-          className={`w-4 h-4 transition-transform ${isOpen ? "rotate-180" : ""}`}
+          className={`w-4 h-4 transition-transform ${isOpen ? 'rotate-180' : ''}`}
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -53,8 +53,8 @@ export function LanguageSelector() {
               }}
               className={`w-full text-left px-4 py-2 text-sm transition-colors ${
                 locale === lang.locale
-                  ? "bg-purple-100 text-purple-700 font-medium"
-                  : "text-gray-700 hover:bg-purple-50"
+                  ? 'bg-purple-100 text-purple-700 font-medium'
+                  : 'text-gray-700 hover:bg-purple-50'
               }`}
               role="option"
               aria-selected={locale === lang.locale}

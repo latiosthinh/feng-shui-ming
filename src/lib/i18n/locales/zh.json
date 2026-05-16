@@ -7,7 +7,8 @@
     "error": "出错了",
     "favorites": "收藏夹",
     "noFavorites": "还没有收藏的名字",
-    "removeFavorite": "移除收藏"
+    "removeFavorite": "移除收藏",
+    "exportFavorites": "导出"
   },
   "form": {
     "title": "起名表单",
@@ -27,7 +28,24 @@
     "strength": "力量",
     "wisdom": "智慧",
     "beauty": "美丽",
-    "peace": "和平"
+    "peace": "和平",
+    "randomGenerate": "随机起名",
+    "advancedSettings": "高级设置",
+    "nameCount": "生成名字数量 (1-6)",
+    "familyMembers": "家庭成员信息",
+    "addMember": "+ 添加成员",
+    "remove": "移除",
+    "member": "成员",
+    "namePlaceholder": "姓名",
+    "selectAll": "全选",
+    "deselectAll": "取消全选",
+    "father": "父亲",
+    "mother": "母亲",
+    "brother": "兄弟",
+    "sister": "姐妹",
+    "grandfather": "祖父",
+    "grandmother": "祖母",
+    "other": "其他"
   },
   "results": {
     "meaning": "含义",
@@ -46,7 +64,11 @@
     "recommendations": "建议",
     "thinking": "正在思考...",
     "analysisComplete": "分析完成",
-    "error": "生成出错"
+    "error": "生成出错",
+    "generating": "生成结果",
+    "generatingNames": "正在生成名字",
+    "nameResults": "名字结果",
+    "maxFavorites": "已达50个收藏上限"
   },
   "validation": {
     "surnameRequired": "请输入姓氏",
@@ -56,5 +78,31 @@
     "birthDateInvalid": "日期格式必须为 YYYY-MM-DD",
     "birthTimeInvalid": "时间格式必须为 HH:MM",
     "preferencesMax": "最多选择5个偏好"
+  },
+  "analysis": {
+    "fengshui": "风水分析",
+    "numerology": "命理分析",
+    "bazi": "八字分析",
+    "horoscope": "星座生肖",
+    "analyzing": "正在分析中...",
+    "clickToStart": "点击上方按钮开始分析",
+    "detail": "详细分析",
+    "failed": "分析失败，请重试"
+  },
+  "nameCard": {
+    "fengshui": "风水",
+    "numerology": "命理",
+    "bazi": "八字",
+    "horoscope": "星座",
+    "excellent": "大吉",
+    "good": "吉",
+    "fair": "平",
+    "poor": "凶"
+  },
+  "streamStatus": {
+    "thinking": "正在思考…",
+    "thinkingSeeded": "正在挑选合适的名字…",
+    "arriving": "首个名字已生成…",
+    "polishing": "正在完善…"
   }
 }

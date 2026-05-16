@@ -1,6 +1,6 @@
-import type { GeneratedName } from "@/lib/agent/types"
-import type { FengShuiAnalysis } from "@/lib/fengshui/types"
-import type { Locale } from "@/lib/i18n/types"
+import type { GeneratedName } from '@/lib/agent/types'
+import type { FengShuiAnalysis } from '@/lib/fengshui/types'
+import type { Locale } from '@/lib/i18n/types'
 
 export interface FavoriteEntry {
   id: string

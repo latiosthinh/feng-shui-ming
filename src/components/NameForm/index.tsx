@@ -1,16 +1,16 @@
-"use client"
-import { useState, useCallback } from "react"
-import { useTranslation } from "@/lib/i18n/hooks"
-import { validateForm } from "./form-validation"
-import type { NameGenerationRequest, FamilyMember } from "@/lib/agent/types"
-import { SurnameField } from "./SurnameField"
-import { GenderField } from "./GenderField"
-import { BirthDateField } from "./BirthDateField"
-import { BirthTimeField } from "./BirthTimeField"
-import { PreferencesField } from "./PreferencesField"
-import { AdvancedSettings } from "./AdvancedSettings"
-import { RandomButton } from "./RandomButton"
-import { SubmitButton } from "./SubmitButton"
+'use client'
+import { useState, useCallback } from 'react'
+import { useTranslation } from '@/lib/i18n/hooks'
+import { validateForm } from './form-validation'
+import type { NameGenerationRequest, FamilyMember } from '@/lib/agent/types'
+import { SurnameField } from './SurnameField'
+import { GenderField } from './GenderField'
+import { BirthDateField } from './BirthDateField'
+import { BirthTimeField } from './BirthTimeField'
+import { PreferencesField } from './PreferencesField'
+import { AdvancedSettings } from './AdvancedSettings'
+import { RandomButton } from './RandomButton'
+import { SubmitButton } from './SubmitButton'
 
 interface NameFormProps {
   onSubmit: (request: NameGenerationRequest) => void
@@ -20,10 +20,10 @@ interface NameFormProps {
 
 export function NameForm({ onSubmit, onRandom, isLoading }: NameFormProps) {
   const { t, locale } = useTranslation()
-  const [surname, setSurname] = useState("")
-  const [gender, setGender] = useState<"male" | "female" | "neutral">("male")
-  const [birthDate, setBirthDate] = useState("")
-  const [birthTime, setBirthTime] = useState("")
+  const [surname, setSurname] = useState('')
+  const [gender, setGender] = useState<'male' | 'female' | 'neutral'>('male')
+  const [birthDate, setBirthDate] = useState('')
+  const [birthTime, setBirthTime] = useState('')
   const [preferences, setPreferences] = useState<string[]>([])
   const [familyMembers, setFamilyMembers] = useState<FamilyMember[]>([])
   const [nameCount, setNameCount] = useState(3)
@@ -52,13 +52,23 @@ export function NameForm({ onSubmit, onRandom, isLoading }: NameFormProps) {
         nameCount,
       })
     },
-    [surname, gender, birthDate, birthTime, preferences, familyMembers, nameCount, locale, onSubmit]
+    [
+      surname,
+      gender,
+      birthDate,
+      birthTime,
+      preferences,
+      familyMembers,
+      nameCount,
+      locale,
+      onSubmit,
+    ],
   )
 
   return (
     <form onSubmit={handleSubmit} className="bg-white rounded-2xl shadow-lg p-6 md:p-8 space-y-6">
       <div className="flex items-center justify-between">
-        <h2 className="text-lg font-bold text-gray-800">{t.form.title || "起名表单"}</h2>
+        <h2 className="text-lg font-bold text-gray-800">{t.form.title}</h2>
         <RandomButton onClick={onRandom} isLoading={isLoading} />
       </div>
 

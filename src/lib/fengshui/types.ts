@@ -1,4 +1,4 @@
-export type WuXingElement = "wood" | "fire" | "earth" | "metal" | "water"
+export type WuXingElement = 'wood' | 'fire' | 'earth' | 'metal' | 'water'
 
 export interface FiveGridScore {
   tianGe: number
@@ -6,7 +6,7 @@ export interface FiveGridScore {
   diGe: number
   waiGe: number
   zongGe: number
-  overall: "auspicious" | "neutral" | "inauspicious"
+  overall: 'auspicious' | 'neutral' | 'inauspicious'
 }
 
 export interface BaziInfo {
@@ -19,7 +19,7 @@ export interface BaziInfo {
 }
 
 export interface AuspiciousnessScore {
-  rating: "excellent" | "good" | "fair" | "poor"
+  rating: 'excellent' | 'good' | 'fair' | 'poor'
   score: number
   details: {
     fiveGridScore: number

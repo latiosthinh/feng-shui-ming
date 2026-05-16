@@ -22,83 +22,39 @@ interface NameCardProps {
   birthTime?: string
 }
 
-const LABELS = {
-  zh: [
-    {
-      type: 'fengshui' as const,
-      label: '风水',
-      emoji: '☯',
-      color: 'bg-green-50 text-green-700 border-green-200 hover:bg-green-100',
-    },
-    {
-      type: 'numerology' as const,
-      label: '命理',
-      emoji: '🔢',
-      color: 'bg-blue-50 text-blue-700 border-blue-200 hover:bg-blue-100',
-    },
-    {
-      type: 'bazi' as const,
-      label: '八字',
-      emoji: '📅',
-      color: 'bg-purple-50 text-purple-700 border-purple-200 hover:bg-purple-100',
-    },
-    {
-      type: 'horoscope' as const,
-      label: '星座',
-      emoji: '⭐',
-      color: 'bg-amber-50 text-amber-700 border-amber-200 hover:bg-amber-100',
-    },
-  ],
-  vi: [
-    {
-      type: 'fengshui' as const,
-      label: 'Phong thủy',
-      emoji: '☯',
-      color: 'bg-green-50 text-green-700 border-green-200 hover:bg-green-100',
-    },
-    {
-      type: 'numerology' as const,
-      label: 'Mệnh lý',
-      emoji: '🔢',
-      color: 'bg-blue-50 text-blue-700 border-blue-200 hover:bg-blue-100',
-    },
-    {
-      type: 'bazi' as const,
-      label: 'Bát tự',
-      emoji: '📅',
-      color: 'bg-purple-50 text-purple-700 border-purple-200 hover:bg-purple-100',
-    },
-    {
-      type: 'horoscope' as const,
-      label: 'Cung & Giáp',
-      emoji: '⭐',
-      color: 'bg-amber-50 text-amber-700 border-amber-200 hover:bg-amber-100',
-    },
-  ],
-}
+const ANALYSIS_TYPES = [
+  {
+    type: 'fengshui' as const,
+    emoji: '☯',
+    color: 'bg-green-50 text-green-700 border-green-200 hover:bg-green-100',
+  },
+  {
+    type: 'numerology' as const,
+    emoji: '🔢',
+    color: 'bg-blue-50 text-blue-700 border-blue-200 hover:bg-blue-100',
+  },
+  {
+    type: 'bazi' as const,
+    emoji: '📅',
+    color: 'bg-purple-50 text-purple-700 border-purple-200 hover:bg-purple-100',
+  },
+  {
+    type: 'horoscope' as const,
+    emoji: '⭐',
+    color: 'bg-amber-50 text-amber-700 border-amber-200 hover:bg-amber-100',
+  },
+]
 
 export function NameCard({ name, analysis, surname, birthDate, birthTime }: NameCardProps) {
-  const { locale } = useTranslation()
+  const { t, locale } = useTranslation()
   const { add, remove, isFav, limitReached, setLimitReached } = useFavorites()
   const [showAnalysis, setShowAnalysis] = useState(false)
   const [toast, setToast] = useState<string | null>(null)
-  const buttons = (LABELS as Record<string, typeof LABELS.vi>)[locale] || LABELS.vi
+  const buttons = ANALYSIS_TYPES.map((btn) => ({
+    ...btn,
+    label: t.nameCard[btn.type],
+  }))
   const auspiciousness: AuspiciousnessScore | undefined = analysis.auspiciousness
-
-  const AUSPICIOUS_LABELS: Record<string, Record<string, { label: string; color: string }>> = {
-    zh: {
-      excellent: { label: '大吉', color: 'bg-green-100 text-green-800 border-green-300' },
-      good: { label: '吉', color: 'bg-blue-100 text-blue-800 border-blue-300' },
-      fair: { label: '平', color: 'bg-yellow-100 text-yellow-800 border-yellow-300' },
-      poor: { label: '凶', color: 'bg-red-100 text-red-800 border-red-300' },
-    },
-    vi: {
-      excellent: { label: 'Đại cát', color: 'bg-green-100 text-green-800 border-green-300' },
-      good: { label: 'Cát', color: 'bg-blue-100 text-blue-800 border-blue-300' },
-      fair: { label: 'Bình', color: 'bg-yellow-100 text-yellow-800 border-yellow-300' },
-      poor: { label: 'Hung', color: 'bg-red-100 text-red-800 border-red-300' },
-    },
-  }
 
   const handleToggleFavorite = () => {
     const id = `${name.native}-${name.romanization}`
@@ -115,8 +71,7 @@ export function NameCard({ name, analysis, surname, birthDate, birthTime }: Name
       }
       const ok = add(entry)
       if (!ok) {
-        const msg = locale === 'zh' ? '已达50个收藏上限' : 'Đã đạt tối đa 50 mục yêu thích'
-        setToast(msg)
+        setToast(t.results.maxFavorites)
         setTimeout(() => setToast(null), 3000)
       }
     }
@@ -124,12 +79,11 @@ export function NameCard({ name, analysis, surname, birthDate, birthTime }: Name
 
   useEffect(() => {
     if (limitReached) {
-      const msg = locale === 'zh' ? '已达50个收藏上限' : 'Đã đạt tối đa 50 mục yêu thích'
-      setToast(msg)
+      setToast(t.results.maxFavorites)
       setTimeout(() => setToast(null), 3000)
       setLimitReached(false)
     }
-  }, [limitReached, locale, setLimitReached])
+  }, [limitReached, setLimitReached])
 
   const id = `${name.native}-${name.romanization}`
   const favorited = isFav(id)
@@ -143,14 +97,25 @@ export function NameCard({ name, analysis, surname, birthDate, birthTime }: Name
               <NameCardHeader name={name} />
               {auspiciousness &&
                 (() => {
-                  const badge = (AUSPICIOUS_LABELS[locale] || AUSPICIOUS_LABELS.vi)[
-                    auspiciousness.rating
-                  ]
+                  const badge = t.nameCard[auspiciousness.rating]
+                  const badgeConfig = {
+                    excellent: {
+                      label: badge,
+                      color: 'bg-green-100 text-green-800 border-green-300',
+                    },
+                    good: { label: badge, color: 'bg-blue-100 text-blue-800 border-blue-300' },
+                    fair: {
+                      label: badge,
+                      color: 'bg-yellow-100 text-yellow-800 border-yellow-300',
+                    },
+                    poor: { label: badge, color: 'bg-red-100 text-red-800 border-red-300' },
+                  }
+                  const config = badgeConfig[auspiciousness.rating]
                   return (
                     <span
-                      className={`inline-block mt-1 px-2 py-0.5 rounded border text-xs font-medium ${badge.color}`}
+                      className={`inline-block mt-1 px-2 py-0.5 rounded border text-xs font-medium ${config.color}`}
                     >
-                      {badge.label}
+                      {config.label}
                     </span>
                   )
                 })()}
@@ -162,7 +127,7 @@ export function NameCard({ name, analysis, surname, birthDate, birthTime }: Name
                   ? 'text-red-500 bg-red-50'
                   : 'text-gray-400 hover:text-red-400 hover:bg-red-50'
               }`}
-              aria-label={favorited ? 'Remove from favorites' : 'Add to favorites'}
+              aria-label={favorited ? t.common.removeFavorite : t.common.favorites}
             >
               <svg
                 className="w-5 h-5"

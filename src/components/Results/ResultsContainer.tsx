@@ -1,6 +1,6 @@
-"use client"
-import type { NameGenerationRequest, NameGenerationResponse } from "@/lib/agent/types"
-import { StreamingResults } from "./StreamingResults"
+'use client'
+import type { NameGenerationRequest, NameGenerationResponse } from '@/lib/agent/types'
+import { StreamingResults } from './StreamingResults'
 
 interface ResultsContainerProps {
   request: NameGenerationRequest

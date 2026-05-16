@@ -25,7 +25,11 @@ function fallbackResponse(text: string, locale?: string): NameGenerationResponse
   }
 }
 
-export function parseResponse(content: string, locale?: string, surname?: string): NameGenerationResponse {
+export function parseResponse(
+  content: string,
+  locale?: string,
+  surname?: string,
+): NameGenerationResponse {
   const jsonMatch = content.match(/\[[\s\S]*\]/)
   if (!jsonMatch) {
     return fallbackResponse(content, locale)

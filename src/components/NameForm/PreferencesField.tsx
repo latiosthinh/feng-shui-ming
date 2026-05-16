@@ -1,5 +1,5 @@
-"use client"
-import { useTranslation } from "@/lib/i18n/hooks"
+'use client'
+import { useTranslation } from '@/lib/i18n/hooks'
 
 interface PreferencesFieldProps {
   value: string[]
@@ -11,12 +11,12 @@ export function PreferencesField({ value, onChange, error }: PreferencesFieldPro
   const { t } = useTranslation()
 
   const preferences = [
-    { key: "nature", label: t.form.nature, emoji: "🌿" },
-    { key: "virtue", label: t.form.virtue, emoji: "✨" },
-    { key: "strength", label: t.form.strength, emoji: "💪" },
-    { key: "wisdom", label: t.form.wisdom, emoji: "📚" },
-    { key: "beauty", label: t.form.beauty, emoji: "🌸" },
-    { key: "peace", label: t.form.peace, emoji: "☮️" },
+    { key: 'nature', label: t.form.nature, emoji: '🌿' },
+    { key: 'virtue', label: t.form.virtue, emoji: '✨' },
+    { key: 'strength', label: t.form.strength, emoji: '💪' },
+    { key: 'wisdom', label: t.form.wisdom, emoji: '📚' },
+    { key: 'beauty', label: t.form.beauty, emoji: '🌸' },
+    { key: 'peace', label: t.form.peace, emoji: '☮️' },
   ]
 
   const allKeys = preferences.map((p) => p.key)
@@ -50,7 +50,7 @@ export function PreferencesField({ value, onChange, error }: PreferencesFieldPro
           onClick={handleSelectAll}
           className="text-xs text-purple-600 hover:text-purple-800 font-medium transition-colors"
         >
-          {allSelected ? "取消全选" : "全选"}
+          {allSelected ? t.form.deselectAll : t.form.selectAll}
         </button>
       </div>
       <div className="flex flex-wrap gap-2">
@@ -65,8 +65,8 @@ export function PreferencesField({ value, onChange, error }: PreferencesFieldPro
               disabled={disabled}
               className={`px-4 py-2 rounded-xl border-2 transition-all text-sm ${
                 isSelected
-                  ? "border-purple-400 bg-purple-50 text-purple-700"
-                  : "border-gray-200 text-gray-600 hover:border-purple-200 disabled:opacity-40"
+                  ? 'border-purple-400 bg-purple-50 text-purple-700'
+                  : 'border-gray-200 text-gray-600 hover:border-purple-200 disabled:opacity-40'
               }`}
             >
               <span className="mr-1">{pref.emoji}</span>

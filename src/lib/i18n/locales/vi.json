@@ -7,7 +7,8 @@
     "error": "Đã xảy ra lỗi",
     "favorites": "Yêu thích",
     "noFavorites": "Chưa có tên yêu thích",
-    "removeFavorite": "Xóa khỏi yêu thích"
+    "removeFavorite": "Xóa khỏi yêu thích",
+    "exportFavorites": "Xuất"
   },
   "form": {
     "title": "Biểu mẫu đặt tên",
@@ -27,7 +28,24 @@
     "strength": "Sức mạnh",
     "wisdom": "Trí tuệ",
     "beauty": "Vẻ đẹp",
-    "peace": "Hòa bình"
+    "peace": "Hòa bình",
+    "randomGenerate": "Đặt tên ngẫu nhiên",
+    "advancedSettings": "Cài đặt nâng cao",
+    "nameCount": "Số lượng tên (1-6)",
+    "familyMembers": "Thông tin gia đình",
+    "addMember": "+ Thêm thành viên",
+    "remove": "Xóa",
+    "member": "Thành viên",
+    "namePlaceholder": "Họ và tên",
+    "selectAll": "Chọn tất cả",
+    "deselectAll": "Bỏ chọn tất cả",
+    "father": "Cha",
+    "mother": "Mẹ",
+    "brother": "Anh em trai",
+    "sister": "Chị em gái",
+    "grandfather": "Ông",
+    "grandmother": "Bà",
+    "other": "Khác"
   },
   "results": {
     "meaning": "Ý nghĩa",
@@ -46,7 +64,11 @@
     "recommendations": "Khuyến nghị",
     "thinking": "Đang suy nghĩ...",
     "analysisComplete": "Phân tích hoàn tất",
-    "error": "Lỗi tạo tên"
+    "error": "Lỗi tạo tên",
+    "generating": "Kết quả",
+    "generatingNames": "Đang tạo tên",
+    "nameResults": "Kết quả tên",
+    "maxFavorites": "Đã đạt tối đa 50 mục yêu thích"
   },
   "validation": {
     "surnameRequired": "Vui lòng nhập họ",
@@ -56,5 +78,31 @@
     "birthDateInvalid": "Ngày phải theo định dạng YYYY-MM-DD",
     "birthTimeInvalid": "Giờ phải theo định dạng HH:MM",
     "preferencesMax": "Tối đa 6 chủ đề ưa thích"
+  },
+  "analysis": {
+    "fengshui": "Phân tích phong thủy",
+    "numerology": "Phân tích số mệnh",
+    "bazi": "Phân tích Bát Tự",
+    "horoscope": "Cung hoàng đạo & Con giáp",
+    "analyzing": "Đang phân tích...",
+    "clickToStart": "Nhấn nút trên để bắt đầu phân tích",
+    "detail": "Phân tích chi tiết",
+    "failed": "Phân tích thất bại, vui lòng thử lại"
+  },
+  "nameCard": {
+    "fengshui": "Phong thủy",
+    "numerology": "Số mệnh",
+    "bazi": "Bát Tự",
+    "horoscope": "Cung hoàng",
+    "excellent": "Đại cát",
+    "good": "Cát",
+    "fair": "Bình",
+    "poor": "Hung"
+  },
+  "streamStatus": {
+    "thinking": "Đang nghĩ...",
+    "thinkingSeeded": "Đang chọn tên phù hợp...",
+    "arriving": "Tên đầu tiên đã đến...",
+    "polishing": "Hoàn thiện..."
   }
 }

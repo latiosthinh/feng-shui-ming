@@ -1,55 +1,59 @@
-"use client"
-import { LanguageSelector } from "@/components/LanguageSelector";
-import { NameForm } from "@/components/NameForm";
-import { ResultsContainer } from "@/components/Results/ResultsContainer";
-import { FavoritesList } from "@/components/Results/FavoritesList";
-import { useState, useCallback, useRef } from "react";
-import type { NameGenerationRequest, NameGenerationResponse, GeneratedName } from "@/lib/agent/types";
-import { getRandomNamesAction } from "@/lib/agent/actions/random-names";
-import { useTranslation } from "@/lib/i18n/hooks";
+'use client'
+import { LanguageSelector } from '@/components/LanguageSelector'
+import { NameForm } from '@/components/NameForm'
+import { ResultsContainer } from '@/components/Results/ResultsContainer'
+import { FavoritesList } from '@/components/Results/FavoritesList'
+import { useState, useCallback, useRef } from 'react'
+import type {
+  NameGenerationRequest,
+  NameGenerationResponse,
+  GeneratedName,
+} from '@/lib/agent/types'
+import { getRandomNamesAction } from '@/lib/agent/actions/random-names'
+import { useTranslation } from '@/lib/i18n/hooks'
 
 export default function Home() {
   const { locale } = useTranslation()
-  const [request, setRequest] = useState<NameGenerationRequest | null>(null);
-  const [response, setResponse] = useState<NameGenerationResponse | null>(null);
-  const [isGenerating, setIsGenerating] = useState(false);
-  const previousNamesRef = useRef<GeneratedName[]>([]);
+  const [request, setRequest] = useState<NameGenerationRequest | null>(null)
+  const [response, setResponse] = useState<NameGenerationResponse | null>(null)
+  const [isGenerating, setIsGenerating] = useState(false)
+  const previousNamesRef = useRef<GeneratedName[]>([])
 
   const handleSubmit = useCallback((req: NameGenerationRequest) => {
-    previousNamesRef.current = [];
-    setRequest(req);
-    setResponse(null);
-    setIsGenerating(true);
-  }, []);
+    previousNamesRef.current = []
+    setRequest(req)
+    setResponse(null)
+    setIsGenerating(true)
+  }, [])
 
   const handleRandom = useCallback(async () => {
-    setResponse(null);
-    setIsGenerating(true);
+    setResponse(null)
+    setIsGenerating(true)
     try {
-      const res = await getRandomNamesAction(undefined, 5, "neutral", "vi");
-      setResponse(res);
-      setRequest({ gender: "neutral", locale: "vi", nameCount: 5 } as NameGenerationRequest);
+      const res = await getRandomNamesAction(undefined, 5, 'neutral', 'vi')
+      setResponse(res)
+      setRequest({ gender: 'neutral', locale: 'vi', nameCount: 5 } as NameGenerationRequest)
     } catch {
       // fallback silently
     } finally {
-      setIsGenerating(false);
+      setIsGenerating(false)
     }
-  }, []);
+  }, [])
 
   const handleComplete = useCallback((res: NameGenerationResponse) => {
-    previousNamesRef.current = [...previousNamesRef.current, ...res.names];
-    setResponse(res);
-    setIsGenerating(false);
-  }, []);
+    previousNamesRef.current = [...previousNamesRef.current, ...res.names]
+    setResponse(res)
+    setIsGenerating(false)
+  }, [])
 
   const handleRegenerate = useCallback(() => {
     if (request) {
-      const enriched = { ...request, previousNames: previousNamesRef.current };
-      setRequest(enriched);
-      setResponse(null);
-      setIsGenerating(true);
+      const enriched = { ...request, previousNames: previousNamesRef.current }
+      setRequest(enriched)
+      setResponse(null)
+      setIsGenerating(true)
     }
-  }, [request]);
+  }, [request])
 
   return (
     <main className="min-h-screen">
@@ -109,5 +113,5 @@ export default function Home() {
         </section>
       </div>
     </main>
-  );
+  )
 }

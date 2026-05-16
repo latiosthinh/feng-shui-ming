@@ -1,9 +1,9 @@
-"use client"
-import { useState, useEffect } from "react"
-import { analyzeNameAction } from "@/lib/agent/actions/analyze-name"
-import { getCachedAnalysis, setCachedAnalysis } from "@/lib/agent/analysis-cache"
-import type { AnalysisType, NameAnalysis } from "@/lib/agent/types"
-import { useTranslation } from "@/lib/i18n/hooks"
+'use client'
+import { useState, useEffect } from 'react'
+import { analyzeNameAction } from '@/lib/agent/actions/analyze-name'
+import { getCachedAnalysis, setCachedAnalysis } from '@/lib/agent/analysis-cache'
+import type { AnalysisType, NameAnalysis } from '@/lib/agent/types'
+import { useTranslation } from '@/lib/i18n/hooks'
 
 interface AnalysisModalProps {
   name: string
@@ -13,30 +13,26 @@ interface AnalysisModalProps {
   onClose: () => void
 }
 
-const ANALYSIS_LABELS: Record<string, Record<AnalysisType, { label: string; emoji: string }>> = {
-  vi: {
-    fengshui: { label: "Phân tích phong thủy", emoji: "☯" },
-    numerology: { label: "Phân tích mệnh lý", emoji: "🔢" },
-    bazi: { label: "Phân tích bát tự", emoji: "📅" },
-    horoscope: { label: "Cung hoàng đạo", emoji: "⭐" },
-  },
-  zh: {
-    fengshui: { label: "风水分析", emoji: "☯" },
-    numerology: { label: "命理分析", emoji: "🔢" },
-    bazi: { label: "八字分析", emoji: "📅" },
-    horoscope: { label: "星座生肖", emoji: "⭐" },
-  },
-}
+const ANALYSIS_TYPES: AnalysisType[] = ['fengshui', 'numerology', 'bazi', 'horoscope']
 
-const ANALYSIS_TYPES: AnalysisType[] = ["fengshui", "numerology", "bazi", "horoscope"]
-
-export function AnalysisModal({ name, surname, birthDate, birthTime, onClose }: AnalysisModalProps) {
-  const { locale } = useTranslation()
-  const [activeType, setActiveType] = useState<AnalysisType>("fengshui")
+export function AnalysisModal({
+  name,
+  surname,
+  birthDate,
+  birthTime,
+  onClose,
+}: AnalysisModalProps) {
+  const { t, locale } = useTranslation()
+  const [activeType, setActiveType] = useState<AnalysisType>('fengshui')
   const [results, setResults] = useState<Record<string, string | null>>({})
   const [loading, setLoading] = useState<AnalysisType | null>(null)
 
-  const labels = ANALYSIS_LABELS[locale] || ANALYSIS_LABELS.vi
+  const ANALYSIS_INFO: Record<AnalysisType, { label: string; emoji: string }> = {
+    fengshui: { label: t.analysis.fengshui, emoji: '☯' },
+    numerology: { label: t.analysis.numerology, emoji: '🔢' },
+    bazi: { label: t.analysis.bazi, emoji: '📅' },
+    horoscope: { label: t.analysis.horoscope, emoji: '⭐' },
+  }
 
   useEffect(() => {
     const cached: Record<string, string | null> = {}
@@ -63,7 +59,7 @@ export function AnalysisModal({ name, surname, birthDate, birthTime, onClose }: 
       setCachedAnalysis(entry)
       setResults((prev) => ({ ...prev, [type]: result }))
     } catch {
-      setResults((prev) => ({ ...prev, [type]: locale === "zh" ? "分析失败，请重试" : "Phân tích thất bại, vui lòng thử lại" }))
+      setResults((prev) => ({ ...prev, [type]: t.analysis.failed }))
     } finally {
       setLoading(null)
     }
@@ -77,21 +73,26 @@ export function AnalysisModal({ name, surname, birthDate, birthTime, onClose }: 
       <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[80vh] flex flex-col">
         <div className="flex items-center justify-between p-6 border-b border-gray-100">
           <h3 className="text-lg font-bold text-gray-800">
-            {displayName} - {locale === "zh" ? "详细分析" : "Phân tích chi tiết"}
+            {displayName} - {t.analysis.detail}
           </h3>
           <button
             onClick={onClose}
             className="p-2 text-gray-400 hover:text-gray-600 transition-colors rounded-lg hover:bg-gray-100"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M6 18L18 6M6 6l12 12"
+              />
             </svg>
           </button>
         </div>
 
         <div className="flex gap-1 px-6 py-3 border-b border-gray-100 overflow-x-auto">
           {ANALYSIS_TYPES.map((type) => {
-            const info = labels[type]
+            const info = ANALYSIS_INFO[type]
             const isActive = activeType === type
             const hasResult = !!results[type]
             const isLoading = loading === type
@@ -105,10 +106,10 @@ export function AnalysisModal({ name, surname, birthDate, birthTime, onClose }: 
                 }}
                 className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${
                   isActive
-                    ? "bg-purple-100 text-purple-700"
+                    ? 'bg-purple-100 text-purple-700'
                     : hasResult
-                      ? "bg-gray-50 text-gray-600 hover:bg-gray-100"
-                      : "text-gray-400 hover:text-gray-600 hover:bg-gray-50"
+                      ? 'bg-gray-50 text-gray-600 hover:bg-gray-100'
+                      : 'text-gray-400 hover:text-gray-600 hover:bg-gray-50'
                 }`}
               >
                 <span>{info.emoji}</span>
@@ -116,8 +117,19 @@ export function AnalysisModal({ name, surname, birthDate, birthTime, onClose }: 
                 {hasResult && <span className="text-green-500 text-xs">✓</span>}
                 {isLoading && (
                   <svg className="w-3 h-3 animate-spin" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    />
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                    />
                   </svg>
                 )}
               </button>
@@ -129,10 +141,21 @@ export function AnalysisModal({ name, surname, birthDate, birthTime, onClose }: 
           {loading === activeType && (
             <div className="flex items-center gap-3 text-gray-500">
               <svg className="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                />
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                />
               </svg>
-              {locale === "zh" ? "正在分析中..." : "Đang phân tích..."}
+              {t.analysis.analyzing}
             </div>
           )}
 
@@ -143,9 +166,7 @@ export function AnalysisModal({ name, surname, birthDate, birthTime, onClose }: 
           )}
 
           {!loading && !results[activeType] && (
-            <div className="text-center py-8 text-gray-400">
-              {locale === "zh" ? "点击上方按钮开始分析" : "Nhấn nút trên để bắt đầu phân tích"}
-            </div>
+            <div className="text-center py-8 text-gray-400">{t.analysis.clickToStart}</div>
           )}
         </div>
       </div>

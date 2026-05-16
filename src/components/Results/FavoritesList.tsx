@@ -22,7 +22,7 @@ export function FavoritesList() {
           onClick={exportFavorites}
           className="px-3 py-1.5 rounded-lg border border-gray-200 text-xs font-medium text-gray-600 hover:bg-gray-50 transition-colors"
         >
-          {locale === 'zh' ? '导出' : 'Xuất'}
+          {t.common.exportFavorites}
         </button>
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">

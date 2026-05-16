@@ -7,7 +7,8 @@
     "error": "エラーが発生しました",
     "favorites": "お気に入り",
     "noFavorites": "お気に入りの名前はありません",
-    "removeFavorite": "お気に入りから削除"
+    "removeFavorite": "お気に入りから削除",
+    "exportFavorites": "エクスポート"
   },
   "form": {
     "title": "起名フォーム",
@@ -27,7 +28,24 @@
     "strength": "力",
     "wisdom": "知恵",
     "beauty": "美",
-    "peace": "平和"
+    "peace": "平和",
+    "randomGenerate": "ランダム起名",
+    "advancedSettings": "詳細設定",
+    "nameCount": "生成数 (1-6)",
+    "familyMembers": "家族情報",
+    "addMember": "+ 追加",
+    "remove": "削除",
+    "member": "メンバー",
+    "namePlaceholder": "名前",
+    "selectAll": "全選択",
+    "deselectAll": "全解除",
+    "father": "父",
+    "mother": "母",
+    "brother": "兄弟",
+    "sister": "姉妹",
+    "grandfather": "祖父",
+    "grandmother": "祖母",
+    "other": "その他"
   },
   "results": {
     "meaning": "意味",
@@ -46,7 +64,11 @@
     "recommendations": "推奨",
     "thinking": "考え中...",
     "analysisComplete": "分析完了",
-    "error": "生成エラー"
+    "error": "生成エラー",
+    "generating": "生成結果",
+    "generatingNames": "名前を生成中",
+    "nameResults": "名前結果",
+    "maxFavorites": "お気に入りは最大50件です"
   },
   "validation": {
     "surnameRequired": "姓を入力してください",
@@ -56,5 +78,31 @@
     "birthDateInvalid": "日付は YYYY-MM-DD 形式です",
     "birthTimeInvalid": "時刻は HH:MM 形式です",
     "preferencesMax": "最大5つの好みを選択できます"
+  },
+  "analysis": {
+    "fengshui": "風水分析",
+    "numerology": "命理分析",
+    "bazi": "八字分析",
+    "horoscope": "星座生肖",
+    "analyzing": "分析中...",
+    "clickToStart": "上のボタンをクリックして分析開始",
+    "detail": "詳細分析",
+    "failed": "分析に失敗しました。もう一度お試しください"
+  },
+  "nameCard": {
+    "fengshui": "風水",
+    "numerology": "命理",
+    "bazi": "八字",
+    "horoscope": "星座",
+    "excellent": "大吉",
+    "good": "吉",
+    "fair": "平",
+    "poor": "凶"
+  },
+  "streamStatus": {
+    "thinking": "考え中…",
+    "thinkingSeeded": "適切な名前を選別中…",
+    "arriving": "最初の名字が生成されました…",
+    "polishing": "完成中…"
   }
 }
