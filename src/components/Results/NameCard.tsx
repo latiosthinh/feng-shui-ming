@@ -50,16 +50,23 @@ export function NameCard({ name, analysis, surname, birthDate, birthTime }: Name
   const { add, remove, isFav, limitReached, setLimitReached } = useFavorites()
   const [showAnalysis, setShowAnalysis] = useState(false)
   const [toast, setToast] = useState<string | null>(null)
+  const [favorited, setFavorited] = useState(false)
   const buttons = ANALYSIS_TYPES.map((btn) => ({
     ...btn,
     label: t.nameCard[btn.type],
   }))
   const auspiciousness: AuspiciousnessScore | undefined = analysis.auspiciousness
 
-  const handleToggleFavorite = () => {
+  useEffect(() => {
     const id = `${name.native}-${name.romanization}`
-    if (isFav(id)) {
-      remove(id)
+    isFav(id).then(setFavorited)
+  }, [name.native, name.romanization, isFav])
+
+  const handleToggleFavorite = async () => {
+    const id = `${name.native}-${name.romanization}`
+    if (favorited) {
+      await remove(id)
+      setFavorited(false)
     } else {
       const entry: FavoriteEntry = {
         id,
@@ -69,10 +76,12 @@ export function NameCard({ name, analysis, surname, birthDate, birthTime }: Name
         savedAt: new Date().toISOString(),
         locale,
       }
-      const ok = add(entry)
+      const ok = await add(entry)
       if (!ok) {
         setToast(t.results.maxFavorites)
         setTimeout(() => setToast(null), 3000)
+      } else {
+        setFavorited(true)
       }
     }
   }
@@ -84,9 +93,6 @@ export function NameCard({ name, analysis, surname, birthDate, birthTime }: Name
       setLimitReached(false)
     }
   }, [limitReached, setLimitReached])
-
-  const id = `${name.native}-${name.romanization}`
-  const favorited = isFav(id)
 
   return (
     <>

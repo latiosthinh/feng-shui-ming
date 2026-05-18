@@ -3,6 +3,7 @@ import { createContext, useContext, useState, useCallback, useEffect, useRef } f
 import type { UserProfile, UserTier } from '@/lib/auth/types'
 import { generateFingerprint } from './fingerprint'
 import { createPocketBase } from '@/lib/pocketbase/client'
+import { migrateLocalToFavorites } from '@/lib/favorites/storage'
 
 interface AuthContextValue {
   user: UserProfile | null
@@ -49,6 +50,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const authData = await pb.collection('users').authWithPassword(email, password)
     const profile = mapRecordToProfile(authData.record)
     setUser(profile)
+    await migrateLocalToFavorites()
   }, [])
 
   const register = useCallback(async (email: string, password: string) => {

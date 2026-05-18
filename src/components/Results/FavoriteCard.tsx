@@ -4,7 +4,7 @@ import { useTranslation } from '@/lib/i18n/hooks'
 
 interface FavoriteCardProps {
   entry: FavoriteEntry
-  onRemove: (id: string) => void
+  onRemove: (id: string) => Promise<void>
 }
 
 export function FavoriteCard({ entry, onRemove }: FavoriteCardProps) {
@@ -38,9 +38,9 @@ export function FavoriteCard({ entry, onRemove }: FavoriteCardProps) {
       <div className="flex items-center gap-2 text-xs text-gray-500">
         <span className="px-2 py-0.5 bg-pink-50 text-pink-600 rounded-full">{entry.nickname}</span>
         <span>
-          {entry.analysis.fiveGrid.overall === 'auspicious'
+          {entry.analysis?.fiveGrid?.overall === 'auspicious'
             ? t.results.auspicious
-            : entry.analysis.fiveGrid.overall === 'inauspicious'
+            : entry.analysis?.fiveGrid?.overall === 'inauspicious'
               ? t.results.inauspicious
               : t.results.neutral}
         </span>
