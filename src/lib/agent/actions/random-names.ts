@@ -34,11 +34,14 @@ export async function getRandomNamesAction(
     if (llmCount > 0) {
       const localeName = localeNames[locale] || 'Tiếng Việt'
       const promptTemplate = getRandomNamesPrompt(locale as any)
-      const surnameInfo = surname ? ` cho họ "${surname}"` : ''
+      const surnamePrompt = surname
+        ? `为姓氏"${surname}"生成{{count}}个风格多样的${localeName}名字。`
+        : `随机生成{{count}}个风格多样的${localeName}名字，自由选择常见姓氏。`
       const prompt = promptTemplate
         .replace('{{count}}', String(llmCount))
+        .replace('{{surnamePrompt}}', surnamePrompt)
         .replace('{{locale}}', localeName)
-        .replace('{{surnameInfo}}', surnameInfo)
+        .replace('{{surnameInfo}}', surname ? ` cho họ "${surname}"` : '')
 
       const res = await fetch(`${API_URL}/chat/completions`, {
         method: 'POST',
@@ -61,19 +64,21 @@ export async function getRandomNamesAction(
         if (jsonMatch) {
           try {
             const parsed = JSON.parse(jsonMatch[0])
-            llmNames = parsed.map((n: any) => ({
-              native: n.native || '',
-              romanization: n.romanization || '',
-              meaning: n.meaning || '',
-              culturalSignificance: n.culturalSignificance || '',
-            }))
+            llmNames = parsed
+              .filter((n: any) => n.native && n.native.trim())
+              .map((n: any) => ({
+                native: n.native || '',
+                romanization: n.romanization || '',
+                meaning: n.meaning || '',
+                culturalSignificance: n.culturalSignificance || '',
+              }))
           } catch {}
         }
       }
     }
   }
 
-  const allNames = [...dbNames, ...llmNames]
+  const allNames = [...dbNames, ...llmNames].filter((n) => n.native && n.native.trim())
   return {
     names: allNames.slice(0, count),
     nickname: locale === 'zh' ? '宝宝' : 'Bé yêu',

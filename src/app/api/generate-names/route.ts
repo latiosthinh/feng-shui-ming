@@ -80,6 +80,8 @@ export async function POST(request: NextRequest) {
         for await (const chunk of streamMimoCompletion(systemPrompt, prompt, request.signal)) {
           const parsed = parser.push(chunk)
           for (const item of parsed) {
+            if (!item.name.native || !item.name.native.trim()) continue
+
             const name: GeneratedName = {
               native: item.name.native,
               romanization: item.name.romanization,

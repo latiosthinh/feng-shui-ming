@@ -71,6 +71,8 @@ Nếu tin nhắn không liên quan đến đặt tên, trả lời: "Xin lỗi, 
         for await (const chunk of streamMimoCompletion(systemPrompt, userPrompt, undefined)) {
           const parsed = parser.push(chunk)
           for (const item of parsed) {
+            if (!item.name.native || !item.name.native.trim()) continue
+
             const name: GeneratedName = {
               native: item.name.native,
               romanization: item.name.romanization,
