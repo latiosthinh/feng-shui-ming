@@ -5,7 +5,7 @@ export function NameCardSkeleton() {
   const { t } = useTranslation()
   return (
     <div
-      className="bg-white rounded-2xl shadow-lg p-6 space-y-4 overflow-hidden"
+      className="bg-white rounded-2xl shadow-lg p-6 space-y-4 overflow-hidden h-full flex flex-col"
       role="status"
       aria-label={t.results.generatingNames}
     >

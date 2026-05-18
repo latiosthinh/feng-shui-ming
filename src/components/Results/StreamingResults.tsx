@@ -1,7 +1,7 @@
 'use client'
 import { useState, useEffect, useRef, useCallback, useTransition } from 'react'
 import { generateNamesAction } from '@/lib/agent/actions/generate-names'
-import type { NameGenerationRequest, NameGenerationResponse } from '@/lib/agent/types'
+import type { NameGenerationRequest, NameGenerationResponse, GeneratedName } from '@/lib/agent/types'
 import type { FengShuiAnalysis } from '@/lib/fengshui/types'
 import { useTranslation } from '@/lib/i18n/hooks'
 import { NameCard } from './NameCard'
@@ -81,6 +81,8 @@ export function StreamingResults({
 
   const abortRef = useRef<AbortController | null>(null)
   const completedRef = useRef(false)
+  const offsetRef = useRef(0)
+  const streamedNamesRef = useRef<GeneratedName[]>([])
   const [, startTransition] = useTransition()
 
   useEffect(() => {
@@ -88,12 +90,26 @@ export function StreamingResults({
 
     abortRef.current?.abort()
     completedRef.current = false
+    streamedNamesRef.current = []
 
     const ctrl = new AbortController()
     abortRef.current = ctrl
 
+    const isAppend = request.appendResults ?? false
+
     startTransition(() => {
-      setCards(Array.from({ length: nameCount }, () => ({ kind: 'skeleton' })))
+      if (isAppend) {
+        setCards((prev) => {
+          offsetRef.current = prev.filter((c) => c.kind === 'real').length
+          return [
+            ...prev,
+            ...Array.from({ length: nameCount }, () => ({ kind: 'skeleton' as const })),
+          ]
+        })
+      } else {
+        offsetRef.current = 0
+        setCards(Array.from({ length: nameCount }, () => ({ kind: 'skeleton' })))
+      }
     })
     setLoading(true)
     setError(null)
@@ -150,10 +166,12 @@ export function StreamingResults({
 
               if (msg.type === 'name') {
                 const name = msg.name
+                streamedNamesRef.current.push(name)
+                const adjustedIndex = msg.index + offsetRef.current
                 setCards((prev) => {
                   const next = [...prev]
-                  if (msg.index < next.length) {
-                    next[msg.index] = { kind: 'real', name, analysis: name.analysis || undefined }
+                  if (adjustedIndex < next.length) {
+                    next[adjustedIndex] = { kind: 'real', name, analysis: name.analysis || undefined }
                   }
                   return next
                 })
@@ -161,9 +179,10 @@ export function StreamingResults({
                 completedRef.current = true
                 setLoading(false)
                 const finalResponse: NameGenerationResponse = {
-                  names: [],
+                  names: streamedNamesRef.current,
                   nickname: response?.nickname || t.results.nickname,
                 }
+                streamedNamesRef.current = []
                 setResponse(finalResponse)
               } else if (msg.type === 'error') {
                 if (!completedRef.current) {
@@ -191,8 +210,16 @@ export function StreamingResults({
       generateNamesAction(request)
         .then((res) => {
           if (localCtrl.signal.aborted) return
+          const isAppend = request.appendResults ?? false
+          if (isAppend) {
+            setCards((prev) => [
+              ...prev.filter((c) => c.kind === 'real'),
+              ...res.names.map((n) => ({ kind: 'real' as const, name: n })),
+            ])
+          } else {
+            setCards(res.names.map((n) => ({ kind: 'real' as const, name: n })))
+          }
           setResponse(res)
-          setCards(res.names.map((n) => ({ kind: 'real' as const, name: n })))
           setLoading(false)
         })
         .catch((err) => {
