@@ -15,6 +15,23 @@ import type {
 import { getRandomNamesAction } from '@/lib/agent/actions/random-names'
 import { useTranslation } from '@/lib/i18n/hooks'
 
+function loadPreviousNames(): GeneratedName[] {
+  if (typeof window === 'undefined') return []
+  try {
+    const stored = sessionStorage.getItem('fengshuiming-previous-names')
+    return stored ? JSON.parse(stored) : []
+  } catch {
+    return []
+  }
+}
+
+function savePreviousNames(names: GeneratedName[]) {
+  if (typeof window === 'undefined') return
+  try {
+    sessionStorage.setItem('fengshuiming-previous-names', JSON.stringify(names))
+  } catch {}
+}
+
 export default function Home() {
   const { locale, t } = useTranslation()
   const { user } = useAuth()
@@ -22,14 +39,19 @@ export default function Home() {
   const [response, setResponse] = useState<NameGenerationResponse | null>(null)
   const [isGenerating, setIsGenerating] = useState(false)
   const [isChatOpen, setIsChatOpen] = useState(false)
-  const previousNamesRef = useRef<GeneratedName[]>([])
+  const previousNamesRef = useRef<GeneratedName[]>(loadPreviousNames())
+
+  const persistPreviousNames = useCallback((names: GeneratedName[]) => {
+    previousNamesRef.current = names
+    savePreviousNames(names)
+  }, [])
 
   const handleSubmit = useCallback((req: NameGenerationRequest) => {
-    previousNamesRef.current = []
+    persistPreviousNames([])
     setRequest(req)
     setResponse(null)
     setIsGenerating(true)
-  }, [])
+  }, [persistPreviousNames])
 
   const handleRandom = useCallback(async () => {
     setResponse(null)
@@ -46,10 +68,10 @@ export default function Home() {
   }, [locale])
 
   const handleComplete = useCallback((res: NameGenerationResponse) => {
-    previousNamesRef.current = [...previousNamesRef.current, ...res.names]
+    persistPreviousNames([...previousNamesRef.current, ...res.names])
     setResponse(res)
     setIsGenerating(false)
-  }, [])
+  }, [persistPreviousNames])
 
   const handleRegenerate = useCallback(() => {
     if (request) {

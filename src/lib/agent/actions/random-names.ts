@@ -53,7 +53,7 @@ export async function getRandomNamesAction(
           model: MODEL,
           messages: [{ role: 'user', content: prompt }],
           temperature: 1.2,
-          max_tokens: 1024,
+          max_completion_tokens: 2048,
         }),
       })
 

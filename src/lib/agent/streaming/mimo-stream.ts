@@ -32,7 +32,7 @@ export async function* streamMimoCompletion(
             { role: 'user', content: userPrompt },
           ],
           temperature: 0.9,
-          max_tokens: 4096,
+          max_completion_tokens: 4096,
           stream: true,
         }),
         signal: combined,

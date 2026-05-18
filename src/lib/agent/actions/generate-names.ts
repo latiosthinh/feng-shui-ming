@@ -35,7 +35,7 @@ export async function generateNamesAction(
           { role: 'user', content: prompt },
         ],
         temperature: 0.9,
-        max_tokens: 8192,
+        max_completion_tokens: 4096,
       }),
       signal: controller.signal,
     })
