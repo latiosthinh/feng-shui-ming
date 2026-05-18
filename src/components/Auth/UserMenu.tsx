@@ -1,5 +1,6 @@
 'use client'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { createPortal } from 'react-dom'
 import { useAuth } from '@/lib/auth/context'
 import { useTranslation } from '@/lib/i18n/hooks'
 import { AuthModal } from './AuthModal'
@@ -9,6 +10,9 @@ export function UserMenu() {
   const { t } = useTranslation()
   const [showAuth, setShowAuth] = useState(false)
   const [showDropdown, setShowDropdown] = useState(false)
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => setMounted(true), [])
 
   if (!user) {
     return (
@@ -19,7 +23,10 @@ export function UserMenu() {
         >
           Đăng nhập
         </button>
-        <AuthModal isOpen={showAuth} onClose={() => setShowAuth(false)} />
+        {mounted && createPortal(
+          <AuthModal isOpen={showAuth} onClose={() => setShowAuth(false)} />,
+          document.body,
+        )}
       </>
     )
   }
