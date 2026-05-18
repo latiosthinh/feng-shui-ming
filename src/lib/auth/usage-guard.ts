@@ -1,0 +1,166 @@
+import { createPocketBase } from '@/lib/pocketbase/client'
+import type { UserTier, UsageCheck, UsageSource } from '@/lib/auth/types'
+import { getLimits } from '@/lib/auth/types'
+
+export async function checkUsage(
+  userId: string | null,
+  fingerprint: string,
+  tier: UserTier,
+  source: UsageSource,
+): Promise<UsageCheck> {
+  const limits = getLimits(tier, !userId)
+
+  let currentGenerations = 0
+  let currentAnalyzes = 0
+  let currentChatNames = 0
+
+  if (userId) {
+    const pb = createPocketBase()
+    try {
+      const record = await pb.collection('users').getOne(userId)
+      currentGenerations = record.totalGenerations || 0
+      currentAnalyzes = record.totalAnalyzes || 0
+      currentChatNames = record.totalChatNames || 0
+    } catch {
+      return { allowed: false, remaining: 0, limit: 0, reason: 'User not found' }
+    }
+  } else {
+    const pb = createPocketBase()
+    try {
+      const records = await pb.collection('anonymous_usage').getFullList({
+        filter: `fingerprint = "${fingerprint}"`,
+      })
+      if (records.length > 0) {
+        currentGenerations = records[0].totalGenerations || 0
+        currentAnalyzes = records[0].totalAnalyzes || 0
+        currentChatNames = records[0].totalChatNames || 0
+      }
+    } catch {
+      return { allowed: false, remaining: 0, limit: 0, reason: 'Usage tracking failed' }
+    }
+  }
+
+  let current: number
+  let limit: number
+  let action: string
+
+  switch (source) {
+    case 'form':
+      current = currentGenerations
+      limit = limits.generations
+      action = 'generation'
+      break
+    case 'chat':
+      current = currentChatNames
+      limit = limits.chatNames
+      action = 'chat name'
+      break
+    case 'random':
+      current = currentGenerations
+      limit = limits.generations
+      action = 'generation'
+      break
+    default:
+      current = currentGenerations
+      limit = limits.generations
+      action = 'generation'
+  }
+
+  if (current >= limit) {
+    return {
+      allowed: false,
+      remaining: 0,
+      limit,
+      reason: `You have reached your ${action} limit (${limit}). ${!userId ? 'Login for more.' : tier === 'free' ? 'Upgrade to paid for unlimited.' : ''}`,
+    }
+  }
+
+  return {
+    allowed: true,
+    remaining: limit - current,
+    limit,
+  }
+}
+
+export async function incrementUsage(
+  userId: string | null,
+  fingerprint: string,
+  source: UsageSource,
+  count: number = 1,
+): Promise<void> {
+  const pb = createPocketBase()
+
+  if (userId) {
+    const record = await pb.collection('users').getOne(userId)
+    const updates: Record<string, number> = {}
+    if (source === 'form' || source === 'random') {
+      updates.totalGenerations = (record.totalGenerations || 0) + count
+    }
+    if (source === 'chat') {
+      updates.totalChatNames = (record.totalChatNames || 0) + count
+    }
+    if (Object.keys(updates).length > 0) {
+      await pb.collection('users').update(userId, updates)
+    }
+  } else {
+    const records = await pb.collection('anonymous_usage').getFullList({
+      filter: `fingerprint = "${fingerprint}"`,
+    })
+
+    if (records.length > 0) {
+      const updates: Record<string, number> = {}
+      if (source === 'form' || source === 'random') {
+        updates.totalGenerations = (records[0].totalGenerations || 0) + count
+      }
+      if (source === 'chat') {
+        updates.totalChatNames = (records[0].totalChatNames || 0) + count
+      }
+      if (Object.keys(updates).length > 0) {
+        await pb.collection('anonymous_usage').update(records[0].id, updates)
+      }
+    } else {
+      const data: Record<string, string | number> = { fingerprint }
+      if (source === 'form' || source === 'random') {
+        data.totalGenerations = count
+      }
+      if (source === 'chat') {
+        data.totalChatNames = count
+      }
+      data.totalAnalyzes = 0
+      data.totalFavorites = 0
+      await pb.collection('anonymous_usage').create(data)
+    }
+  }
+}
+
+export async function incrementAnalyzeUsage(
+  userId: string | null,
+  fingerprint: string,
+): Promise<void> {
+  const pb = createPocketBase()
+
+  if (userId) {
+    const record = await pb.collection('users').getOne(userId)
+    await pb.collection('users').update(userId, {
+      totalAnalyzes: (record.totalAnalyzes || 0) + 1,
+    })
+  } else {
+    const records = await pb.collection('anonymous_usage').getFullList({
+      filter: `fingerprint = "${fingerprint}"`,
+    })
+
+    if (records.length > 0) {
+      await pb.collection('anonymous_usage').update(records[0].id, {
+        totalAnalyzes: (records[0].totalAnalyzes || 0) + 1,
+      })
+    } else {
+      await pb.collection('anonymous_usage').create({
+        fingerprint,
+        totalGenerations: 0,
+        totalAnalyzes: 1,
+        totalChatNames: 0,
+        totalFavorites: 0,
+      })
+    }
+  }
+}

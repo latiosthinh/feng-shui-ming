@@ -6,6 +6,7 @@ interface ResultsContainerProps {
   request: NameGenerationRequest
   onComplete: (response: NameGenerationResponse) => void
   onRegenerate: () => void
+  onGenerateMore: () => void
   isRegenerating: boolean
   initialResponse?: NameGenerationResponse
 }
@@ -14,6 +15,7 @@ export function ResultsContainer({
   request,
   onComplete,
   onRegenerate,
+  onGenerateMore,
   isRegenerating,
   initialResponse,
 }: ResultsContainerProps) {
@@ -22,6 +24,7 @@ export function ResultsContainer({
       request={request}
       onComplete={onComplete}
       onRegenerate={onRegenerate}
+      onGenerateMore={onGenerateMore}
       isRegenerating={isRegenerating}
       initialResponse={initialResponse}
     />

@@ -3,7 +3,10 @@ import { LanguageSelector } from '@/components/LanguageSelector'
 import { NameForm } from '@/components/NameForm'
 import { ResultsContainer } from '@/components/Results/ResultsContainer'
 import { FavoritesList } from '@/components/Results/FavoritesList'
+import { UserMenu } from '@/components/Auth/UserMenu'
+import { ChatWindow } from '@/components/Chat/ChatWindow'
 import { useState, useCallback, useRef } from 'react'
+import { useAuth } from '@/lib/auth/context'
 import type {
   NameGenerationRequest,
   NameGenerationResponse,
@@ -14,9 +17,11 @@ import { useTranslation } from '@/lib/i18n/hooks'
 
 export default function Home() {
   const { locale, t } = useTranslation()
+  const { user } = useAuth()
   const [request, setRequest] = useState<NameGenerationRequest | null>(null)
   const [response, setResponse] = useState<NameGenerationResponse | null>(null)
   const [isGenerating, setIsGenerating] = useState(false)
+  const [isChatOpen, setIsChatOpen] = useState(false)
   const previousNamesRef = useRef<GeneratedName[]>([])
 
   const handleSubmit = useCallback((req: NameGenerationRequest) => {
@@ -38,7 +43,7 @@ export default function Home() {
     } finally {
       setIsGenerating(false)
     }
-  }, [])
+  }, [locale])
 
   const handleComplete = useCallback((res: NameGenerationResponse) => {
     previousNamesRef.current = [...previousNamesRef.current, ...res.names]
@@ -55,6 +60,19 @@ export default function Home() {
     }
   }, [request])
 
+  const handleGenerateMore = useCallback(() => {
+    if (request) {
+      const enriched = {
+        ...request,
+        previousNames: previousNamesRef.current,
+        appendResults: true,
+      }
+      setRequest(enriched)
+      setResponse(null)
+      setIsGenerating(true)
+    }
+  }, [request])
+
   return (
     <main className="min-h-screen">
       <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-purple-100">
@@ -65,7 +83,10 @@ export default function Home() {
               FengShuiMing
             </h1>
           </div>
-          <LanguageSelector />
+          <div className="flex items-center gap-3">
+            <LanguageSelector />
+            <UserMenu />
+          </div>
         </div>
       </header>
 
@@ -92,6 +113,7 @@ export default function Home() {
               request={request}
               onComplete={handleComplete}
               onRegenerate={handleRegenerate}
+              onGenerateMore={handleGenerateMore}
               isRegenerating={isGenerating}
             />
           </section>
@@ -103,6 +125,7 @@ export default function Home() {
               request={request!}
               onComplete={handleComplete}
               onRegenerate={handleRegenerate}
+              onGenerateMore={handleGenerateMore}
               isRegenerating={isGenerating}
               initialResponse={response}
             />
@@ -113,6 +136,23 @@ export default function Home() {
           <FavoritesList />
         </section>
       </div>
+
+      <button
+        onClick={() => setIsChatOpen(!isChatOpen)}
+        className="fixed bottom-4 right-4 z-40 w-12 h-12 bg-purple-600 text-white rounded-full shadow-lg hover:bg-purple-700 transition-colors flex items-center justify-center"
+        aria-label="Open chat"
+      >
+        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
+          />
+        </svg>
+      </button>
+
+      {isChatOpen && <ChatWindow isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} />}
     </main>
   )
 }

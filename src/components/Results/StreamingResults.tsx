@@ -9,6 +9,7 @@ import { NameCardSkeleton } from './NameCardSkeleton'
 import { StreamStatusBanner } from './StreamStatusBanner'
 import { ErrorState } from './ErrorState'
 import { RegenerateButton } from './RegenerateButton'
+import { GenerateMoreButton } from './GenerateMoreButton'
 
 type CardState =
   | { kind: 'skeleton' }
@@ -30,6 +31,7 @@ interface StreamingResultsProps {
   request: NameGenerationRequest
   onComplete: (response: NameGenerationResponse) => void
   onRegenerate: () => void
+  onGenerateMore: () => void
   isRegenerating: boolean
   initialResponse?: NameGenerationResponse
 }
@@ -55,6 +57,7 @@ export function StreamingResults({
   request,
   onComplete,
   onRegenerate,
+  onGenerateMore,
   isRegenerating,
   initialResponse,
 }: StreamingResultsProps) {
@@ -224,7 +227,12 @@ export function StreamingResults({
         <h3 className="text-xl font-bold text-gray-800">{t.results.generating}</h3>
         <div className="flex items-center gap-2">
           {loading && <StreamStatusBanner phase={streamPhase} />}
-          {!loading && <RegenerateButton onRegenerate={onRegenerate} isLoading={isRegenerating} />}
+          {!loading && (
+            <div className="flex items-center gap-2">
+              <GenerateMoreButton onGenerateMore={onGenerateMore} isLoading={isRegenerating} />
+              <RegenerateButton onRegenerate={onRegenerate} isLoading={isRegenerating} />
+            </div>
+          )}
         </div>
       </div>
       <div

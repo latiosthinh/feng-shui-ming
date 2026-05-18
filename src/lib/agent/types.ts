@@ -20,6 +20,7 @@ export interface NameGenerationRequest {
   nameCount?: number
   nameLength?: number
   previousNames?: { native: string; romanization: string }[]
+  appendResults?: boolean
 }
 
 export interface NameGenerationResponse {

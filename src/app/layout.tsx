@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
 import './globals.css'
+import { AuthProvider } from '@/lib/auth/context'
 import { I18nProvider } from '@/lib/i18n/provider'
 import { ErrorBoundary } from '@/components/ErrorBoundary'
 
@@ -65,7 +66,9 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
         <ErrorBoundary>
-          <I18nProvider>{children}</I18nProvider>
+          <AuthProvider>
+            <I18nProvider>{children}</I18nProvider>
+          </AuthProvider>
         </ErrorBoundary>
       </body>
     </html>
