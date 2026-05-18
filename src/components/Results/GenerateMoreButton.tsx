@@ -13,7 +13,7 @@ export function GenerateMoreButton({ onGenerateMore, isLoading }: GenerateMoreBu
     <button
       onClick={onGenerateMore}
       disabled={isLoading}
-      className="flex items-center gap-2 px-4 py-2 bg-amber-100 text-amber-700 rounded-xl hover:bg-amber-200 transition-colors text-sm font-medium disabled:opacity-50"
+      className="flex items-center gap-2 px-4 py-2 bg-amber-100 text-amber-700 rounded-xl hover:bg-amber-200 transition-colors text-sm font-medium disabled:opacity-50 cursor-pointer"
     >
       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path

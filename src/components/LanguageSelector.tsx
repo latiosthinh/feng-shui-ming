@@ -23,7 +23,7 @@ export function LanguageSelector() {
     <div className="relative">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2 px-3 py-2 rounded-lg bg-purple-50 hover:bg-purple-100 transition-colors text-sm font-medium text-gray-700"
+        className="flex items-center gap-2 px-3 py-2 rounded-lg bg-purple-50 hover:bg-purple-100 transition-colors text-sm font-medium text-gray-700 cursor-pointer"
         aria-label="Select language"
         aria-expanded={isOpen}
       >
@@ -51,7 +51,7 @@ export function LanguageSelector() {
                 setLocale(lang.locale)
                 setIsOpen(false)
               }}
-              className={`w-full text-left px-4 py-2 text-sm transition-colors ${
+              className={`w-full text-left px-4 py-2 text-sm transition-colors cursor-pointer ${
                 locale === lang.locale
                   ? 'bg-purple-100 text-purple-700 font-medium'
                   : 'text-gray-700 hover:bg-purple-50'

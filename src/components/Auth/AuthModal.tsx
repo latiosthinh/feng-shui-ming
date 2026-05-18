@@ -54,7 +54,7 @@ export function AuthModal({ isOpen, onClose, initialMode = 'login' }: AuthModalP
           <h2 className="text-xl font-bold text-gray-800">
             {mode === 'login' ? 'Đăng nhập' : 'Đăng ký'}
           </h2>
-          <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
+          <button onClick={onClose} className="text-gray-400 hover:text-gray-600 cursor-pointer">
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
             </svg>
@@ -93,7 +93,7 @@ export function AuthModal({ isOpen, onClose, initialMode = 'login' }: AuthModalP
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full py-2.5 bg-purple-600 text-white rounded-xl font-medium hover:bg-purple-700 transition-colors disabled:opacity-50"
+            className="w-full py-3 bg-purple-600 text-white rounded-xl font-semibold hover:bg-purple-700 transition-colors disabled:opacity-50 cursor-pointer"
           >
             {isSubmitting ? 'Đang xử lý...' : mode === 'login' ? 'Đăng nhập' : 'Đăng ký'}
           </button>
@@ -105,7 +105,7 @@ export function AuthModal({ isOpen, onClose, initialMode = 'login' }: AuthModalP
               Chưa có tài khoản?{' '}
               <button
                 onClick={() => setMode('register')}
-                className="text-purple-600 hover:underline font-medium"
+                className="text-purple-600 hover:underline font-medium cursor-pointer"
               >
                 Đăng ký
               </button>
@@ -115,7 +115,7 @@ export function AuthModal({ isOpen, onClose, initialMode = 'login' }: AuthModalP
               Đã có tài khoản?{' '}
               <button
                 onClick={() => setMode('login')}
-                className="text-purple-600 hover:underline font-medium"
+                className="text-purple-600 hover:underline font-medium cursor-pointer"
               >
                 Đăng nhập
               </button>

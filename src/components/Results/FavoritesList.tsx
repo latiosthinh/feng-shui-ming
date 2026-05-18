@@ -59,7 +59,7 @@ export function FavoritesList() {
         </div>
         <button
           onClick={exportFavorites}
-          className="px-3 py-1.5 rounded-lg border border-gray-200 text-xs font-medium text-gray-600 hover:bg-gray-50 transition-colors"
+          className="px-3 py-1.5 rounded-lg border border-gray-200 text-xs font-medium text-gray-600 hover:bg-gray-50 transition-colors cursor-pointer"
         >
           {t.common.exportFavorites}
         </button>

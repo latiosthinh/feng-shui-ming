@@ -15,7 +15,7 @@ export function RandomButton({ onClick, isLoading }: RandomButtonProps) {
       type="button"
       onClick={onClick}
       disabled={isLoading}
-      className="flex items-center gap-2 px-4 py-2 rounded-xl border-2 border-amber-300 bg-amber-50 text-amber-700 hover:bg-amber-100 transition-all disabled:opacity-50 text-sm font-medium"
+      className="flex items-center gap-2 px-4 py-2 rounded-xl border-2 border-amber-300 bg-amber-50 text-amber-700 hover:bg-amber-100 transition-all disabled:opacity-50 text-sm font-medium cursor-pointer"
     >
       {isLoading ? (
         <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">

@@ -13,7 +13,7 @@ export function RegenerateButton({ onRegenerate, isLoading }: RegenerateButtonPr
     <button
       onClick={onRegenerate}
       disabled={isLoading}
-      className="flex items-center gap-2 px-4 py-2 bg-purple-100 text-purple-700 rounded-xl hover:bg-purple-200 transition-colors text-sm font-medium disabled:opacity-50"
+      className="flex items-center gap-2 px-4 py-2 bg-purple-100 text-purple-700 rounded-xl hover:bg-purple-200 transition-colors text-sm font-medium disabled:opacity-50 cursor-pointer"
     >
       <svg
         className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`}

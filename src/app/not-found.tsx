@@ -10,7 +10,7 @@ export default function NotFound() {
         </p>
         <a
           href="/"
-          className="inline-block px-6 py-3 bg-purple-600 text-white rounded-xl hover:bg-purple-700 transition-colors"
+          className="inline-block px-6 py-3 bg-purple-600 text-white rounded-xl hover:bg-purple-700 transition-colors cursor-pointer"
         >
           返回首页 / Go Home
         </a>

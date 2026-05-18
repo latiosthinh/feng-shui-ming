@@ -21,7 +21,7 @@ export function FavoriteCard({ entry, onRemove }: FavoriteCardProps) {
         </div>
         <button
           onClick={() => onRemove(entry.id)}
-          className="text-gray-400 hover:text-red-500 transition-colors p-1"
+          className="text-gray-400 hover:text-red-500 transition-colors p-1 cursor-pointer"
           aria-label={t.common.removeFavorite}
         >
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -122,7 +122,7 @@ export default function AdminPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-2.5 bg-purple-600 text-white rounded-xl font-medium hover:bg-purple-700 disabled:opacity-50"
+              className="w-full py-3 bg-purple-600 text-white rounded-xl font-semibold hover:bg-purple-700 disabled:opacity-50 cursor-pointer"
             >
               {loading ? 'Logging in...' : 'Login'}
             </button>
@@ -205,7 +205,7 @@ export default function AdminPage() {
                     <div className="flex items-center gap-2">
                       <button
                         onClick={() => toggleTier(user.id, user.tier)}
-                        className={`px-2 py-1 rounded text-xs font-medium transition-colors ${
+                        className={`px-2 py-1 rounded text-xs font-medium transition-colors cursor-pointer ${
                           user.tier === 'paid'
                             ? 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                             : 'bg-amber-100 text-amber-700 hover:bg-amber-200'
@@ -215,7 +215,7 @@ export default function AdminPage() {
                       </button>
                       <button
                         onClick={() => regenerateCode(user.id)}
-                        className="px-2 py-1 rounded text-xs font-medium bg-purple-100 text-purple-700 hover:bg-purple-200 transition-colors"
+                        className="px-2 py-1 rounded text-xs font-medium bg-purple-100 text-purple-700 hover:bg-purple-200 transition-colors cursor-pointer"
                       >
                         New Code
                       </button>

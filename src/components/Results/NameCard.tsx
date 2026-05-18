@@ -128,7 +128,7 @@ export function NameCard({ name, analysis, surname, birthDate, birthTime }: Name
             </div>
             <button
               onClick={handleToggleFavorite}
-              className={`p-2 rounded-full transition-colors ${
+              className={`p-2 rounded-full transition-colors cursor-pointer ${
                 favorited
                   ? 'text-red-500 bg-red-50'
                   : 'text-gray-400 hover:text-red-400 hover:bg-red-50'
@@ -167,7 +167,7 @@ export function NameCard({ name, analysis, surname, birthDate, birthTime }: Name
                   key={btn.type}
                   type="button"
                   onClick={() => setShowAnalysis(true)}
-                  className={`px-3 py-1.5 rounded-lg border text-xs font-medium transition-colors ${btn.color}`}
+                  className={`px-3 py-1.5 rounded-lg border text-xs font-medium transition-colors cursor-pointer ${btn.color}`}
                 >
                   <span className="mr-1">{btn.emoji}</span>
                   {btn.label}

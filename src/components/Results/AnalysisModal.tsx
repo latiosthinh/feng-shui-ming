@@ -77,7 +77,7 @@ export function AnalysisModal({
           </h3>
           <button
             onClick={onClose}
-            className="p-2 text-gray-400 hover:text-gray-600 transition-colors rounded-lg hover:bg-gray-100"
+            className="p-2 text-gray-400 hover:text-gray-600 transition-colors rounded-lg hover:bg-gray-100 cursor-pointer"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
@@ -104,7 +104,7 @@ export function AnalysisModal({
                   setActiveType(type)
                   if (!hasResult && !isLoading) runAnalysis(type)
                 }}
-                className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${
+                className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap cursor-pointer ${
                   isActive
                     ? 'bg-purple-100 text-purple-700'
                     : hasResult

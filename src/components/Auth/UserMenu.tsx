@@ -19,7 +19,7 @@ export function UserMenu() {
       <>
         <button
           onClick={() => setShowAuth(true)}
-          className="px-3 py-1.5 rounded-lg bg-purple-600 text-white text-sm font-medium hover:bg-purple-700 transition-colors"
+          className="px-3 py-1.5 rounded-lg bg-purple-600 text-white text-sm font-medium hover:bg-purple-700 transition-colors cursor-pointer"
         >
           Đăng nhập
         </button>
@@ -35,7 +35,7 @@ export function UserMenu() {
     <div className="relative">
       <button
         onClick={() => setShowDropdown(!showDropdown)}
-        className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-gray-100 hover:bg-gray-200 transition-colors"
+        className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-gray-100 hover:bg-gray-200 transition-colors cursor-pointer"
       >
         <div className="w-6 h-6 rounded-full bg-purple-600 text-white flex items-center justify-center text-xs font-bold">
           {user.email.charAt(0).toUpperCase()}
@@ -75,7 +75,7 @@ export function UserMenu() {
                 logout()
                 setShowDropdown(false)
               }}
-              className="w-full px-4 py-2 text-left text-sm text-red-600 hover:bg-red-50 transition-colors"
+              className="w-full px-4 py-2 text-left text-sm text-red-600 hover:bg-red-50 transition-colors cursor-pointer"
             >
               Đăng xuất
             </button>
