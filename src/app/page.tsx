@@ -151,7 +151,7 @@ export default function Home() {
           <NameForm onSubmit={handleSubmit} onRandom={handleRandom} isLoading={isGenerating} />
         </section>
 
-        {isGenerating && request && (
+        {request && (
           <section className="mb-10">
             <ResultsContainer
               request={request}
@@ -159,19 +159,7 @@ export default function Home() {
               onRegenerate={handleRegenerate}
               onGenerateMore={handleGenerateMore}
               isRegenerating={isGenerating}
-            />
-          </section>
-        )}
-
-        {response && !isGenerating && (
-          <section className="mb-10">
-            <ResultsContainer
-              request={request!}
-              onComplete={handleComplete}
-              onRegenerate={handleRegenerate}
-              onGenerateMore={handleGenerateMore}
-              isRegenerating={isGenerating}
-              initialResponse={response}
+              initialResponse={response || undefined}
             />
           </section>
         )}
