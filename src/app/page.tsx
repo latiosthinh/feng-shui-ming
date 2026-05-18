@@ -48,14 +48,17 @@ export default function Home() {
     savePreviousNames(names)
   }, [])
 
-  const handleSubmit = useCallback((req: NameGenerationRequest) => {
-    appendingRef.current = false
-    savedNamesRef.current = []
-    persistPreviousNames([])
-    setRequest(req)
-    setResponse(null)
-    setIsGenerating(true)
-  }, [persistPreviousNames])
+  const handleSubmit = useCallback(
+    (req: NameGenerationRequest) => {
+      appendingRef.current = false
+      savedNamesRef.current = []
+      persistPreviousNames([])
+      setRequest(req)
+      setResponse(null)
+      setIsGenerating(true)
+    },
+    [persistPreviousNames],
+  )
 
   const handleRandom = useCallback(async () => {
     appendingRef.current = false
@@ -73,17 +76,20 @@ export default function Home() {
     }
   }, [locale])
 
-  const handleComplete = useCallback((res: NameGenerationResponse) => {
-    let allNames = res.names
-    if (appendingRef.current) {
-      allNames = [...savedNamesRef.current, ...res.names]
-      appendingRef.current = false
-      savedNamesRef.current = []
-    }
-    persistPreviousNames([...previousNamesRef.current, ...allNames])
-    setResponse({ ...res, names: allNames })
-    setIsGenerating(false)
-  }, [persistPreviousNames])
+  const handleComplete = useCallback(
+    (res: NameGenerationResponse) => {
+      let allNames = res.names
+      if (appendingRef.current) {
+        allNames = [...savedNamesRef.current, ...res.names]
+        appendingRef.current = false
+        savedNamesRef.current = []
+      }
+      persistPreviousNames([...previousNamesRef.current, ...allNames])
+      setResponse({ ...res, names: allNames })
+      setIsGenerating(false)
+    },
+    [persistPreviousNames],
+  )
 
   const handleRegenerate = useCallback(() => {
     if (request) {
@@ -122,7 +128,7 @@ export default function Home() {
             </h1>
           </div>
           <div className="flex items-center gap-3">
-            <LanguageSelector />
+            {/* <LanguageSelector /> */}
             <UserMenu />
           </div>
         </div>
