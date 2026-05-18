@@ -32,7 +32,7 @@ export async function* streamMimoCompletion(
             { role: 'user', content: userPrompt },
           ],
           temperature: 0.9,
-          max_tokens: 1024,
+          max_tokens: 4096,
           stream: true,
         }),
         signal: combined,
@@ -95,8 +95,11 @@ export async function* streamMimoCompletion(
         const jsonStr = trimmed.slice(6)
         try {
           const data = JSON.parse(jsonStr)
-          const delta = data.choices?.[0]?.delta?.content
-          if (delta) yield delta
+          const delta = data.choices?.[0]?.delta
+          const content = delta?.content
+          if (content) {
+            yield content
+          }
         } catch {
           // skip malformed SSE lines
         }

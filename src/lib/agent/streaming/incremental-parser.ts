@@ -16,34 +16,30 @@ export interface IncrementalParser {
 
 export function createIncrementalNameParser(): IncrementalParser {
   let buffer = ''
-  let braceDepth = 0
-  let inString = false
-  let escape = false
-  let objectStart = -1
-  let desyncCount = 0
-  const results: ParseResult[] = []
+  let processedUpTo = 0
 
   function scan(): ParseResult[] {
     const found: ParseResult[] = []
-    let i = 0
-    while (i < buffer.length) {
+    let braceDepth = 0
+    let inString = false
+    let escape = false
+    let objectStart = -1
+
+    for (let i = processedUpTo; i < buffer.length; i++) {
       const ch = buffer[i]
 
       if (escape) {
         escape = false
-        i++
         continue
       }
 
       if (ch === '\\' && inString) {
         escape = true
-        i++
         continue
       }
 
       if (ch === '"') {
         inString = !inString
-        i++
         continue
       }
 
@@ -53,7 +49,6 @@ export function createIncrementalNameParser(): IncrementalParser {
             objectStart = i
           }
           braceDepth++
-          i++
           continue
         }
 
@@ -64,7 +59,7 @@ export function createIncrementalNameParser(): IncrementalParser {
             try {
               const parsed = JSON.parse(jsonStr)
               if (parsed.native || parsed.romanization) {
-                const result: ParseResult = {
+                found.push({
                   name: {
                     native: parsed.native || '',
                     romanization: parsed.romanization || '',
@@ -72,34 +67,17 @@ export function createIncrementalNameParser(): IncrementalParser {
                     culturalSignificance: parsed.culturalSignificance || '',
                     nickname: parsed.nickname || undefined,
                   },
-                }
-                found.push(result)
-                results.push(result)
+                })
               }
             } catch {
-              desyncCount++
-              if (desyncCount >= 2) {
-                objectStart = -1
-                return found
-              }
+              // skip malformed JSON
             }
+            processedUpTo = i + 1
             objectStart = -1
           }
-          i++
           continue
         }
       }
-
-      i++
-    }
-
-    // Trim processed content: keep only from last unmatched `{` or end
-    if (braceDepth > 0 && objectStart >= 0) {
-      buffer = buffer.slice(objectStart)
-      objectStart = 0
-    } else {
-      buffer = ''
-      objectStart = -1
     }
 
     return found
@@ -114,7 +92,7 @@ export function createIncrementalNameParser(): IncrementalParser {
       return buffer
     },
     getDesyncCount(): number {
-      return desyncCount
+      return 0
     },
   }
 }
