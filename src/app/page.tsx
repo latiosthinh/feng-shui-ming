@@ -40,6 +40,8 @@ export default function Home() {
   const [isGenerating, setIsGenerating] = useState(false)
   const [isChatOpen, setIsChatOpen] = useState(false)
   const previousNamesRef = useRef<GeneratedName[]>(loadPreviousNames())
+  const appendingRef = useRef(false)
+  const savedNamesRef = useRef<GeneratedName[]>([])
 
   const persistPreviousNames = useCallback((names: GeneratedName[]) => {
     previousNamesRef.current = names
@@ -47,6 +49,8 @@ export default function Home() {
   }, [])
 
   const handleSubmit = useCallback((req: NameGenerationRequest) => {
+    appendingRef.current = false
+    savedNamesRef.current = []
     persistPreviousNames([])
     setRequest(req)
     setResponse(null)
@@ -54,6 +58,8 @@ export default function Home() {
   }, [persistPreviousNames])
 
   const handleRandom = useCallback(async () => {
+    appendingRef.current = false
+    savedNamesRef.current = []
     setResponse(null)
     setIsGenerating(true)
     try {
@@ -68,13 +74,21 @@ export default function Home() {
   }, [locale])
 
   const handleComplete = useCallback((res: NameGenerationResponse) => {
-    persistPreviousNames([...previousNamesRef.current, ...res.names])
-    setResponse(res)
+    let allNames = res.names
+    if (appendingRef.current) {
+      allNames = [...savedNamesRef.current, ...res.names]
+      appendingRef.current = false
+      savedNamesRef.current = []
+    }
+    persistPreviousNames([...previousNamesRef.current, ...allNames])
+    setResponse({ ...res, names: allNames })
     setIsGenerating(false)
   }, [persistPreviousNames])
 
   const handleRegenerate = useCallback(() => {
     if (request) {
+      appendingRef.current = false
+      savedNamesRef.current = []
       const enriched = { ...request, previousNames: previousNamesRef.current }
       setRequest(enriched)
       setResponse(null)
@@ -84,6 +98,8 @@ export default function Home() {
 
   const handleGenerateMore = useCallback(() => {
     if (request) {
+      savedNamesRef.current = response?.names || []
+      appendingRef.current = true
       const enriched = {
         ...request,
         previousNames: previousNamesRef.current,
@@ -93,7 +109,7 @@ export default function Home() {
       setResponse(null)
       setIsGenerating(true)
     }
-  }, [request])
+  }, [request, response])
 
   return (
     <main className="min-h-screen">
