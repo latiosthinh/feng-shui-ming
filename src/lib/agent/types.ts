@@ -24,7 +24,7 @@ export interface NameGenerationRequest {
 
 export interface NameGenerationResponse {
   names: GeneratedName[]
-  analysis: FengShuiAnalysis
+  analysis?: FengShuiAnalysis
   nickname: string
 }
 

@@ -7,18 +7,11 @@ function defaultFiveGrid() {
 
 function fallbackResponse(text: string, locale?: string): NameGenerationResponse {
   const defaultNickname = locale === 'zh' ? '宝宝' : 'Bé yêu'
-  if (!text) {
-    const msg =
-      locale === 'zh' ? 'API 未返回结果，请稍后重试' : 'API chưa trả về kết quả. Vui lòng thử lại.'
-    return {
-      names: [{ native: msg, romanization: '', meaning: '', culturalSignificance: '' }],
-      analysis: { fiveGrid: defaultFiveGrid(), wuXing: [], recommendations: [] },
-      nickname: defaultNickname,
-    }
-  }
+  const errorMsg =
+    locale === 'zh' ? '未能解析结果，请稍后重试' : 'Không thể phân tích kết quả. Vui lòng thử lại.'
   return {
     names: [
-      { native: text.substring(0, 20), romanization: '', meaning: text, culturalSignificance: '' },
+      { native: '', romanization: '', meaning: text ? errorMsg : '', culturalSignificance: '' },
     ],
     analysis: { fiveGrid: defaultFiveGrid(), wuXing: [], recommendations: [] },
     nickname: defaultNickname,

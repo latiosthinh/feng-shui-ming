@@ -10,6 +10,10 @@
     "removeFavorite": "お気に入りから削除",
     "exportFavorites": "エクスポート"
   },
+  "hero": {
+    "title": "風水起名",
+    "subtitle": "伝統的な風水分析付きアジア赤ちゃん名前を生成"
+  },
   "form": {
     "title": "起名フォーム",
     "surname": "姓",
@@ -32,6 +36,7 @@
     "randomGenerate": "ランダム起名",
     "advancedSettings": "詳細設定",
     "nameCount": "生成数 (1-6)",
+    "nameLength": "名前の文字数 (1-3)",
     "familyMembers": "家族情報",
     "addMember": "+ 追加",
     "remove": "削除",
@@ -104,5 +109,8 @@
     "thinkingSeeded": "適切な名前を選別中…",
     "arriving": "最初の名字が生成されました…",
     "polishing": "完成中…"
+  },
+  "favorites": {
+    "localNotice": "名前はブラウザにローカルに保存されます"
   }
 }

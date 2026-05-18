@@ -13,7 +13,7 @@ import { getRandomNamesAction } from '@/lib/agent/actions/random-names'
 import { useTranslation } from '@/lib/i18n/hooks'
 
 export default function Home() {
-  const { locale } = useTranslation()
+  const { locale, t } = useTranslation()
   const [request, setRequest] = useState<NameGenerationRequest | null>(null)
   const [response, setResponse] = useState<NameGenerationResponse | null>(null)
   const [isGenerating, setIsGenerating] = useState(false)
@@ -30,9 +30,9 @@ export default function Home() {
     setResponse(null)
     setIsGenerating(true)
     try {
-      const res = await getRandomNamesAction(undefined, 5, 'neutral', 'vi')
+      const res = await getRandomNamesAction(undefined, 5, 'neutral', locale)
       setResponse(res)
-      setRequest({ gender: 'neutral', locale: 'vi', nameCount: 5 } as NameGenerationRequest)
+      setRequest({ gender: 'neutral', locale, nameCount: 5 } as NameGenerationRequest)
     } catch {
       // fallback silently
     } finally {
@@ -72,12 +72,13 @@ export default function Home() {
       <div className="max-w-6xl mx-auto px-4 py-8">
         <section className="text-center mb-10">
           <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-3">
-            {locale === 'zh' ? '风水起名' : 'Đặt tên phong thủy'}
+            {t.hero?.title ?? (locale === 'zh' ? '风水起名' : 'Đặt tên phong thủy')}
           </h2>
           <p className="text-gray-600 text-lg max-w-2xl mx-auto">
-            {locale === 'zh'
-              ? '生成具有传统风水分析的亚洲婴儿名字'
-              : 'Tạo tên em bé châu Á với phân tích phong thủy truyền thống'}
+            {t.hero?.subtitle ??
+              (locale === 'zh'
+                ? '生成具有传统风水分析的亚洲婴儿名字'
+                : 'Tạo tên em bé châu Á với phân tích phong thủy truyền thống')}
           </p>
         </section>
 

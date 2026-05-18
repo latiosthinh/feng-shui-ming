@@ -10,6 +10,10 @@
     "removeFavorite": "Xóa khỏi yêu thích",
     "exportFavorites": "Xuất"
   },
+  "hero": {
+    "title": "Đặt tên phong thủy",
+    "subtitle": "Tạo tên em bé châu Á với phân tích phong thủy truyền thống"
+  },
   "form": {
     "title": "Biểu mẫu đặt tên",
     "surname": "Họ",
@@ -32,6 +36,7 @@
     "randomGenerate": "Đặt tên ngẫu nhiên",
     "advancedSettings": "Cài đặt nâng cao",
     "nameCount": "Số lượng tên (1-6)",
+    "nameLength": "Số ký tự tên (1-3)",
     "familyMembers": "Thông tin gia đình",
     "addMember": "+ Thêm thành viên",
     "remove": "Xóa",
@@ -104,5 +109,8 @@
     "thinkingSeeded": "Đang chọn tên phù hợp...",
     "arriving": "Tên đầu tiên đã đến...",
     "polishing": "Hoàn thiện..."
+  },
+  "favorites": {
+    "localNotice": "Tên được lưu cục bộ trong trình duyệt của bạn"
   }
 }

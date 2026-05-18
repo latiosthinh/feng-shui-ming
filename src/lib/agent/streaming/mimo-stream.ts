@@ -125,12 +125,30 @@ function sleep(ms: number): Promise<void> {
 
 function combineSignals(...signals: AbortSignal[]): AbortSignal {
   const controller = new AbortController()
+  const cleanups: (() => void)[] = []
+
+  const abort = (reason?: unknown) => {
+    for (const cleanup of cleanups) cleanup()
+    controller.abort(reason)
+  }
+
   for (const signal of signals) {
     if (signal.aborted) {
-      controller.abort(signal.reason)
+      abort(signal.reason)
       return controller.signal
     }
-    signal.addEventListener('abort', () => controller.abort(signal.reason), { once: true })
+    const listener = () => abort(signal.reason)
+    signal.addEventListener('abort', listener, { once: true })
+    cleanups.push(() => signal.removeEventListener('abort', listener))
   }
+
+  controller.signal.addEventListener(
+    'abort',
+    () => {
+      for (const cleanup of cleanups) cleanup()
+    },
+    { once: true },
+  )
+
   return controller.signal
 }

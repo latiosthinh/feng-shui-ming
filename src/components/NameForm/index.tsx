@@ -27,6 +27,7 @@ export function NameForm({ onSubmit, onRandom, isLoading }: NameFormProps) {
   const [preferences, setPreferences] = useState<string[]>([])
   const [familyMembers, setFamilyMembers] = useState<FamilyMember[]>([])
   const [nameCount, setNameCount] = useState(3)
+  const [nameLength, setNameLength] = useState(2)
   const [errors, setErrors] = useState<Record<string, string | undefined>>({})
 
   const handleSubmit = useCallback(
@@ -50,6 +51,7 @@ export function NameForm({ onSubmit, onRandom, isLoading }: NameFormProps) {
         locale,
         familyMembers: familyMembers.length > 0 ? familyMembers : undefined,
         nameCount,
+        nameLength,
       })
     },
     [
@@ -60,6 +62,7 @@ export function NameForm({ onSubmit, onRandom, isLoading }: NameFormProps) {
       preferences,
       familyMembers,
       nameCount,
+      nameLength,
       locale,
       onSubmit,
     ],
@@ -89,6 +92,8 @@ export function NameForm({ onSubmit, onRandom, isLoading }: NameFormProps) {
         onFamilyMembersChange={setFamilyMembers}
         nameCount={nameCount}
         onNameCountChange={setNameCount}
+        nameLength={nameLength}
+        onNameLengthChange={setNameLength}
       />
 
       <SubmitButton isLoading={isLoading} />

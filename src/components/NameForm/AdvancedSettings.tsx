@@ -8,6 +8,8 @@ interface AdvancedSettingsProps {
   onFamilyMembersChange: (members: FamilyMember[]) => void
   nameCount: number
   onNameCountChange: (count: number) => void
+  nameLength: number
+  onNameLengthChange: (length: number) => void
 }
 
 let nextId = 1
@@ -17,6 +19,8 @@ export function AdvancedSettings({
   onFamilyMembersChange,
   nameCount,
   onNameCountChange,
+  nameLength,
+  onNameLengthChange,
 }: AdvancedSettingsProps) {
   const { t } = useTranslation()
   const [open, setOpen] = useState(false)
@@ -87,6 +91,26 @@ export function AdvancedSettings({
                 className="flex-1 accent-purple-600"
               />
               <span className="text-sm font-bold text-purple-600 w-6 text-center">{nameCount}</span>
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-gray-700">{t.form.nameLength}</label>
+            <div className="flex items-center gap-2">
+              {[1, 2, 3].map((len) => (
+                <button
+                  key={len}
+                  type="button"
+                  onClick={() => onNameLengthChange(len)}
+                  className={`px-4 py-1.5 rounded-lg text-sm font-medium border transition-colors ${
+                    nameLength === len
+                      ? 'bg-purple-600 text-white border-purple-600'
+                      : 'bg-white text-gray-600 border-gray-200 hover:border-purple-400'
+                  }`}
+                >
+                  {len}
+                </button>
+              ))}
             </div>
           </div>
 

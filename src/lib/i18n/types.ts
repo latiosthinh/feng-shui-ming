@@ -1,6 +1,10 @@
 export type Locale = 'zh' | 'ja' | 'ko' | 'vi'
 
 export interface TranslationKeys {
+  hero: {
+    title: string
+    subtitle: string
+  }
   common: {
     appName: string
     generate: string
@@ -34,6 +38,7 @@ export interface TranslationKeys {
     randomGenerate: string
     advancedSettings: string
     nameCount: string
+    nameLength: string
     familyMembers: string
     addMember: string
     remove: string
@@ -106,5 +111,8 @@ export interface TranslationKeys {
     thinkingSeeded: string
     arriving: string
     polishing: string
+  }
+  favorites: {
+    localNotice: string
   }
 }

@@ -74,7 +74,7 @@ export function buildPrompt(request: NameGenerationRequest, nameCount: number): 
   const birthDate = request.birthDate || labels.notProvided
   const birthTime = request.birthTime || labels.notProvided
   const prefs = request.preferences?.length ? request.preferences.join('、') : labels.none
-  const nameLength = request.nameLength || 2
+  const nameLength = request.nameLength ?? 2
 
   const promptTemplate = getNameGenerationPrompt(request.locale)
   return promptTemplate

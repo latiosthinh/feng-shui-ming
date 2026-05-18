@@ -1,7 +1,6 @@
 'use client'
-import { useState, useEffect, useRef, useCallback, useTransition, useMemo } from 'react'
+import { useState, useEffect, useRef, useCallback, useTransition } from 'react'
 import { generateNamesAction } from '@/lib/agent/actions/generate-names'
-import { getRandomNamesAction } from '@/lib/agent/actions/random-names'
 import type { NameGenerationRequest, NameGenerationResponse } from '@/lib/agent/types'
 import type { FengShuiAnalysis } from '@/lib/fengshui/types'
 import { useTranslation } from '@/lib/i18n/hooks'
@@ -14,16 +13,6 @@ import { RegenerateButton } from './RegenerateButton'
 type CardState =
   | { kind: 'skeleton' }
   | {
-      kind: 'seed'
-      name: {
-        native: string
-        romanization: string
-        meaning: string
-        culturalSignificance: string
-        nickname?: string
-      }
-    }
-  | {
       kind: 'real'
       name: {
         native: string
@@ -35,7 +24,7 @@ type CardState =
       analysis?: FengShuiAnalysis
     }
 
-type StreamPhase = 'thinking' | 'thinking-seeded' | 'arriving'
+type StreamPhase = 'thinking' | 'arriving'
 
 interface StreamingResultsProps {
   request: NameGenerationRequest
@@ -69,7 +58,7 @@ export function StreamingResults({
   isRegenerating,
   initialResponse,
 }: StreamingResultsProps) {
-  const { t, locale } = useTranslation()
+  const { t } = useTranslation()
   const nameCount = request.nameCount || 3
 
   const [cards, setCards] = useState<CardState[]>(() =>
@@ -85,23 +74,20 @@ export function StreamingResults({
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(!initialResponse)
 
-  const streamPhase = useMemo<StreamPhase>(() => {
-    if (cards.some((c) => c.kind === 'real')) return 'arriving'
-    if (cards.some((c) => c.kind === 'seed')) return 'thinking-seeded'
-    return 'thinking'
-  }, [cards])
-  const execRef = useRef(0)
-  const completedRef = useRef(false)
+  const streamPhase = cards.some((c) => c.kind === 'real') ? 'arriving' : 'thinking'
+
   const abortRef = useRef<AbortController | null>(null)
+  const completedRef = useRef(false)
   const [, startTransition] = useTransition()
 
   useEffect(() => {
     if (initialResponse) return
-    const execId = ++execRef.current
-    completedRef.current = false
 
     abortRef.current?.abort()
-    abortRef.current = null
+    completedRef.current = false
+
+    const ctrl = new AbortController()
+    abortRef.current = ctrl
 
     startTransition(() => {
       setCards(Array.from({ length: nameCount }, () => ({ kind: 'skeleton' })))
@@ -109,44 +95,16 @@ export function StreamingResults({
     setLoading(true)
     setError(null)
 
-    // Seed from DB (instant)
-    const seedPromise = getRandomNamesAction(
-      request.surname,
-      nameCount,
-      request.gender,
-      request.locale,
-      true,
-    )
-
-    seedPromise.then((seedRes) => {
-      if (execId !== execRef.current) return
-      if (completedRef.current) return
-      setCards((prev) =>
-        prev.map((c, i) =>
-          c.kind === 'skeleton' && i < seedRes.names.length
-            ? { kind: 'seed' as const, name: seedRes.names[i] }
-            : c,
-        ),
-      )
-    })
-
     const doStream = isStreamingEnabled()
     if (!doStream) {
-      fallbackBlocking(execId)
+      runBlocking(ctrl)
       return
     }
 
-    // Try streaming
-    const ctrl = new AbortController()
-    abortRef.current = ctrl
-    let started = false
-
     const softTimeout = setTimeout(() => {
-      if (!started) {
+      if (!ctrl.signal.aborted && !completedRef.current) {
         ctrl.abort()
-        if (execId === execRef.current && !completedRef.current) {
-          fallbackBlocking(execId)
-        }
+        runBlocking(new AbortController())
       }
     }, 5000)
 
@@ -159,12 +117,11 @@ export function StreamingResults({
         clearTimeout(softTimeout)
 
         if (!res.ok || !res.headers.get('Content-Type')?.includes('x-ndjson')) {
-          fallbackBlocking(execId)
+          runBlocking(new AbortController())
           return
         }
 
-        started = true
-        if (execId !== execRef.current) return
+        if (ctrl.signal.aborted) return
 
         const reader = res.body!.getReader()
         const decoder = new TextDecoder()
@@ -202,49 +159,52 @@ export function StreamingResults({
                 setLoading(false)
                 const finalResponse: NameGenerationResponse = {
                   names: [],
-                  analysis: defaultAnalysis(),
                   nickname: response?.nickname || t.results.nickname,
                 }
                 setResponse(finalResponse)
               } else if (msg.type === 'error') {
                 if (!completedRef.current) {
-                  fallbackBlocking(execId)
+                  runBlocking(new AbortController())
                 }
               }
             }
           }
         } catch {
           if (!completedRef.current) {
-            fallbackBlocking(execId)
+            runBlocking(new AbortController())
           }
         }
       })
       .catch(() => {
         clearTimeout(softTimeout)
-        if (!completedRef.current && execId === execRef.current) {
-          fallbackBlocking(execId)
+        if (!completedRef.current && !ctrl.signal.aborted) {
+          runBlocking(new AbortController())
         }
       })
 
-    function fallbackBlocking(id: number) {
-      if (id !== execRef.current || completedRef.current) return
+    function runBlocking(localCtrl: AbortController) {
+      if (completedRef.current) return
       completedRef.current = true
       generateNamesAction(request)
         .then((res) => {
-          if (id !== execRef.current) return
+          if (localCtrl.signal.aborted) return
           setResponse(res)
           setCards(res.names.map((n) => ({ kind: 'real' as const, name: n })))
           setLoading(false)
         })
         .catch((err) => {
-          if (id !== execRef.current) return
+          if (localCtrl.signal.aborted) return
           completedRef.current = true
           const msg = err instanceof Error ? err.message : String(err)
-          setError(translateError(msg, locale))
+          setError(translateError(msg))
           setLoading(false)
         })
     }
-  }, [request, initialResponse, nameCount, locale])
+
+    return () => {
+      ctrl.abort()
+    }
+  }, [request, initialResponse, nameCount])
 
   const prevResponseRef = useRef(response)
   useEffect(() => {
@@ -286,19 +246,6 @@ export function StreamingResults({
               </div>
             )
           }
-          if (card.kind === 'seed') {
-            return (
-              <div key={index} className="transition-opacity duration-300 opacity-60">
-                <NameCard
-                  name={card.name}
-                  analysis={defaultAnalysis()}
-                  surname={request.surname}
-                  birthDate={request.birthDate}
-                  birthTime={request.birthTime}
-                />
-              </div>
-            )
-          }
           return (
             <div key={index} className="transition-opacity duration-300 opacity-100">
               <NameCardSkeleton />
@@ -310,8 +257,7 @@ export function StreamingResults({
   )
 }
 
-function translateError(msg: string, locale: string): string {
-  if (locale === 'zh') return msg
+function translateError(msg: string): string {
   if (msg.includes('timed out') || msg.includes('timeout'))
     return 'Yêu cầu đã hết thời gian. Vui lòng thử lại.'
   if (msg.includes('after 2 attempts')) return 'Không thể tạo tên. Vui lòng thử lại sau.'

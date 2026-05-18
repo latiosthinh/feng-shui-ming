@@ -14,10 +14,13 @@ export function FavoritesList() {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h3 className="text-xl font-bold text-gray-800 flex items-center gap-2">
-          <span>❤️</span>
-          {t.common.favorites} ({favorites.length})
-        </h3>
+        <div>
+          <h3 className="text-xl font-bold text-gray-800 flex items-center gap-2">
+            <span>❤️</span>
+            {t.common.favorites} ({favorites.length})
+          </h3>
+          <p className="text-xs text-gray-400 mt-1">{t.favorites.localNotice}</p>
+        </div>
         <button
           onClick={exportFavorites}
           className="px-3 py-1.5 rounded-lg border border-gray-200 text-xs font-medium text-gray-600 hover:bg-gray-50 transition-colors"

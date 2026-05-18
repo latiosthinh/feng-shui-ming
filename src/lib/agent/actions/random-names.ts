@@ -6,11 +6,18 @@ import type {
   NameGenerationResponse,
   GeneratedName,
 } from '@/lib/agent/types'
-import type { FengShuiAnalysis } from '@/lib/fengshui/types'
+import { getRandomNamesPrompt } from '@/lib/agent/prompts'
 
 const API_URL = process.env.MIMO_API_BASE_URL || 'https://api.xiaomimimo.com/v1'
 const API_KEY = process.env.MIMO_API_KEY!
 const MODEL = process.env.MIMO_MODEL || 'mimo-v2.5-pro'
+
+const localeNames: Record<string, string> = {
+  vi: 'Tiếng Việt',
+  zh: '中文',
+  ja: '日本語',
+  ko: '한국어',
+}
 
 export async function getRandomNamesAction(
   surname?: string,
@@ -19,28 +26,19 @@ export async function getRandomNamesAction(
   locale: string = 'vi',
   dbOnly: boolean = false,
 ): Promise<NameGenerationResponse> {
-  const dbNames = getDbNames(3)
+  const dbNames = await getDbNames(3)
 
   let llmNames: GeneratedName[] = []
   if (!dbOnly) {
     const llmCount = Math.max(0, count - dbNames.length)
     if (llmCount > 0) {
-      const s = surname || ''
-      const localeNames: Record<string, string> = {
-        vi: 'Tiếng Việt',
-        zh: '中文',
-      }
       const localeName = localeNames[locale] || 'Tiếng Việt'
-
-      const viPrompt = surname
-        ? `Tạo ${llmCount} cái tên ${localeName} đa dạng phong cách cho họ "${s}". Chỉ xuất JSON: [{"native":"","romanization":"","meaning":"","culturalSignificance":""}]`
-        : `Tạo ngẫu nhiên ${llmCount} cái tên ${localeName} đa dạng phong cách, tự do chọn họ phổ biến. Chỉ xuất JSON: [{"native":"","romanization":"","meaning":"","culturalSignificance":""}]`
-
-      const zhPrompt = surname
-        ? `为姓氏"${s}"生成${llmCount}个风格多样的${localeName}名字。仅输出JSON：[{"native":"","romanization":"","meaning":"","culturalSignificance":""}]`
-        : `随机生成${llmCount}个风格多样的${localeName}名字，自由选择常见姓氏。仅输出JSON：[{"native":"","romanization":"","meaning":"","culturalSignificance":""}]`
-
-      const prompt = locale === 'zh' ? zhPrompt : viPrompt
+      const promptTemplate = getRandomNamesPrompt(locale as any)
+      const surnameInfo = surname ? ` cho họ "${surname}"` : ''
+      const prompt = promptTemplate
+        .replace('{{count}}', String(llmCount))
+        .replace('{{locale}}', localeName)
+        .replace('{{surnameInfo}}', surnameInfo)
 
       const res = await fetch(`${API_URL}/chat/completions`, {
         method: 'POST',
@@ -78,15 +76,6 @@ export async function getRandomNamesAction(
   const allNames = [...dbNames, ...llmNames]
   return {
     names: allNames.slice(0, count),
-    analysis: defaultAnalysis(),
     nickname: locale === 'zh' ? '宝宝' : 'Bé yêu',
-  }
-}
-
-function defaultAnalysis(): FengShuiAnalysis {
-  return {
-    fiveGrid: { tianGe: 0, renGe: 0, diGe: 0, waiGe: 0, zongGe: 0, overall: 'neutral' },
-    wuXing: [],
-    recommendations: [],
   }
 }

@@ -42,13 +42,10 @@ export async function generateNamesAction(
     clearTimeout(timeout)
 
     if (!res.ok) {
-      const err = await res.text()
-      throw new Error(`MIMO API error ${res.status}: ${err}`)
+      throw new Error(`MIMO API error ${res.status}`)
     }
 
     const raw = await res.text()
-    console.log(`[generateNames] raw length: ${raw.length}, preview: ${raw.substring(0, 300)}`)
-
     const data = JSON.parse(raw)
     const content = data.choices?.[0]?.message?.content || ''
     const reason = data.choices?.[0]?.finish_reason
@@ -56,11 +53,10 @@ export async function generateNamesAction(
 
     if (content) {
       const result = parseResponse(content, request.locale, request.surname)
-      saveNames(result.names)
+      await saveNames(result.names)
       return result
     }
 
-    console.log(`[generateNames] empty content, full data:`, JSON.stringify(data).substring(0, 500))
     return parseResponse('', request.locale)
   } catch (err) {
     clearTimeout(timeout)

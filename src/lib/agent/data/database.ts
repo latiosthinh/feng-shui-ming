@@ -1,66 +1,85 @@
 import 'server-only'
-import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'fs'
+import { readFile, writeFile, mkdir, rename, access } from 'fs/promises'
 import { join } from 'path'
-import type { GeneratedName } from '@/lib/agent/types'
 
 const DB_PATH = join(process.cwd(), 'data', 'name-database.json')
+const TMP_PATH = DB_PATH + '.tmp'
 
-function ensureDir() {
-  const dir = join(process.cwd(), 'data')
-  if (!existsSync(dir)) mkdirSync(dir, { recursive: true })
-}
-
-function readDb(): Array<{
+type DbEntry = {
   native: string
   romanization: string
   meaning: string
   culturalSignificance: string
-}> {
-  ensureDir()
-  if (!existsSync(DB_PATH)) return []
+}
+
+let writeQueue: Promise<unknown> = Promise.resolve()
+
+function enqueue<T>(fn: () => Promise<T>): Promise<T> {
+  let result: Promise<T>
+  writeQueue = writeQueue.then(
+    () => (result = fn()),
+    () => (result = fn()),
+  )
+  return result!
+}
+
+async function ensureDir() {
   try {
-    return JSON.parse(readFileSync(DB_PATH, 'utf-8'))
+    await access(join(process.cwd(), 'data'))
+  } catch {
+    await mkdir(join(process.cwd(), 'data'), { recursive: true })
+  }
+}
+
+async function readDb(): Promise<DbEntry[]> {
+  await ensureDir()
+  try {
+    const raw = await readFile(DB_PATH, 'utf-8')
+    return JSON.parse(raw)
   } catch {
     return []
   }
 }
 
-function writeDb(
-  data: Array<{
-    native: string
-    romanization: string
-    meaning: string
-    culturalSignificance: string
-  }>,
-) {
-  ensureDir()
-  writeFileSync(DB_PATH, JSON.stringify(data, null, 2), 'utf-8')
+async function writeDb(data: DbEntry[]) {
+  await ensureDir()
+  await writeFile(TMP_PATH, JSON.stringify(data, null, 2), 'utf-8')
+  await rename(TMP_PATH, DB_PATH)
 }
 
-export function getRandomNames(count: number): GeneratedName[] {
-  const db = readDb()
-  if (db.length === 0) return []
-  const shuffled = [...db].sort(() => Math.random() - 0.5)
-  return shuffled.slice(0, Math.min(count, db.length))
+let cache: DbEntry[] | null = null
+
+export function getRandomNames(count: number): Promise<DbEntry[]> {
+  return enqueue(async () => {
+    if (!cache) cache = await readDb()
+    if (cache.length === 0) return []
+    const shuffled = [...cache].sort(() => Math.random() - 0.5)
+    return shuffled.slice(0, Math.min(count, cache.length))
+  })
 }
 
-export function saveNames(names: GeneratedName[]) {
-  const db = readDb()
-  const existing = new Set(db.map((n) => n.native))
-  for (const name of names) {
-    if (!existing.has(name.native)) {
-      db.push({
-        native: name.native,
-        romanization: name.romanization,
-        meaning: name.meaning,
-        culturalSignificance: name.culturalSignificance,
-      })
-      existing.add(name.native)
+export function saveNames(names: DbEntry[]): Promise<void> {
+  return enqueue(async () => {
+    if (!cache) cache = await readDb()
+    const existing = new Set(cache.map((n) => n.native))
+    for (const name of names) {
+      if (!existing.has(name.native)) {
+        cache.push({
+          native: name.native,
+          romanization: name.romanization,
+          meaning: name.meaning,
+          culturalSignificance: name.culturalSignificance,
+        })
+        existing.add(name.native)
+      }
     }
-  }
-  writeDb(db)
+    await writeDb(cache)
+  })
 }
 
-export function getDbSize(): number {
-  return readDb().length
+export function getDbSize(): Promise<number> {
+  return enqueue(async () => {
+    if (!cache) cache = await readDb()
+    return cache.length
+  })
 }

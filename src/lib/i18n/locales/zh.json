@@ -10,6 +10,10 @@
     "removeFavorite": "移除收藏",
     "exportFavorites": "导出"
   },
+  "hero": {
+    "title": "风水起名",
+    "subtitle": "生成具有传统风水分析的亚洲婴儿名字"
+  },
   "form": {
     "title": "起名表单",
     "surname": "姓氏",
@@ -32,6 +36,7 @@
     "randomGenerate": "随机起名",
     "advancedSettings": "高级设置",
     "nameCount": "生成名字数量 (1-6)",
+    "nameLength": "名字字数 (1-3)",
     "familyMembers": "家庭成员信息",
     "addMember": "+ 添加成员",
     "remove": "移除",
@@ -104,5 +109,8 @@
     "thinkingSeeded": "正在挑选合适的名字…",
     "arriving": "首个名字已生成…",
     "polishing": "正在完善…"
+  },
+  "favorites": {
+    "localNotice": "名字存储在您的浏览器本地"
   }
 }

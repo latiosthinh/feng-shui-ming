@@ -11,9 +11,49 @@ import { buildPrompt } from '@/lib/agent/build-prompt'
 
 const analysisCache = createLRUCache<FengShuiAnalysis>(1000, 3600000)
 
+const MAX_REQUESTS = 10
+const WINDOW_MS = 60_000
+const rateLimitMap = new Map<string, number[]>()
+
+function getClientIp(request: NextRequest): string {
+  const forwarded = request.headers.get('x-forwarded-for')
+  if (forwarded) return forwarded.split(',')[0].trim()
+  return 'unknown'
+}
+
+function checkRateLimit(ip: string): boolean {
+  const now = Date.now()
+  const timestamps = rateLimitMap.get(ip) ?? []
+  const valid = timestamps.filter((t) => now - t < WINDOW_MS)
+  if (valid.length >= MAX_REQUESTS) return false
+  valid.push(now)
+  rateLimitMap.set(ip, valid)
+  return true
+}
+
+setInterval(
+  () => {
+    const now = Date.now()
+    for (const [ip, timestamps] of rateLimitMap) {
+      const valid = timestamps.filter((t) => now - t < WINDOW_MS)
+      if (valid.length === 0) rateLimitMap.delete(ip)
+      else rateLimitMap.set(ip, valid)
+    }
+  },
+  5 * 60 * 1000,
+)
+
 export const runtime = 'nodejs'
 
 export async function POST(request: NextRequest) {
+  const ip = getClientIp(request)
+  if (!checkRateLimit(ip)) {
+    return new Response(JSON.stringify({ error: 'Too many requests. Try again later.' }), {
+      status: 429,
+      headers: { 'Content-Type': 'application/json' },
+    })
+  }
+
   let body: NameGenerationRequest
   try {
     body = await request.json()
@@ -75,7 +115,7 @@ export async function POST(request: NextRequest) {
         }
 
         if (allNames.length > 0) {
-          saveNames(allNames)
+          await saveNames(allNames)
         }
 
         controller.enqueue(

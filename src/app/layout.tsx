@@ -55,7 +55,8 @@ export default function RootLayout({
   }
 
   return (
-    <html lang="vi">
+    <html>
+      {/* TODO: make dynamic when adding per-locale routing (e.g. /vi/, /zh/) */}
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen bg-gradient-to-br from-purple-50 via-white to-amber-50`}
       >
