@@ -32,6 +32,7 @@ export interface NameGenerationResponse {
 export interface GeneratedName {
   native: string
   romanization: string
+  hanzi?: string
   meaning: string
   culturalSignificance: string
   nickname?: string

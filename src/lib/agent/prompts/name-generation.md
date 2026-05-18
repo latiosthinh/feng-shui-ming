@@ -14,6 +14,7 @@ Vui lòng xuất kết quả theo định dạng mảng JSON sau (chỉ xuất J
 {
 "native": "Tên bằng chữ Quốc ngữ có dấu (chỉ tên, không bao gồm họ, {{nameLength}} chữ, ví dụ: Văn An, Thị Hoa, Đức Minh)",
 "romanization": "Tên không dấu (chỉ tên, không họ, không dấu, ví dụ: Van An, Thi Hoa)",
+"hanzi": "Chữ Hán tương ứng (chữ Hán giản thể, chỉ tên, không họ, ví dụ: 文安, 氏花, 德明)",
 "meaning": "Ý nghĩa của tên (ngắn gọn, tiếng Việt)",
 "culturalSignificance": "Ý nghĩa văn hóa (ngắn gọn, tiếng Việt)",
 "nickname": "Tên thân mật ở nhà (ngắn gọn, tiếng Việt, khác biệt với tên chính)"
@@ -24,6 +25,7 @@ Lưu ý:
 
 - native và romanization CHỈ chứa tên, KHÔNG bao gồm họ
 - native là tên thuần Việt có dấu (chữ Quốc ngữ), KHÔNG phải chữ Hán
+- hanzi là chữ Hán giản thể tương ứng với tên, cũng chỉ chứa tên không bao gồm họ
 - native phải có {{nameLength}} chữ (ví dụ: "Văn An" cho 2 chữ, "Thị Hồng Nhung" cho 3 chữ)
 - Họ là {{surname}} (ví dụ: Nguyễn, Trần, Lê, Phạm, Hoàng, etc.)
 - Tên cần phong cách đa dạng, khác biệt rõ ràng

@@ -54,6 +54,7 @@ export async function addFavoriteAction(
       fingerprint: userId ? undefined : fingerprint,
       native: entry.name.native,
       romanization: entry.name.romanization,
+      hanzi: entry.name.hanzi,
       meaning: entry.name.meaning,
       culturalSignificance: entry.name.culturalSignificance,
       nickname: entry.nickname,
@@ -133,6 +134,7 @@ function mapRecordToEntry(record: any): FavoriteEntry {
     name: {
       native: record.native || '',
       romanization: record.romanization || '',
+      hanzi: record.hanzi || undefined,
       meaning: record.meaning || '',
       culturalSignificance: record.culturalSignificance || '',
       nickname: record.nickname || undefined,

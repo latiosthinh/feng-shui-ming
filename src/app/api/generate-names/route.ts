@@ -85,6 +85,7 @@ export async function POST(request: NextRequest) {
             const name: GeneratedName = {
               native: item.name.native,
               romanization: item.name.romanization,
+              hanzi: item.name.hanzi,
               meaning: item.name.meaning,
               culturalSignificance: item.name.culturalSignificance,
               nickname: item.name.nickname,

@@ -2,6 +2,7 @@ export interface ParseResult {
   name: {
     native: string
     romanization: string
+    hanzi?: string
     meaning: string
     culturalSignificance: string
     nickname?: string
@@ -63,6 +64,7 @@ export function createIncrementalNameParser(): IncrementalParser {
                   name: {
                     native: parsed.native || '',
                     romanization: parsed.romanization || '',
+                    hanzi: parsed.hanzi || undefined,
                     meaning: parsed.meaning || '',
                     culturalSignificance: parsed.culturalSignificance || '',
                     nickname: parsed.nickname || undefined,

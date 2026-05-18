@@ -69,6 +69,7 @@ export async function getRandomNamesAction(
               .map((n: any) => ({
                 native: n.native || '',
                 romanization: n.romanization || '',
+                hanzi: n.hanzi || undefined,
                 meaning: n.meaning || '',
                 culturalSignificance: n.culturalSignificance || '',
               }))

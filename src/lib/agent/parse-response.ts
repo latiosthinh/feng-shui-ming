@@ -33,6 +33,7 @@ export function parseResponse(
     const names: GeneratedName[] = parsed.map((n: any) => ({
       native: n.native || '',
       romanization: n.romanization || '',
+      hanzi: n.hanzi || undefined,
       meaning: n.meaning || '',
       culturalSignificance: n.culturalSignificance || '',
       nickname: n.nickname || undefined,

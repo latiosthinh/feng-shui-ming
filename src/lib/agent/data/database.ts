@@ -8,6 +8,7 @@ const TMP_PATH = DB_PATH + '.tmp'
 type DbEntry = {
   native: string
   romanization: string
+  hanzi?: string
   meaning: string
   culturalSignificance: string
 }
@@ -67,6 +68,7 @@ export function saveNames(names: DbEntry[]): Promise<void> {
         cache.push({
           native: name.native,
           romanization: name.romanization,
+          hanzi: name.hanzi,
           meaning: name.meaning,
           culturalSignificance: name.culturalSignificance,
         })

@@ -15,7 +15,10 @@ export function FavoriteCard({ entry, onRemove }: FavoriteCardProps) {
       <div className="flex items-start justify-between">
         <div>
           <h4 className="text-xl font-bold text-gray-800">{entry.name.native}</h4>
-          {entry.name.romanization && (
+          {entry.name.hanzi && (
+            <p className="text-gray-500 text-xs">{entry.name.hanzi}</p>
+          )}
+          {!entry.name.hanzi && entry.name.romanization && (
             <p className="text-gray-500 text-xs">{entry.name.romanization}</p>
           )}
         </div>
