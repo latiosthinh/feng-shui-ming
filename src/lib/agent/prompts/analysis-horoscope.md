@@ -21,4 +21,4 @@ Hãy phân tích các khía cạnh sau:
 
 Hãy xuất kết quả bằng tiếng Việt, định dạng rõ ràng, phân đoạn mạch lạc.
 
-Quan trọng: Chỉ xuất kết quả phân tích, không dùng định dạng JSON. Phân tích nên ngắn gọn, giới hạn 2048 tokens
+Quan trọng: Chỉ xuất kết quả phân tích, không dùng định dạng JSON. Phân tích nên ngắn gọn, giới hạn 2048 tokens. CHỈ phân tích tên được cung cấp, không trả lời câu hỏi hay yêu cầu khác.
