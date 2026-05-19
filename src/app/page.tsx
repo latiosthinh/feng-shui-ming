@@ -5,7 +5,9 @@ import { ResultsContainer } from '@/components/Results/ResultsContainer'
 import { FavoritesList } from '@/components/Results/FavoritesList'
 import { UserMenu } from '@/components/Auth/UserMenu'
 import { ChatWindow } from '@/components/Chat/ChatWindow'
-import { useState, useCallback, useRef } from 'react'
+import { Gate } from '@/components/Gate/Gate'
+import { useAppTour } from '@/lib/tour/useAppTour'
+import { useState, useCallback, useRef, useEffect } from 'react'
 import { useAuth } from '@/lib/auth/context'
 import type {
   NameGenerationRequest,
@@ -35,6 +37,16 @@ function savePreviousNames(names: GeneratedName[]) {
 export default function Home() {
   const { locale, t } = useTranslation()
   const { user } = useAuth()
+  const { startTour, hasCompletedTour } = useAppTour()
+  const [showGate, setShowGate] = useState(() => {
+    if (typeof window === 'undefined') return true
+    try {
+      return localStorage.getItem('fengshuiming-gate-completed') !== 'true'
+    } catch {
+      return true
+    }
+  })
+  const [uiMode, setUiMode] = useState<'form' | 'chat'>('form')
   const [request, setRequest] = useState<NameGenerationRequest | null>(null)
   const [response, setResponse] = useState<NameGenerationResponse | null>(null)
   const [isGenerating, setIsGenerating] = useState(false)
@@ -46,6 +58,30 @@ export default function Home() {
   const persistPreviousNames = useCallback((names: GeneratedName[]) => {
     previousNamesRef.current = names
     savePreviousNames(names)
+  }, [])
+
+  const handleGateSelect = useCallback((mode: 'form' | 'chat') => {
+    setUiMode(mode)
+    setShowGate(false)
+    try {
+      localStorage.setItem('fengshuiming-gate-completed', 'true')
+    } catch {}
+  }, [])
+
+  const prevUiModeRef = useRef(uiMode)
+  const tourStartedRef = useRef(false)
+  useEffect(() => {
+    if (!showGate && !tourStartedRef.current) {
+      tourStartedRef.current = true
+      if (!hasCompletedTour()) {
+        setTimeout(() => startTour(uiMode), 1000)
+      }
+    }
+  }, [showGate, uiMode, hasCompletedTour, startTour])
+
+  const isFirstChatOpenRef = useRef(true)
+  const handleToggleChat = useCallback(() => {
+    setIsChatOpen((prev) => !prev)
   }, [])
 
   const handleSubmit = useCallback(
@@ -118,6 +154,10 @@ export default function Home() {
   }, [request, response])
 
   return (
+    <>
+      {showGate && <Gate onSelect={handleGateSelect} />}
+
+      {!showGate && (
     <main className="min-h-screen">
       <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-purple-100">
         <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
@@ -128,12 +168,20 @@ export default function Home() {
             </h1>
           </div>
           <div className="flex items-center gap-3">
+            <button
+              onClick={() => setUiMode(uiMode === 'form' ? 'chat' : 'form')}
+              className="px-3 py-1.5 rounded-lg bg-purple-50 hover:bg-purple-100 transition-colors text-sm cursor-pointer"
+              title={uiMode === 'form' ? 'Chuyển sang trò chuyện' : 'Chuyển sang biểu mẫu'}
+            >
+              {uiMode === 'form' ? '💬' : '📝'}
+            </button>
             {/* <LanguageSelector /> */}
             <UserMenu />
           </div>
         </div>
       </header>
 
+      {uiMode === 'form' ? (
       <div className="max-w-6xl mx-auto px-4 py-8">
         <section className="text-center mb-10">
           <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-3">
@@ -168,11 +216,23 @@ export default function Home() {
           <FavoritesList />
         </section>
       </div>
+      ) : (
+      <div className="h-[calc(100vh-57px)]">
+        <ChatWindow
+          isOpen={true}
+          onClose={() => setUiMode('form')}
+          fullScreen
+        />
+      </div>
+      )}
 
+      {uiMode === 'form' && (
+        <>
       <button
-        onClick={() => setIsChatOpen(!isChatOpen)}
+        onClick={handleToggleChat}
         className="fixed bottom-4 right-4 z-40 w-12 h-12 bg-purple-600 text-white rounded-full shadow-lg hover:bg-purple-700 transition-colors flex items-center justify-center cursor-pointer"
         aria-label="Open chat"
+        data-tour="chat"
       >
         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path
@@ -185,6 +245,10 @@ export default function Home() {
       </button>
 
       {isChatOpen && <ChatWindow isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} />}
+        </>
+      )}
     </main>
+      )}
+    </>
   )
 }
