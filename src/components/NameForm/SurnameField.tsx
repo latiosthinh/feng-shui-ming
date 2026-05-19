@@ -11,7 +11,7 @@ export function SurnameField({ value, onChange, error }: SurnameFieldProps) {
   const { t } = useTranslation()
 
   return (
-    <div className="space-y-1">
+    <div className="space-y-1" data-tour="surname">
       <label className="block text-sm font-medium text-gray-700">
         {t.form.surname}
         <span className="text-gray-400 text-xs ml-1">({t.form.optional})</span>

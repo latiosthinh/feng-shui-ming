@@ -11,7 +11,7 @@ export function BirthDateField({ value, onChange, error }: BirthDateFieldProps) 
   const { t } = useTranslation()
 
   return (
-    <div className="space-y-1">
+    <div className="space-y-1" data-tour="birth">
       <label className="block text-sm font-medium text-gray-700">{t.form.birthDate}</label>
       <input
         type="date"

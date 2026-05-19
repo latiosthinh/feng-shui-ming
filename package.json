@@ -45,19 +45,5 @@
     "tailwindcss": "^4.1.0",
     "typescript": "^5.7.0",
     "vitest": "^3.0.0"
-  },
-  "description": "",
-  "main": "index.js",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/latiosthinh/feng-shui-ming.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "commonjs",
-  "bugs": {
-    "url": "https://github.com/latiosthinh/feng-shui-ming/issues"
-  },
-  "homepage": "https://github.com/latiosthinh/feng-shui-ming#readme"
+  }
 }

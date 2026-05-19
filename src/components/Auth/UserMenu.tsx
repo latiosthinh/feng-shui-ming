@@ -5,7 +5,11 @@ import { useAuth } from '@/lib/auth/context'
 import { useTranslation } from '@/lib/i18n/hooks'
 import { AuthModal } from './AuthModal'
 
-export function UserMenu() {
+interface UserMenuProps {
+  onRestartTour?: () => void
+}
+
+export function UserMenu({ onRestartTour }: UserMenuProps) {
   const { user, logout } = useAuth()
   const { t } = useTranslation()
   const [showAuth, setShowAuth] = useState(false)
@@ -69,6 +73,17 @@ export function UserMenu() {
                 <p className="text-xs text-gray-500">Mã thanh toán:</p>
                 <p className="text-xs font-mono font-bold text-purple-600">{user.purchaseCode}</p>
               </div>
+            )}
+            {onRestartTour && (
+              <button
+                onClick={() => {
+                  onRestartTour()
+                  setShowDropdown(false)
+                }}
+                className="w-full px-4 py-2 text-left text-sm text-purple-600 hover:bg-purple-50 transition-colors cursor-pointer"
+              >
+                Hướng dẫn lại
+              </button>
             )}
             <button
               onClick={() => {

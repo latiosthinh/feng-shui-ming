@@ -17,7 +17,7 @@ export function GenderField({ value, onChange, error }: GenderFieldProps) {
   ]
 
   return (
-    <div className="space-y-1">
+    <div className="space-y-1" data-tour="gender">
       <label className="block text-sm font-medium text-gray-700">{t.form.gender}</label>
       <div className="flex gap-2">
         {options.map((opt) => (

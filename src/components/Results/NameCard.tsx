@@ -134,6 +134,7 @@ export function NameCard({ name, analysis, surname, birthDate, birthTime }: Name
               </div>
               <button
                 onClick={handleToggleFavorite}
+                data-tour="favorite"
                 className={`p-2 rounded-full transition-colors cursor-pointer ${
                   favorited
                     ? 'text-red-500 bg-red-50'
@@ -168,7 +169,7 @@ export function NameCard({ name, analysis, surname, birthDate, birthTime }: Name
           </div>
 
           <div className="pt-2 border-t border-gray-100 mt-auto">
-            <div className="flex flex-wrap gap-1.5">
+            <div className="flex flex-wrap gap-1.5" data-tour="analysis-buttons">
               {buttons.map((btn) => (
                 <button
                   key={btn.type}

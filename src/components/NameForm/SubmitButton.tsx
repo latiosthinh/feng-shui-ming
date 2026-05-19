@@ -12,6 +12,7 @@ export function SubmitButton({ isLoading }: SubmitButtonProps) {
     <button
       type="submit"
       disabled={isLoading}
+      data-tour="submit"
       className="w-full py-4 px-6 bg-gradient-to-r from-purple-600 to-amber-500 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2 cursor-pointer"
     >
       {isLoading ? (

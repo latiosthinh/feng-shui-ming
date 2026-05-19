@@ -71,7 +71,7 @@ export function ChatWindow({ isOpen, onClose, fullScreen }: ChatWindowProps) {
   }, [messages])
 
   const handleSaveFavorite = useCallback(
-    async (name: ChatMessageData['names'][number]) => {
+    async (name: NonNullable<ChatMessageData['names']>[number]) => {
       const id = `${name.native}-${name.romanization}`
       const entry: FavoriteEntry = {
         id,

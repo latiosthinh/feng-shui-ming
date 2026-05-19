@@ -37,7 +37,7 @@ function savePreviousNames(names: GeneratedName[]) {
 export default function Home() {
   const { locale, t } = useTranslation()
   const { user } = useAuth()
-  const { startTour, hasCompletedTour } = useAppTour()
+  const { startTour, hasCompletedTour, resetTour } = useAppTour()
   const [showGate, setShowGate] = useState(() => {
     if (typeof window === 'undefined') return true
     try {
@@ -83,6 +83,11 @@ export default function Home() {
   const handleToggleChat = useCallback(() => {
     setIsChatOpen((prev) => !prev)
   }, [])
+
+  const handleRestartTour = useCallback(() => {
+    resetTour()
+    setTimeout(() => startTour(uiMode), 500)
+  }, [resetTour, startTour, uiMode])
 
   const handleSubmit = useCallback(
     (req: NameGenerationRequest) => {
@@ -176,7 +181,7 @@ export default function Home() {
               {uiMode === 'form' ? '💬' : '📝'}
             </button>
             {/* <LanguageSelector /> */}
-            <UserMenu />
+            <UserMenu onRestartTour={handleRestartTour} />
           </div>
         </div>
       </header>
@@ -200,7 +205,7 @@ export default function Home() {
         </section>
 
         {request && (
-          <section className="mb-10">
+          <section className="mb-10" data-tour="results">
             <ResultsContainer
               request={request}
               onComplete={handleComplete}
