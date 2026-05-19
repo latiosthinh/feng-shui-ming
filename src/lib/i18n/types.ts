@@ -91,6 +91,7 @@ export interface TranslationKeys {
     numerology: string
     bazi: string
     horoscope: string
+    yijing: string
     analyzing: string
     clickToStart: string
     detail: string
@@ -101,6 +102,7 @@ export interface TranslationKeys {
     numerology: string
     bazi: string
     horoscope: string
+    yijing: string
     excellent: string
     good: string
     fair: string

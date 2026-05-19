@@ -13,7 +13,7 @@ interface AnalysisModalProps {
   onClose: () => void
 }
 
-const ANALYSIS_TYPES: AnalysisType[] = ['fengshui', 'numerology', 'bazi', 'horoscope']
+const ANALYSIS_TYPES: AnalysisType[] = ['fengshui', 'numerology', 'bazi', 'horoscope', 'yijing']
 
 export function AnalysisModal({
   name,
@@ -32,6 +32,7 @@ export function AnalysisModal({
     numerology: { label: t.analysis.numerology, emoji: '🔢' },
     bazi: { label: t.analysis.bazi, emoji: '📅' },
     horoscope: { label: t.analysis.horoscope, emoji: '⭐' },
+    yijing: { label: t.analysis.yijing, emoji: '📖' },
   }
 
   useEffect(() => {

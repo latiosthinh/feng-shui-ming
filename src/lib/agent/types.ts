@@ -40,11 +40,11 @@ export interface GeneratedName {
 
 export interface NameAnalysis {
   id: string
-  type: 'fengshui' | 'numerology' | 'bazi' | 'horoscope'
+  type: 'fengshui' | 'numerology' | 'bazi' | 'horoscope' | 'yijing'
   name: string
   surname: string
   result: string
   timestamp: number
 }
 
-export type AnalysisType = 'fengshui' | 'numerology' | 'bazi' | 'horoscope'
+export type AnalysisType = 'fengshui' | 'numerology' | 'bazi' | 'horoscope' | 'yijing'

@@ -43,6 +43,11 @@ const ANALYSIS_TYPES = [
     emoji: '⭐',
     color: 'bg-amber-50 text-amber-700 border-amber-200 hover:bg-amber-100',
   },
+  {
+    type: 'yijing' as const,
+    emoji: '📖',
+    color: 'bg-teal-50 text-teal-700 border-teal-200 hover:bg-teal-100',
+  },
 ]
 
 export function NameCard({ name, analysis, surname, birthDate, birthTime }: NameCardProps) {
