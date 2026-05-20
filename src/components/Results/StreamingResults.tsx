@@ -26,8 +26,6 @@ type CardState =
       analysis?: FengShuiAnalysis
     }
 
-type StreamPhase = 'thinking' | 'arriving'
-
 interface StreamingResultsProps {
   request: NameGenerationRequest
   onComplete: (response: NameGenerationResponse) => void
