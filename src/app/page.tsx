@@ -180,7 +180,7 @@ export default function Home() {
             >
               {uiMode === 'form' ? '💬' : '📝'}
             </button>
-            {/* <LanguageSelector /> */}
+            <LanguageSelector />
             <UserMenu onRestartTour={handleRestartTour} />
           </div>
         </div>
