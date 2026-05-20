@@ -87,10 +87,19 @@ export function createIncrementalNameParser(): IncrementalParser {
     return found
   }
 
+  function trimBuffer(): void {
+    if (processedUpTo > 0) {
+      buffer = buffer.slice(processedUpTo)
+      processedUpTo = 0
+    }
+  }
+
   return {
     push(chunk: string): ParseResult[] {
       buffer += chunk
-      return scan()
+      const results = scan()
+      trimBuffer()
+      return results
     },
     getBuffer(): string {
       return buffer
