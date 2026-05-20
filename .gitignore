@@ -11,7 +11,6 @@ data/name-database.json
 .aidlc/
 .ast-graph/
 .planning/
-pnpm-lock.yaml
 name_generation_reasoning.md
 names.json
 nul
