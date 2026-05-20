@@ -54,22 +54,26 @@ Tracks usage for unauthenticated users via browser fingerprint.
 
 ### 3. `favorites` (base collection)
 
-Stores user-favorited names.
+Stores user-favorited names. Both authenticated users (via `user` relation) and anonymous users (via `fingerprint`) can save favorites.
 
 | Field | Type | Required | Default | Description |
 |-------|------|----------|---------|-------------|
-| `user` | relation | Yes | — | Reference to `users` collection |
-| `nameNative` | text | Yes | — | The native name text |
-| `nameRomanization` | text | No | `""` | Romanized version of the name |
-| `nameHanzi` | text | No | `""` | Hanzi characters |
-| `nameMeaning` | text | No | `""` | Name meaning description |
-| `surname` | text | No | `""` | Associated surname |
+| `user` | relation | No | — | Reference to `users` collection (null for anonymous) |
+| `fingerprint` | text | No | `""` | Browser fingerprint for anonymous users |
+| `native` | text | Yes | — | The native name text |
+| `romanization` | text | No | `""` | Romanized version of the name |
+| `hanzi` | text | No | `""` | Hanzi characters |
+| `meaning` | text | No | `""` | Name meaning description |
+| `culturalSignificance` | text | No | `""` | Cultural significance description |
+| `nickname` | text | No | `""` | Nickname |
+| `analysis` | json | No | — | Feng Shui analysis data |
+| `locale` | text | No | `"vi"` | Locale of the saved name |
 
 **API rules:**
-- List: `user = @request.auth.id` (users see only their own)
-- Create: `user = @request.auth.id`
-- Update: `user = @request.auth.id`
-- Delete: `user = @request.auth.id`
+- List: `user = @request.auth.id || fingerprint != ""` (allows both authenticated and anonymous access)
+- Create: `user = @request.auth.id || fingerprint != ""`
+- Update: `user = @request.auth.id || fingerprint != ""`
+- Delete: `user = @request.auth.id || fingerprint != ""`
 
 ## Setup Steps
 
@@ -87,7 +91,7 @@ Stores user-favorited names.
 
 3. **Create `favorites` collection:**
    - Go to Collections → Create collection → Select "Base collection"
-   - Add fields: `user` (relation → users), `nameNative` (text), `nameRomanization` (text), `nameHanzi` (text), `nameMeaning` (text), `surname` (text)
+   - Add fields: `user` (relation → users, not required), `fingerprint` (text), `native` (text, required), `romanization` (text), `hanzi` (text), `meaning` (text), `culturalSignificance` (text), `nickname` (text), `analysis` (json), `locale` (text)
    - Set API rules as specified above
 
 ### Programmatic Setup (via PocketBase SDK)
@@ -137,17 +141,21 @@ async function setup() {
     name: 'favorites',
     type: 'base',
     fields: [
-      { name: 'user', type: 'relation', collectionId: 'users_collection_id', required: true },
-      { name: 'nameNative', type: 'text', required: true },
-      { name: 'nameRomanization', type: 'text' },
-      { name: 'nameHanzi', type: 'text' },
-      { name: 'nameMeaning', type: 'text' },
-      { name: 'surname', type: 'text' },
+      { name: 'user', type: 'relation', collectionId: 'users_collection_id' },
+      { name: 'fingerprint', type: 'text' },
+      { name: 'native', type: 'text', required: true },
+      { name: 'romanization', type: 'text' },
+      { name: 'hanzi', type: 'text' },
+      { name: 'meaning', type: 'text' },
+      { name: 'culturalSignificance', type: 'text' },
+      { name: 'nickname', type: 'text' },
+      { name: 'analysis', type: 'json' },
+      { name: 'locale', type: 'text' },
     ],
-    listRule: 'user = @request.auth.id',
-    createRule: 'user = @request.auth.id',
-    updateRule: 'user = @request.auth.id',
-    deleteRule: 'user = @request.auth.id',
+    listRule: 'user = @request.auth.id || fingerprint != ""',
+    createRule: 'user = @request.auth.id || fingerprint != ""',
+    updateRule: 'user = @request.auth.id || fingerprint != ""',
+    deleteRule: 'user = @request.auth.id || fingerprint != ""',
   })
 
   console.log('Schema setup complete!')
@@ -166,10 +174,10 @@ POCKETBASE_URL=http://127.0.0.1:8090
 
 ## Usage Limits
 
-| Tier | Generations | Analyzes | Chat Names |
-|------|-------------|----------|------------|
-| Free (anonymous) | 5 | 3 | 5 |
-| Free (registered) | 20 | 10 | 20 |
-| Paid | Unlimited | Unlimited | Unlimited |
+| Tier | Generations | Analyzes | Chat Names | Favorites |
+|------|-------------|----------|------------|-----------|
+| Free (anonymous) | 5 | 1 | 15 | 9 |
+| Free (registered) | 10 | 5 | 30 | 9 |
+| Paid | Unlimited | Unlimited | 100 | 100 |
 
 These limits are enforced by `src/lib/auth/usage-guard.ts`.
