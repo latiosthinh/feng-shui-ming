@@ -79,13 +79,14 @@ export async function POST(request: NextRequest) {
             allNames.push(name)
 
             let analysis: FengShuiAnalysis | null = null
-            if (body.surname && name.native) {
-              const cacheKey = `${body.surname}|${name.native}`
+            const effectiveSurname = body.surname || item.name.surname || ''
+            if (effectiveSurname && name.native) {
+              const cacheKey = `${effectiveSurname}|${name.native}`
               const cached = analysisCache.get(cacheKey)
               if (cached) {
                 analysis = cached
               } else {
-                analysis = analyzeName({ surname: body.surname, givenName: name.native })
+                analysis = analyzeName({ surname: effectiveSurname, givenName: name.native })
                 analysisCache.set(cacheKey, analysis)
               }
             }

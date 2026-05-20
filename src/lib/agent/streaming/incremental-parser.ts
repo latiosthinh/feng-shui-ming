@@ -6,6 +6,7 @@ export interface ParseResult {
     meaning: string
     culturalSignificance: string
     nickname?: string
+    surname?: string
   }
 }
 
@@ -68,6 +69,7 @@ export function createIncrementalNameParser(): IncrementalParser {
                     meaning: parsed.meaning || '',
                     culturalSignificance: parsed.culturalSignificance || '',
                     nickname: parsed.nickname || undefined,
+                    surname: parsed.surname || undefined,
                   },
                 })
               }

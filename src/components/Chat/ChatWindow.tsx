@@ -97,6 +97,8 @@ export function ChatWindow({ isOpen, onClose, fullScreen }: ChatWindowProps) {
     [add, locale],
   )
 
+  const [surname, setSurname] = useState('')
+
   const handleSend = useCallback(async () => {
     if (!input.trim() || isGenerating) return
 
@@ -119,6 +121,7 @@ export function ChatWindow({ isOpen, onClose, fullScreen }: ChatWindowProps) {
         },
         body: JSON.stringify({
           message: input.trim(),
+          surname: surname.trim() || undefined,
           userId: user?.id,
           locale,
         }),
@@ -175,7 +178,7 @@ export function ChatWindow({ isOpen, onClose, fullScreen }: ChatWindowProps) {
     } finally {
       setIsGenerating(false)
     }
-  }, [input, isGenerating, user, fingerprint, locale])
+  }, [input, isGenerating, user, fingerprint, locale, surname])
 
   const handleSuggestedPrompt = useCallback((prompt: string) => {
     setInput(prompt)
@@ -248,7 +251,15 @@ export function ChatWindow({ isOpen, onClose, fullScreen }: ChatWindowProps) {
           <div ref={messagesEndRef} />
         </div>
 
-        <div className="px-4 py-3 border-t border-gray-100">
+        <div className="px-4 py-3 border-t border-gray-100 space-y-2">
+          <input
+            type="text"
+            value={surname}
+            onChange={(e) => setSurname(e.target.value)}
+            placeholder="Họ (để phân tích phong thủy)..."
+            className="w-full px-3 py-1.5 rounded-lg border border-gray-200 text-xs outline-none focus:border-purple-400"
+            disabled={isGenerating}
+          />
           <div className="flex gap-2">
             <input
               type="text"
