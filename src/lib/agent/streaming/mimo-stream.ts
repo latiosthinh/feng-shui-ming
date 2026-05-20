@@ -1,7 +1,8 @@
 import 'server-only'
+import { getRequiredEnvVar } from '@/lib/env'
 
 const API_URL = process.env.MIMO_API_BASE_URL || 'https://api.xiaomimimo.com/v1'
-const API_KEY = process.env.MIMO_API_KEY!
+const API_KEY = getRequiredEnvVar('MIMO_API_KEY')
 const MODEL = process.env.MIMO_MODEL || 'mimo-v2.5-pro'
 
 export async function* streamMimoCompletion(

@@ -3,9 +3,10 @@
 import { getAnalysisPrompt } from '@/lib/agent/prompts'
 import type { AnalysisType } from '@/lib/agent/types'
 import type { Locale } from '@/lib/i18n/types'
+import { getRequiredEnvVar } from '@/lib/env'
 
 const API_URL = process.env.MIMO_API_BASE_URL || 'https://api.xiaomimimo.com/v1'
-const API_KEY = process.env.MIMO_API_KEY!
+const API_KEY = getRequiredEnvVar('MIMO_API_KEY')
 const MODEL = process.env.MIMO_MODEL || 'mimo-v2.5-pro'
 
 interface AnalysisLabels {
