@@ -2,6 +2,7 @@ import { NextRequest } from 'next/server'
 import 'server-only'
 import type { GeneratedName } from '@/lib/agent/types'
 import type { FengShuiAnalysis } from '@/lib/fengshui/types'
+import type { Locale } from '@/lib/i18n/types'
 import { streamMimoCompletion } from '@/lib/agent/streaming/mimo-stream'
 import { createIncrementalNameParser } from '@/lib/agent/streaming/incremental-parser'
 import { analyzeName } from '@/lib/fengshui/engine'
@@ -9,6 +10,7 @@ import { createLRUCache } from '@/lib/fengshui/lru-cache'
 import { saveNames } from '@/lib/agent/data/database'
 import { checkUsage, incrementUsage } from '@/lib/auth/usage-guard'
 import { createPocketBase } from '@/lib/pocketbase/client'
+import { getChatNamesPrompt } from '@/lib/agent/prompts'
 
 const analysisCache = createLRUCache<FengShuiAnalysis>(1000, 3600000)
 
@@ -47,15 +49,8 @@ export async function POST(request: NextRequest) {
     })
   }
 
-  const systemPrompt = `Bạn là chuyên gia đặt tên phong thủy. Người dùng sẽ mô tả sở thích của họ bằng ngôn ngữ tự nhiên.
-
-QUAN TRỌNG:
-1. CHỈ trả lời các yêu cầu liên quan đến đặt tên em bé/phong thủy. Nếu người dùng hỏi chuyện khác, trả lời lịch sự rằng bạn chỉ hỗ trợ đặt tên.
-2. Trích xuất thông tin từ tin nhắn của họ: họ (nếu có), giới tính, ý nghĩa mong muốn, sở thích.
-3. Tạo 3-5 tên theo mô tả của họ.
-4. CHỈ xuất ra mảng JSON, không kèm văn bản khác: [{"native":"","romanization":"","hanzi":"","meaning":"","culturalSignificance":"","nickname":""}]
-
-Nếu tin nhắn không liên quan đến đặt tên, trả lời: "Xin lỗi, tôi chỉ có thể hỗ trợ đặt tên phong thủy. Bạn muốn tôi giúp đặt tên cho bé?"`
+  const locale = (body.locale as Locale) || 'vi'
+  const systemPrompt = getChatNamesPrompt(locale)
 
   const userPrompt = body.message
 
