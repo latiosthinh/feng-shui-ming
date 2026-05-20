@@ -13,7 +13,15 @@ const analysisCache = createLRUCache<FengShuiAnalysis>(1000, 3600000)
 
 const MAX_REQUESTS = 10
 const WINDOW_MS = 60_000
+const CLEANUP_INTERVAL_MS = 5 * 60 * 1000 // 5 minutes
 const rateLimitMap = new Map<string, number[]>()
+
+/**
+ * NOTE: This rate limiter is in-memory only and does not persist across
+ * server restarts or scale across multiple instances. For production with
+ * multiple replicas, consider switching to Redis or PocketBase-backed
+ * rate limiting. See scripts/pocketbase-schema.md for schema reference.
+ */
 
 function getClientIp(request: NextRequest): string {
   const forwarded = request.headers.get('x-forwarded-for')
