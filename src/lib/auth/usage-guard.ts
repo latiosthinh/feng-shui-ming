@@ -28,7 +28,8 @@ export async function checkUsage(
     const pb = createPocketBase()
     try {
       const records = await pb.collection('anonymous_usage').getFullList({
-        filter: `fingerprint = "${fingerprint}"`,
+        filter: 'fingerprint = {:fingerprint}',
+        filterParams: { fingerprint },
       })
       if (records.length > 0) {
         currentGenerations = records[0].totalGenerations || 0
@@ -104,7 +105,8 @@ export async function incrementUsage(
     }
   } else {
     const records = await pb.collection('anonymous_usage').getFullList({
-      filter: `fingerprint = "${fingerprint}"`,
+      filter: 'fingerprint = {:fingerprint}',
+      filterParams: { fingerprint },
     })
 
     if (records.length > 0) {
@@ -146,7 +148,8 @@ export async function incrementAnalyzeUsage(
     })
   } else {
     const records = await pb.collection('anonymous_usage').getFullList({
-      filter: `fingerprint = "${fingerprint}"`,
+      filter: 'fingerprint = {:fingerprint}',
+      filterParams: { fingerprint },
     })
 
     if (records.length > 0) {
