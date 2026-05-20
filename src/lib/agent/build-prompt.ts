@@ -1,3 +1,4 @@
+import 'server-only'
 import type { NameGenerationRequest } from '@/lib/agent/types'
 import { getNameGenerationPrompt } from '@/lib/agent/prompts'
 

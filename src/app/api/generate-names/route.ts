@@ -1,3 +1,4 @@
+import 'server-only'
 import { NextRequest } from 'next/server'
 import type { NameGenerationRequest, GeneratedName } from '@/lib/agent/types'
 import type { FengShuiAnalysis } from '@/lib/fengshui/types'

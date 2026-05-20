@@ -1,3 +1,4 @@
+import 'server-only'
 import type { NameGenerationResponse, GeneratedName } from '@/lib/agent/types'
 import { calculateFiveGrid } from '@/lib/fengshui/five-grid'
 

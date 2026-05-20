@@ -1,3 +1,4 @@
+import 'server-only'
 import type { FiveGridScore } from './types'
 import { getStrokeCount } from './stroke-data'
 

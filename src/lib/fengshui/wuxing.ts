@@ -1,3 +1,4 @@
+import 'server-only'
 import type { WuXingElement } from './types'
 
 const elementMap: Record<number, WuXingElement> = {
