@@ -6,6 +6,7 @@ import { saveNames } from '@/lib/agent/data/database'
 import { buildPrompt } from '@/lib/agent/build-prompt'
 import { parseResponse } from '@/lib/agent/parse-response'
 import { getRequiredEnvVar } from '@/lib/env'
+import { incrementUsage } from '@/lib/auth/usage-guard'
 
 export { parseResponse }
 
@@ -15,6 +16,8 @@ const MODEL = process.env.MIMO_MODEL || 'mimo-v2.5-pro'
 
 export async function generateNamesAction(
   request: NameGenerationRequest,
+  fingerprint?: string,
+  userId?: string | null,
 ): Promise<NameGenerationResponse> {
   const nameCount = request.nameCount || 3
   const prompt = buildPrompt(request, nameCount)
@@ -55,6 +58,9 @@ export async function generateNamesAction(
     if (content) {
       const result = parseResponse(content, request.locale, request.surname)
       await saveNames(result.names)
+      if (fingerprint) {
+        await incrementUsage(userId || null, fingerprint, 'form', result.names.length)
+      }
       return result
     }
 

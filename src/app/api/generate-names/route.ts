@@ -9,6 +9,7 @@ import { createIncrementalNameParser } from '@/lib/agent/streaming/incremental-p
 import { analyzeName } from '@/lib/fengshui/engine'
 import { createLRUCache } from '@/lib/fengshui/lru-cache'
 import { buildPrompt } from '@/lib/agent/build-prompt'
+import { checkUsage, incrementUsage } from '@/lib/auth/usage-guard'
 
 const analysisCache = createLRUCache<FengShuiAnalysis>(1000, 3600000)
 
@@ -74,6 +75,31 @@ export async function POST(request: NextRequest) {
   }
 
   const nameCount = body.nameCount || 3
+
+  const fingerprint = request.headers.get('x-fingerprint') || ''
+  const reqBody = body as NameGenerationRequest & { userId?: string }
+  const userId = reqBody.userId || null
+  if (fingerprint) {
+    let tier: 'free' | 'paid' = 'free'
+    if (userId) {
+      try {
+        const { createPocketBase } = await import('@/lib/pocketbase/client')
+        const pb = createPocketBase()
+        const record = await pb.collection('users').getOne(userId)
+        tier = record.tier || 'free'
+      } catch {
+        tier = 'free'
+      }
+    }
+    const usageCheck = await checkUsage(userId, fingerprint, tier, 'form')
+    if (!usageCheck.allowed) {
+      return new Response(JSON.stringify({ error: usageCheck.reason }), {
+        status: 429,
+        headers: { 'Content-Type': 'application/json' },
+      })
+    }
+  }
+
   const prompt = buildPrompt(body, nameCount)
   const systemPrompt = getSystemPrompt(body.locale)
 
@@ -128,6 +154,9 @@ export async function POST(request: NextRequest) {
 
         if (allNames.length > 0) {
           await saveNames(allNames)
+          if (fingerprint) {
+            await incrementUsage(userId, fingerprint, 'form', allNames.length)
+          }
         }
 
         controller.enqueue(

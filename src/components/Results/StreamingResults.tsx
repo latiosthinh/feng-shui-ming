@@ -1,9 +1,10 @@
 'use client'
-import { useState, useEffect, useRef, useCallback, useTransition } from 'react'
+import { useState, useEffect, useRef, useTransition } from 'react'
 import { generateNamesAction } from '@/lib/agent/actions/generate-names'
 import type { NameGenerationRequest, NameGenerationResponse, GeneratedName } from '@/lib/agent/types'
 import type { FengShuiAnalysis } from '@/lib/fengshui/types'
 import { useTranslation } from '@/lib/i18n/hooks'
+import { useAuth } from '@/lib/auth/context'
 import { NameCard } from './NameCard'
 import { NameCardSkeleton } from './NameCardSkeleton'
 import { StreamStatusBanner } from './StreamStatusBanner'
@@ -62,6 +63,7 @@ export function StreamingResults({
   initialResponse,
 }: StreamingResultsProps) {
   const { t } = useTranslation()
+  const { user, fingerprint } = useAuth()
   const nameCount = request.nameCount || 3
 
   const [cards, setCards] = useState<CardState[]>(() =>
@@ -130,7 +132,11 @@ export function StreamingResults({
     fetch('/api/generate-names', {
       method: 'POST',
       signal: ctrl.signal,
-      body: JSON.stringify(request),
+      headers: {
+        'Content-Type': 'application/json',
+        'x-fingerprint': fingerprint,
+      },
+      body: JSON.stringify({ ...request, userId: user?.id }),
     })
       .then(async (res) => {
         clearTimeout(softTimeout)
@@ -207,7 +213,7 @@ export function StreamingResults({
     function runBlocking(localCtrl: AbortController) {
       if (completedRef.current) return
       completedRef.current = true
-      generateNamesAction(request)
+      generateNamesAction(request, fingerprint, user?.id || null)
         .then((res) => {
           if (localCtrl.signal.aborted) return
           const isAppend = request.appendResults ?? false
