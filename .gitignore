@@ -8,6 +8,11 @@ package-lock.json
 *.tsbuildinfo
 coverage/
 data/name-database.json
+scripts/corpus/clean-names.json
+scripts/corpus/hanviet-names.json
+scripts/corpus/enriched-names.json
+scripts/corpus/char-meanings.json
+scripts/corpus/Chinese-Names-Corpus/
 .aidlc/
 .ast-graph/
 .planning/
