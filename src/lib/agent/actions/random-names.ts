@@ -1,6 +1,7 @@
 'use server'
 
 import { getRandomNames as getDbNames } from '@/lib/agent/data/database'
+import { getRandomCorpusNames } from '@/lib/agent/data/corpus-queries'
 import type {
   NameGenerationRequest,
   NameGenerationResponse,
@@ -27,23 +28,66 @@ export async function getRandomNamesAction(
   locale: string = 'vi',
   dbOnly: boolean = false,
 ): Promise<NameGenerationResponse> {
-  const dbNames = await getDbNames(3)
+  // Run corpus query and JSON DB query in parallel
+  const [corpusNames, jsonDbNames] = await Promise.all([
+    getRandomCorpusNames(Math.ceil(count / 2)),
+    getDbNames(Math.ceil(count / 2)),
+  ])
 
+  // Map corpus names to GeneratedName format
+  const corpusGenerated: GeneratedName[] = corpusNames.map(n => ({
+    native: n.hanViet,
+    romanization: n.hanViet.normalize('NFD').replace(/[\u0300-\u036f]/g, ''),
+    hanzi: n.givenNameHanzi,
+    meaning: n.meaning || '',
+    culturalSignificance: n.culturalSignificance || '',
+    source: 'corpus' as const,
+  }))
+
+  // Map JSON DB names
+  const jsonDbGenerated: GeneratedName[] = jsonDbNames.map(n => ({
+    native: n.native,
+    romanization: n.romanization,
+    hanzi: n.hanzi,
+    meaning: n.meaning || '',
+    culturalSignificance: n.culturalSignificance || '',
+    source: 'corpus' as const,
+  }))
+
+  // Deduplicate by native name
+  const seen = new Set<string>()
+  const dbResults: GeneratedName[] = []
+  for (const n of [...corpusGenerated, ...jsonDbGenerated]) {
+    if (!seen.has(n.native) && n.native) {
+      seen.add(n.native)
+      dbResults.push(n)
+    }
+  }
+
+  // If dbOnly, return DB results
+  if (dbOnly) {
+    return {
+      names: dbResults.slice(0, count),
+      nickname: locale === 'zh' ? '宝宝' : 'Bé yêu',
+    }
+  }
+
+  // Fill remaining with LLM
   let llmNames: GeneratedName[] = []
-  if (!dbOnly) {
-    const llmCount = Math.max(0, count - dbNames.length)
-    if (llmCount > 0) {
-      const localeName = localeNames[locale] || 'Tiếng Việt'
-      const promptTemplate = getRandomNamesPrompt(locale as any)
-      const surnamePrompt = surname
-        ? `为姓氏"${surname}"生成{{count}}个风格多样的${localeName}名字。`
-        : `随机生成{{count}}个风格多样的${localeName}名字，自由选择常见姓氏。`
-      const prompt = promptTemplate
-        .replace('{{count}}', String(llmCount))
-        .replace('{{surnamePrompt}}', surnamePrompt)
-        .replace('{{locale}}', localeName)
-        .replace('{{surnameInfo}}', surname ? ` cho họ "${surname}"` : '')
+  const llmCount = Math.max(0, count - dbResults.length)
+  if (llmCount > 0) {
+    const localeName = localeNames[locale] || 'Tiếng Việt'
+    const promptTemplate = getRandomNamesPrompt(locale as any)
+    const surnamePrompt = surname
+      ? `为姓氏"${surname}"生成{{count}}个风格多样的${localeName}名字。`
+      : `随机生成{{count}}个风格多样的${localeName}名字，自由选择常见姓氏。`
+    const prompt = promptTemplate
+      .replace('{{count}}', String(llmCount))
+      .replace('{{surnamePrompt}}', surnamePrompt)
+      .replace('{{locale}}', localeName)
+      .replace('{{surnameInfo}}', surname ? ` cho họ "${surname}"` : '')
 
+    try {
       const res = await fetch(`${API_URL}/chat/completions`, {
         method: 'POST',
         headers: {
@@ -63,24 +107,33 @@ export async function getRandomNamesAction(
         const content = data.choices?.[0]?.message?.content || ''
         const jsonMatch = content.match(/\[[\s\S]*\]/)
         if (jsonMatch) {
-          try {
-            const parsed = JSON.parse(jsonMatch[0])
-            llmNames = parsed
-              .filter((n: any) => n.native && n.native.trim())
-              .map((n: any) => ({
-                native: n.native || '',
-                romanization: n.romanization || '',
-                hanzi: n.hanzi || undefined,
-                meaning: n.meaning || '',
-                culturalSignificance: n.culturalSignificance || '',
-              }))
-          } catch {}
+          const parsed = JSON.parse(jsonMatch[0])
+          llmNames = parsed
+            .filter((n: any) => n.native && n.native.trim())
+            .map((n: any) => ({
+              native: n.native || '',
+              romanization: n.romanization || '',
+              hanzi: n.hanzi || undefined,
+              meaning: n.meaning || '',
+              culturalSignificance: n.culturalSignificance || '',
+              source: 'llm' as const,
+            }))
         }
       }
+    } catch (err) {
+      console.error('[getRandomNamesAction] LLM error:', (err as Error).message)
     }
   }
 
-  const allNames = [...dbNames, ...llmNames].filter((n) => n.native && n.native.trim())
+  // Merge DB results + LLM results, deduplicate
+  const allNames: GeneratedName[] = [...dbResults]
+  for (const n of llmNames) {
+    if (!seen.has(n.native) && n.native) {
+      seen.add(n.native)
+      allNames.push(n)
+    }
+  }
+
   return {
     names: allNames.slice(0, count),
     nickname: locale === 'zh' ? '宝宝' : 'Bé yêu',

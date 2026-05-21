@@ -36,6 +36,7 @@ export interface GeneratedName {
   meaning: string
   culturalSignificance: string
   nickname?: string
+  source?: 'corpus' | 'llm'
 }
 
 export interface NameAnalysis {
