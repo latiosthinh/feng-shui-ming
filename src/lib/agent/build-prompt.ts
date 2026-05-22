@@ -77,6 +77,34 @@ export function buildPrompt(request: NameGenerationRequest, nameCount: number): 
   const prefs = request.preferences?.length ? request.preferences.join('、') : labels.none
   const nameLength = request.nameLength ?? 2
 
+  // Build additional instructions from boolean flags
+  const instructions: string[] = []
+  if (request.siblingSetMode) {
+    instructions.push(
+      'YÊU CẦU BỘ TÊN: Các tên phải tạo thành một bộ tên cho anh chị em. Chúng cần có sự hài hòa về âm điệu, phong cách và chữ đệm, nhưng mỗi tên vẫn phải độc đáo riêng.',
+    )
+  }
+  if (request.followPattern) {
+    instructions.push(
+      'YÊU CẦU TÊN ĐỆM TRUYỀN THỐNG: Nam dùng tên đệm "Văn" hoặc "Đức". Nữ dùng tên đệm "Thị". Không sáng tạo tên đệm khác.',
+    )
+  }
+  if (request.suggestNicknames) {
+    instructions.push(
+      'Thêm trường "nicknameSuggestions": mảng 2-3 tên thân mật ở nhà đa dạng (ví dụ: Bống, Cún, Tít, Mây, Sữa, Mia, Cám, Bông, Bon, Mon, Nari). Khác với nickname chính.',
+    )
+  }
+
+  // Build extra JSON fields
+  const extraFields: string[] = []
+  if (request.includeEnglishName) {
+    extraFields.push('"englishName": "Tên tiếng Anh quốc tế phù hợp (ví dụ: Emma, David)"')
+  }
+  if (request.suggestNicknames) {
+    extraFields.push('"nicknameSuggestions": ["biệt danh 1", "biệt danh 2", "biệt danh 3"]')
+  }
+  const extraFieldsStr = extraFields.length > 0 ? ',\n' + extraFields.join(',\n') : ''
+
   const promptTemplate = getNameGenerationPrompt(request.locale)
   return promptTemplate
     .replace('{{nameCount}}', String(nameCount))
@@ -88,4 +116,6 @@ export function buildPrompt(request: NameGenerationRequest, nameCount: number): 
     .replace('{{preferences}}', prefs)
     .replace('{{familyInfo}}', familyInfo)
     .replace('{{excludedNames}}', excludedNames)
+    .replace('{{additionalInstructions}}', instructions.join('\n\n'))
+    .replace('{{extraFields}}', extraFieldsStr)
 }

@@ -124,6 +124,9 @@ export async function POST(request: NextRequest) {
               meaning: item.name.meaning,
               culturalSignificance: item.name.culturalSignificance,
               nickname: item.name.nickname,
+              englishName: item.name.englishName || undefined,
+              teasingFlags: Array.isArray(item.name.teasingFlags) && item.name.teasingFlags.length > 0 ? item.name.teasingFlags : undefined,
+              nicknameSuggestions: Array.isArray(item.name.nicknameSuggestions) && item.name.nicknameSuggestions.length > 0 ? item.name.nicknameSuggestions : undefined,
             }
             allNames.push(name)
 

@@ -38,6 +38,10 @@ export function parseResponse(
       meaning: n.meaning || '',
       culturalSignificance: n.culturalSignificance || '',
       nickname: n.nickname || undefined,
+      englishName: n.englishName || undefined,
+      frequencyTier: n.frequencyTier || undefined,
+      teasingFlags: Array.isArray(n.teasingFlags) && n.teasingFlags.length > 0 ? n.teasingFlags : undefined,
+      nicknameSuggestions: Array.isArray(n.nicknameSuggestions) && n.nicknameSuggestions.length > 0 ? n.nicknameSuggestions : undefined,
     }))
 
     const fiveGrid =

@@ -7,6 +7,9 @@ export interface ParseResult {
     culturalSignificance: string
     nickname?: string
     surname?: string
+    englishName?: string
+    teasingFlags?: string[]
+    nicknameSuggestions?: string[]
   }
 }
 

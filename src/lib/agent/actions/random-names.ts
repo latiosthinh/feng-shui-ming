@@ -116,6 +116,9 @@ export async function getRandomNamesAction(
               hanzi: n.hanzi || undefined,
               meaning: n.meaning || '',
               culturalSignificance: n.culturalSignificance || '',
+              nickname: n.nickname || undefined,
+              englishName: n.englishName || undefined,
+              teasingFlags: Array.isArray(n.teasingFlags) && n.teasingFlags.length > 0 ? n.teasingFlags : undefined,
               source: 'llm' as const,
             }))
         }
