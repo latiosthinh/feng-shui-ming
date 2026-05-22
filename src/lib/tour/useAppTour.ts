@@ -2,6 +2,7 @@
 import { useCallback } from 'react'
 import { driver } from 'driver.js'
 import 'driver.js/dist/driver.css'
+import './tour-styles.css'
 
 const TOUR_KEY = 'fengshuiming-tour-completed'
 
@@ -72,7 +73,8 @@ function buildFormTour(): TourStep[] {
       element: '[data-tour="favorite"]',
       popover: {
         title: '❤️ Lưu tên yêu thích',
-        description: 'Nhấn trái tim để lưu tên vào danh sách yêu thích. Bạn có thể lưu tối đa 9 tên ở gói miễn phí.',
+        description:
+          'Nhấn trái tim để lưu tên vào danh sách yêu thích. Bạn cũng có thể chia sẻ danh sách với ông bà để cả nhà cùng bình chọn.',
         side: 'left',
       },
     },
@@ -116,13 +118,22 @@ export function useAppTour() {
 
   const startTour = useCallback(() => {
     const steps = buildFormTour()
+    const total = steps.length
 
     const driverObj = driver({
+      animate: true,
       showProgress: true,
-      steps: steps.map((step) => ({
+      popoverClass: 'driver-popover',
+      stagePadding: 6,
+      stageRadius: 14,
+      doneBtnText: '✅ Hoàn tất',
+      closeBtnText: '✕',
+      nextBtnText: 'Tiếp theo →',
+      prevBtnText: '← Quay lại',
+      steps: steps.map((step, i) => ({
         element: step.element,
         popover: {
-          title: step.popover.title,
+          title: `<span style="font-size:0.7rem;font-weight:600;color:#a78bfa;display:block;margin-bottom:4px;text-transform:uppercase;letter-spacing:0.05em">Bước ${i + 1} / ${total}</span>${step.popover.title}`,
           description: step.popover.description,
           side: step.popover.side || 'bottom',
           align: step.popover.align || 'center',
@@ -135,7 +146,6 @@ export function useAppTour() {
       },
     })
 
-    // Small delay to ensure DOM is ready
     setTimeout(() => driverObj.drive(), 500)
   }, [])
 
