@@ -13,7 +13,7 @@ import { checkUsage, incrementUsage } from '@/lib/auth/usage-guard'
 
 const analysisCache = createLRUCache<FengShuiAnalysis>(1000, 3600000)
 
-const MAX_REQUESTS = 10
+const MAX_REQUESTS = Number(process.env.RATE_LIMIT_MAX) || 30
 const WINDOW_MS = 60_000
 const CLEANUP_INTERVAL_MS = 5 * 60 * 1000 // 5 minutes
 const rateLimitMap = new Map<string, number[]>()
