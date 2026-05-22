@@ -14,17 +14,17 @@ export async function checkUsage(
   let currentAnalyzes = 0
 
   if (userId) {
-    const pb = createPocketBase()
     try {
+      const pb = createPocketBase()
       const record = await pb.collection('users').getOne(userId)
       currentGenerations = record.totalGenerations || 0
       currentAnalyzes = record.totalAnalyzes || 0
     } catch {
-      return { allowed: false, remaining: 0, limit: 0, reason: 'User not found' }
+      // PB unavailable — assume no prior usage so generation is not blocked
     }
   } else {
-    const pb = createPocketBase()
     try {
+      const pb = createPocketBase()
       const records = await pb.collection('anonymous_usage').getFullList({
         filter: 'fingerprint = {:fingerprint}',
         filterParams: { fingerprint },
@@ -34,7 +34,7 @@ export async function checkUsage(
         currentAnalyzes = records[0].totalAnalyzes || 0
       }
     } catch {
-      return { allowed: false, remaining: 0, limit: 0, reason: 'Usage tracking failed' }
+      // PB unavailable — assume no prior usage so generation is not blocked
     }
   }
 
@@ -81,40 +81,44 @@ export async function incrementUsage(
   source: UsageSource,
   count: number = 1,
 ): Promise<void> {
-  const pb = createPocketBase()
+  try {
+    const pb = createPocketBase()
 
-  if (userId) {
-    const record = await pb.collection('users').getOne(userId)
-    const updates: Record<string, number> = {}
-    if (source === 'form' || source === 'random') {
-      updates.totalGenerations = (record.totalGenerations || 0) + count
-    }
-    if (Object.keys(updates).length > 0) {
-      await pb.collection('users').update(userId, updates)
-    }
-  } else {
-    const records = await pb.collection('anonymous_usage').getFullList({
-      filter: 'fingerprint = {:fingerprint}',
-      filterParams: { fingerprint },
-    })
-
-    if (records.length > 0) {
+    if (userId) {
+      const record = await pb.collection('users').getOne(userId)
       const updates: Record<string, number> = {}
       if (source === 'form' || source === 'random') {
-        updates.totalGenerations = (records[0].totalGenerations || 0) + count
+        updates.totalGenerations = (record.totalGenerations || 0) + count
       }
       if (Object.keys(updates).length > 0) {
-        await pb.collection('anonymous_usage').update(records[0].id, updates)
+        await pb.collection('users').update(userId, updates)
       }
     } else {
-      const data: Record<string, string | number> = { fingerprint }
-      if (source === 'form' || source === 'random') {
-        data.totalGenerations = count
+      const records = await pb.collection('anonymous_usage').getFullList({
+        filter: 'fingerprint = {:fingerprint}',
+        filterParams: { fingerprint },
+      })
+
+      if (records.length > 0) {
+        const updates: Record<string, number> = {}
+        if (source === 'form' || source === 'random') {
+          updates.totalGenerations = (records[0].totalGenerations || 0) + count
+        }
+        if (Object.keys(updates).length > 0) {
+          await pb.collection('anonymous_usage').update(records[0].id, updates)
+        }
+      } else {
+        const data: Record<string, string | number> = { fingerprint }
+        if (source === 'form' || source === 'random') {
+          data.totalGenerations = count
+        }
+        data.totalAnalyzes = 0
+        data.totalFavorites = 0
+        await pb.collection('anonymous_usage').create(data)
       }
-      data.totalAnalyzes = 0
-      data.totalFavorites = 0
-      await pb.collection('anonymous_usage').create(data)
     }
+  } catch {
+    // PB unavailable — usage tracking skipped, generation still works
   }
 }
 
@@ -122,30 +126,34 @@ export async function incrementAnalyzeUsage(
   userId: string | null,
   fingerprint: string,
 ): Promise<void> {
-  const pb = createPocketBase()
+  try {
+    const pb = createPocketBase()
 
-  if (userId) {
-    const record = await pb.collection('users').getOne(userId)
-    await pb.collection('users').update(userId, {
-      totalAnalyzes: (record.totalAnalyzes || 0) + 1,
-    })
-  } else {
-    const records = await pb.collection('anonymous_usage').getFullList({
-      filter: 'fingerprint = {:fingerprint}',
-      filterParams: { fingerprint },
-    })
-
-    if (records.length > 0) {
-      await pb.collection('anonymous_usage').update(records[0].id, {
-        totalAnalyzes: (records[0].totalAnalyzes || 0) + 1,
+    if (userId) {
+      const record = await pb.collection('users').getOne(userId)
+      await pb.collection('users').update(userId, {
+        totalAnalyzes: (record.totalAnalyzes || 0) + 1,
       })
     } else {
-      await pb.collection('anonymous_usage').create({
-        fingerprint,
-      totalGenerations: 0,
-      totalAnalyzes: 1,
-      totalFavorites: 0,
+      const records = await pb.collection('anonymous_usage').getFullList({
+        filter: 'fingerprint = {:fingerprint}',
+        filterParams: { fingerprint },
       })
+
+      if (records.length > 0) {
+        await pb.collection('anonymous_usage').update(records[0].id, {
+          totalAnalyzes: (records[0].totalAnalyzes || 0) + 1,
+        })
+      } else {
+        await pb.collection('anonymous_usage').create({
+          fingerprint,
+        totalGenerations: 0,
+        totalAnalyzes: 1,
+        totalFavorites: 0,
+        })
+      }
     }
+  } catch {
+    // PB unavailable — usage tracking skipped
   }
 }
