@@ -18,4 +18,5 @@ scripts/corpus/Chinese-Names-Corpus/
 .planning/
 name_generation_reasoning.md
 names.json
+data/shortlist-shares.json
 nul
