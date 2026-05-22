@@ -14,7 +14,14 @@ export function FavoriteCard({ entry, onRemove }: FavoriteCardProps) {
     <div className="bg-white rounded-xl shadow p-4 space-y-2 animate-scale-in">
       <div className="flex items-start justify-between">
         <div>
-          <h4 className="text-xl font-bold text-gray-800">{entry.name.native}</h4>
+          <div className="flex items-center gap-2">
+            <h4 className="text-xl font-bold text-gray-800">{entry.name.native}</h4>
+            {entry.name.englishName && (
+              <span className="text-xs text-blue-500 bg-blue-50 px-1.5 py-0.5 rounded font-medium">
+                {entry.name.englishName}
+              </span>
+            )}
+          </div>
           {entry.name.hanzi && (
             <p className="text-gray-500 text-xs">{entry.name.hanzi}</p>
           )}
@@ -40,6 +47,15 @@ export function FavoriteCard({ entry, onRemove }: FavoriteCardProps) {
       <p className="text-gray-600 text-sm">{entry.name.meaning}</p>
       <div className="flex items-center gap-2 text-xs text-gray-500">
         <span className="px-2 py-0.5 bg-pink-50 text-pink-600 rounded-full">{entry.nickname}</span>
+        {entry.name.frequencyTier && (
+          <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${
+            entry.name.frequencyTier === 'popular' ? 'bg-orange-50 text-orange-700' :
+            entry.name.frequencyTier === 'timeless' ? 'bg-green-50 text-green-700' :
+            'bg-purple-50 text-purple-700'
+          }`}>
+            {t.nameCard[entry.name.frequencyTier]}
+          </span>
+        )}
         <span>
           {entry.analysis?.fiveGrid?.overall === 'auspicious'
             ? t.results.auspicious

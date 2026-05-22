@@ -158,6 +158,48 @@ export function NameCard({ name, analysis, surname, birthDate, birthTime }: Name
               </button>
             </div>
 
+            {name.englishName && (
+              <div className="flex items-center gap-1.5 text-xs text-blue-600 bg-blue-50 rounded-lg px-2.5 py-1">
+                <span>🌐</span>
+                <span className="font-medium">{t.nameCard.englishName}:</span>
+                <span>{name.englishName}</span>
+              </div>
+            )}
+
+            {name.frequencyTier && (
+              <div className="flex items-center gap-1.5">
+                {name.frequencyTier === 'popular' && (
+                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-orange-50 text-orange-700 text-xs font-medium border border-orange-200">
+                    🔥 {t.nameCard.popular}
+                  </span>
+                )}
+                {name.frequencyTier === 'timeless' && (
+                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-green-50 text-green-700 text-xs font-medium border border-green-200">
+                    ✅ {t.nameCard.timeless}
+                  </span>
+                )}
+                {name.frequencyTier === 'unique' && (
+                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-purple-50 text-purple-700 text-xs font-medium border border-purple-200">
+                    ✦ {t.nameCard.unique}
+                  </span>
+                )}
+              </div>
+            )}
+
+            {name.teasingFlags && name.teasingFlags.length > 0 && (
+              <div className="bg-amber-50 border border-amber-200 rounded-xl p-3">
+                <div className="flex items-start gap-2">
+                  <span className="text-amber-500 text-sm mt-0.5">⚠️</span>
+                  <div>
+                    <p className="text-xs font-semibold text-amber-800">{t.nameCard.teasingWarning}</p>
+                    {name.teasingFlags.map((flag, i) => (
+                      <p key={i} className="text-xs text-amber-700 mt-0.5">• {flag}</p>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+
             <div className="space-y-1">
               <p className="text-sm text-gray-600 leading-relaxed">{name.meaning}</p>
               {name.culturalSignificance && (
@@ -165,7 +207,7 @@ export function NameCard({ name, analysis, surname, birthDate, birthTime }: Name
               )}
             </div>
 
-            {name.nickname && <NameCardNickname nickname={name.nickname} />}
+            {name.nickname && <NameCardNickname nickname={name.nickname} nicknameSuggestions={name.nicknameSuggestions} />}
           </div>
 
           <div className="pt-2 border-t border-gray-100 mt-auto">
