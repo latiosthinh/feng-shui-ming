@@ -9,7 +9,6 @@ export interface UserProfile {
   purchaseCode: string
   totalGenerations: number
   totalAnalyzes: number
-  totalChatNames: number
   totalFavorites: number
 }
 
@@ -18,7 +17,6 @@ export interface AnonymousUsage {
   fingerprint: string
   totalGenerations: number
   totalAnalyzes: number
-  totalChatNames: number
   totalFavorites: number
 }
 
@@ -26,24 +24,21 @@ export const LIMITS = {
   anonymous: {
     generations: 5,
     analyzes: 1,
-    chatNames: 15,
     favorites: 9,
   },
   free: {
     generations: 10,
     analyzes: 5,
-    chatNames: 30,
     favorites: 9,
   },
   paid: {
     generations: Infinity,
     analyzes: Infinity,
-    chatNames: 100,
     favorites: 100,
   },
 } as const
 
-export type UsageSource = 'form' | 'chat' | 'random'
+export type UsageSource = 'form' | 'random'
 
 export interface UsageCheck {
   allowed: boolean

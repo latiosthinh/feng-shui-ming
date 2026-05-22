@@ -35,10 +35,6 @@ export function getRandomNamesPrompt(locale?: Locale): string {
   return load('random-names.md', locale)
 }
 
-export function getChatNamesPrompt(locale?: Locale): string {
-  return load('chat-names.md', locale)
-}
-
 export const SYSTEM_PROMPT = load('system.md')
 export const NAME_GENERATION_PROMPT = load('name-generation.md')
 export const ANALYSIS_FENGSHUI = load('analysis-fengshui.md')

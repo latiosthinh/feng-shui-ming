@@ -65,7 +65,6 @@ export function UserMenu({ onRestartTour }: UserMenuProps) {
             <div className="px-4 py-2 text-xs text-gray-500 space-y-1">
               <p>Tạo tên: {user.totalGenerations}</p>
               <p>Phân tích: {user.totalAnalyzes}</p>
-              <p>Chat: {user.totalChatNames} tên</p>
               <p>Yêu thích: {user.totalFavorites}</p>
             </div>
             {user.purchaseCode && (

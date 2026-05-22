@@ -104,7 +104,6 @@ function mapRecordToProfile(record: any): UserProfile {
     purchaseCode: record.purchaseCode || '',
     totalGenerations: record.totalGenerations || 0,
     totalAnalyzes: record.totalAnalyzes || 0,
-    totalChatNames: record.totalChatNames || 0,
     totalFavorites: record.totalFavorites || 0,
   }
 }

@@ -5,8 +5,6 @@ import 'driver.js/dist/driver.css'
 
 const TOUR_KEY = 'fengshuiming-tour-completed'
 
-type TourMode = 'form' | 'chat'
-
 interface TourStep {
   element?: string
   popover: {
@@ -88,12 +86,12 @@ function buildFormTour(): TourStep[] {
       },
     },
     {
-      element: '[data-tour="chat"]',
+      element: '[data-tour="advanced-settings"]',
       popover: {
-        title: '💬 Trò chuyện AI',
+        title: '⚙️ Cài đặt nâng cao',
         description:
-          'Cần gợi ý thêm? Nhấn vào đây để trò chuyện với trợ lý AI. Bạn có thể mô tả sở thích bằng ngôn ngữ tự nhiên!',
-        side: 'left',
+          'Mở rộng để điều chỉnh số lượng tên, độ dài tên, và bật các tính năng như bộ tên anh chị em, tên đệm truyền thống, gợi ý biệt danh, và tên tiếng Anh.',
+        side: 'top',
       },
     },
     {
@@ -101,61 +99,6 @@ function buildFormTour(): TourStep[] {
         title: '🎯 Bắt đầu thôi!',
         description:
           'Bạn đã sẵn sàng! Hãy bắt đầu tạo tên cho bé yêu của mình nhé. Nếu cần hỗ trợ thêm, bạn luôn có thể xem lại hướng dẫn này trong menu người dùng.',
-      },
-    },
-  ]
-}
-
-function buildChatTour(): TourStep[] {
-  return [
-    {
-      popover: {
-        title: '🎉 Chào mừng bạn!',
-        description:
-          'Đây là giao diện trò chuyện AI. Bạn có thể mô tả mong muốn của mình bằng ngôn ngữ tự nhiên, và tôi sẽ gợi ý những tên phù hợp!',
-        side: 'bottom',
-      },
-    },
-    {
-      element: '[data-tour="chat-input"]',
-      popover: {
-        title: '💬 Bắt đầu trò chuyện',
-        description:
-          'Nhập mô tả về tên bạn mong muốn. Ví dụ: "Gợi ý tên cho bé trai họ Nguyễn, sinh năm 2024, mong muốn thông minh và tài giỏi."',
-        side: 'top',
-      },
-    },
-    {
-      element: '[data-tour="chat-send"]',
-      popover: {
-        title: '📨 Gửi tin nhắn',
-        description: 'Nhấn nút này để gửi yêu cầu. Hệ thống sẽ tạo tên dựa trên mô tả của bạn.',
-        side: 'left',
-      },
-    },
-    {
-      element: '[data-tour="chat-names"]',
-      popover: {
-        title: '📇 Kết quả tên',
-        description:
-          'Các tên sẽ hiển thị ở đây. Bạn có thể nhấn ❤️ để lưu hoặc 📖 để xem phân tích chi tiết từng tên.',
-        side: 'top',
-      },
-    },
-    {
-      element: '[data-tour="chat-suggestions"]',
-      popover: {
-        title: '💡 Gợi ý nhanh',
-        description:
-          'Bạn có thể nhấn vào các gợi ý bên dưới để khám phá thêm nhiều lựa chọn khác nhau.',
-        side: 'top',
-      },
-    },
-    {
-      popover: {
-        title: '🎯 Bắt đầu thôi!',
-        description:
-          'Bạn đã sẵn sàng! Hãy nhập yêu cầu đầu tiên của bạn nhé. Nếu muốn chuyển sang giao diện biểu mẫu, bạn có thể nhấn nút 📝 ở góc trên bên phải.',
       },
     },
   ]
@@ -171,8 +114,8 @@ export function useAppTour() {
     }
   }, [])
 
-  const startTour = useCallback((mode: TourMode) => {
-    const steps = mode === 'form' ? buildFormTour() : buildChatTour()
+  const startTour = useCallback(() => {
+    const steps = buildFormTour()
 
     const driverObj = driver({
       showProgress: true,

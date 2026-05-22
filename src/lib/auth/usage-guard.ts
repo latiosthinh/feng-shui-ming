@@ -12,7 +12,6 @@ export async function checkUsage(
 
   let currentGenerations = 0
   let currentAnalyzes = 0
-  let currentChatNames = 0
 
   if (userId) {
     const pb = createPocketBase()
@@ -20,7 +19,6 @@ export async function checkUsage(
       const record = await pb.collection('users').getOne(userId)
       currentGenerations = record.totalGenerations || 0
       currentAnalyzes = record.totalAnalyzes || 0
-      currentChatNames = record.totalChatNames || 0
     } catch {
       return { allowed: false, remaining: 0, limit: 0, reason: 'User not found' }
     }
@@ -34,7 +32,6 @@ export async function checkUsage(
       if (records.length > 0) {
         currentGenerations = records[0].totalGenerations || 0
         currentAnalyzes = records[0].totalAnalyzes || 0
-        currentChatNames = records[0].totalChatNames || 0
       }
     } catch {
       return { allowed: false, remaining: 0, limit: 0, reason: 'Usage tracking failed' }
@@ -50,11 +47,6 @@ export async function checkUsage(
       current = currentGenerations
       limit = limits.generations
       action = 'generation'
-      break
-    case 'chat':
-      current = currentChatNames
-      limit = limits.chatNames
-      action = 'chat name'
       break
     case 'random':
       current = currentGenerations
@@ -97,9 +89,6 @@ export async function incrementUsage(
     if (source === 'form' || source === 'random') {
       updates.totalGenerations = (record.totalGenerations || 0) + count
     }
-    if (source === 'chat') {
-      updates.totalChatNames = (record.totalChatNames || 0) + count
-    }
     if (Object.keys(updates).length > 0) {
       await pb.collection('users').update(userId, updates)
     }
@@ -114,9 +103,6 @@ export async function incrementUsage(
       if (source === 'form' || source === 'random') {
         updates.totalGenerations = (records[0].totalGenerations || 0) + count
       }
-      if (source === 'chat') {
-        updates.totalChatNames = (records[0].totalChatNames || 0) + count
-      }
       if (Object.keys(updates).length > 0) {
         await pb.collection('anonymous_usage').update(records[0].id, updates)
       }
@@ -124,9 +110,6 @@ export async function incrementUsage(
       const data: Record<string, string | number> = { fingerprint }
       if (source === 'form' || source === 'random') {
         data.totalGenerations = count
-      }
-      if (source === 'chat') {
-        data.totalChatNames = count
       }
       data.totalAnalyzes = 0
       data.totalFavorites = 0
@@ -159,10 +142,9 @@ export async function incrementAnalyzeUsage(
     } else {
       await pb.collection('anonymous_usage').create({
         fingerprint,
-        totalGenerations: 0,
-        totalAnalyzes: 1,
-        totalChatNames: 0,
-        totalFavorites: 0,
+      totalGenerations: 0,
+      totalAnalyzes: 1,
+      totalFavorites: 0,
       })
     }
   }
