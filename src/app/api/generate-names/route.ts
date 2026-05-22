@@ -57,7 +57,7 @@ export const runtime = 'nodejs'
 
 export async function POST(request: NextRequest) {
   const ip = getClientIp(request)
-  if (!checkRateLimit(ip)) {
+  if (process.env.NODE_ENV === 'production' && !checkRateLimit(ip)) {
     return new Response(JSON.stringify({ error: 'Too many requests. Try again later.' }), {
       status: 429,
       headers: { 'Content-Type': 'application/json' },
