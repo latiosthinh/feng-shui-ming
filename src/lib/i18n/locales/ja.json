@@ -50,7 +50,11 @@
     "sister": "姉妹",
     "grandfather": "祖父",
     "grandmother": "祖母",
-    "other": "その他"
+    "other": "その他",
+    "siblingSetMode": "兄弟姉妹名前セット",
+    "followPattern": "傳統的なミドルネーム（文/氏）",
+    "includeEnglishName": "英語名を含む",
+    "suggestNicknames": "家庭ニックネーム提案"
   },
   "results": {
     "meaning": "意味",
@@ -104,7 +108,20 @@
     "excellent": "大吉",
     "good": "吉",
     "fair": "平",
-    "poor": "凶"
+    "poor": "凶",
+    "englishName": "英語名",
+    "popular": "人気",
+    "timeless": "定番",
+    "unique": "ユニーク",
+    "teasingWarning": "発音注意",
+    "nicknameSuggestions": "ニックネーム提案"
+  },
+  "share": {
+    "title": "リスト共有",
+    "copyLink": "リンクをコピー",
+    "copied": "コピーしました！",
+    "viewShortlist": "お気に入りリスト",
+    "like": "いいね"
   },
   "streamStatus": {
     "thinking": "考え中…",

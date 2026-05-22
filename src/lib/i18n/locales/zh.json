@@ -50,7 +50,11 @@
     "sister": "姐妹",
     "grandfather": "祖父",
     "grandmother": "祖母",
-    "other": "其他"
+    "other": "其他",
+    "siblingSetMode": "兄弟姐妹名字套装",
+    "followPattern": "传统中间名模式 (文/氏)",
+    "includeEnglishName": "包含英文名",
+    "suggestNicknames": "建议家庭昵称"
   },
   "results": {
     "meaning": "含义",
@@ -104,7 +108,20 @@
     "excellent": "大吉",
     "good": "吉",
     "fair": "平",
-    "poor": "凶"
+    "poor": "凶",
+    "englishName": "英文名",
+    "popular": "热门",
+    "timeless": "经典",
+    "unique": "独特",
+    "teasingWarning": "读音警告",
+    "nicknameSuggestions": "昵称建议"
+  },
+  "share": {
+    "title": "分享列表",
+    "copyLink": "复制链接",
+    "copied": "已复制！",
+    "viewShortlist": "收藏名字列表",
+    "like": "喜欢"
   },
   "streamStatus": {
     "thinking": "正在思考…",

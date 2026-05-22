@@ -50,7 +50,11 @@
     "sister": "자매",
     "grandfather": "조부",
     "grandmother": "조모",
-    "other": "기타"
+    "other": "기타",
+    "siblingSetMode": "형제자매 이름 세트",
+    "followPattern": "전통적 중간 이름 (문/씨)",
+    "includeEnglishName": "영어 이름 포함",
+    "suggestNicknames": "가족 애칭 제안"
   },
   "results": {
     "meaning": "의미",
@@ -104,7 +108,20 @@
     "excellent": "대길",
     "good": "길",
     "fair": "평",
-    "poor": "흉"
+    "poor": "흉",
+    "englishName": "영어 이름",
+    "popular": "인기",
+    "timeless": "클래식",
+    "unique": "독특",
+    "teasingWarning": "발음 주의",
+    "nicknameSuggestions": "애칭 제안"
+  },
+  "share": {
+    "title": "목록 공유",
+    "copyLink": "링크 복사",
+    "copied": "복사됨!",
+    "viewShortlist": "즐겨찾기 목록",
+    "like": "좋아요"
   },
   "streamStatus": {
     "thinking": "생각 중…",

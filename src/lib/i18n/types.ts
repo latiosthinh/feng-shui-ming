@@ -53,6 +53,10 @@ export interface TranslationKeys {
     grandfather: string
     grandmother: string
     other: string
+    siblingSetMode: string
+    followPattern: string
+    includeEnglishName: string
+    suggestNicknames: string
   }
   results: {
     meaning: string
@@ -107,6 +111,19 @@ export interface TranslationKeys {
     good: string
     fair: string
     poor: string
+    englishName: string
+    popular: string
+    timeless: string
+    unique: string
+    teasingWarning: string
+    nicknameSuggestions: string
+  }
+  share: {
+    title: string
+    copyLink: string
+    copied: string
+    viewShortlist: string
+    like: string
   }
   streamStatus: {
     thinking: string

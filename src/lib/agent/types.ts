@@ -21,6 +21,10 @@ export interface NameGenerationRequest {
   nameLength?: number
   previousNames?: { native: string; romanization: string }[]
   appendResults?: boolean
+  siblingSetMode?: boolean
+  followPattern?: boolean
+  includeEnglishName?: boolean
+  suggestNicknames?: boolean
 }
 
 export interface NameGenerationResponse {
@@ -37,6 +41,10 @@ export interface GeneratedName {
   culturalSignificance: string
   nickname?: string
   source?: 'corpus' | 'llm'
+  englishName?: string
+  frequencyTier?: 'popular' | 'timeless' | 'unique'
+  teasingFlags?: string[]
+  nicknameSuggestions?: string[]
 }
 
 export interface NameAnalysis {

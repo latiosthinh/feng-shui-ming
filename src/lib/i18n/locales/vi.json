@@ -50,7 +50,11 @@
     "sister": "Chị em gái",
     "grandfather": "Ông",
     "grandmother": "Bà",
-    "other": "Khác"
+    "other": "Khác",
+    "siblingSetMode": "Bộ tên anh chị em",
+    "followPattern": "Tên đệm truyền thống (Văn/Thị)",
+    "includeEnglishName": "Thêm tên tiếng Anh",
+    "suggestNicknames": "Gợi ý biệt danh ở nhà"
   },
   "results": {
     "meaning": "Ý nghĩa",
@@ -104,7 +108,20 @@
     "excellent": "Đại cát",
     "good": "Cát",
     "fair": "Bình",
-    "poor": "Hung"
+    "poor": "Hung",
+    "englishName": "Tên tiếng Anh",
+    "popular": "Thịnh hành",
+    "timeless": "Kinh điển",
+    "unique": "Độc đáo",
+    "teasingWarning": "Cảnh báo âm vận",
+    "nicknameSuggestions": "Gợi ý biệt danh"
+  },
+  "share": {
+    "title": "Chia sẻ danh sách",
+    "copyLink": "Sao chép liên kết",
+    "copied": "Đã sao chép!",
+    "viewShortlist": "Danh sách tên yêu thích",
+    "like": "Thích"
   },
   "streamStatus": {
     "thinking": "Đang nghĩ...",
