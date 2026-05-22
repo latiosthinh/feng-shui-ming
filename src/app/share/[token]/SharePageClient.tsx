@@ -2,7 +2,6 @@
 import { useState, useCallback } from 'react'
 import type { ShareNameEntry } from '@/lib/share/types'
 import type { Locale } from '@/lib/i18n/types'
-import { useTranslation } from '@/lib/i18n/hooks'
 import { likeNameAction } from '@/lib/share/actions'
 import { useAuth } from '@/lib/auth/context'
 
