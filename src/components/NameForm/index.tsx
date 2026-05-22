@@ -28,6 +28,10 @@ export function NameForm({ onSubmit, onRandom, isLoading }: NameFormProps) {
   const [familyMembers, setFamilyMembers] = useState<FamilyMember[]>([])
   const [nameCount, setNameCount] = useState(3)
   const [nameLength, setNameLength] = useState(2)
+  const [siblingSetMode, setSiblingSetMode] = useState(false)
+  const [followPattern, setFollowPattern] = useState(false)
+  const [includeEnglishName, setIncludeEnglishName] = useState(false)
+  const [suggestNicknames, setSuggestNicknames] = useState(false)
   const [errors, setErrors] = useState<Record<string, string | undefined>>({})
 
   const handleSubmit = useCallback(
@@ -52,6 +56,10 @@ export function NameForm({ onSubmit, onRandom, isLoading }: NameFormProps) {
         familyMembers: familyMembers.length > 0 ? familyMembers : undefined,
         nameCount,
         nameLength,
+        siblingSetMode: siblingSetMode || undefined,
+        followPattern: followPattern || undefined,
+        includeEnglishName: includeEnglishName || undefined,
+        suggestNicknames: suggestNicknames || undefined,
       })
     },
     [
@@ -63,6 +71,10 @@ export function NameForm({ onSubmit, onRandom, isLoading }: NameFormProps) {
       familyMembers,
       nameCount,
       nameLength,
+      siblingSetMode,
+      followPattern,
+      includeEnglishName,
+      suggestNicknames,
       locale,
       onSubmit,
     ],
@@ -94,6 +106,14 @@ export function NameForm({ onSubmit, onRandom, isLoading }: NameFormProps) {
         onNameCountChange={setNameCount}
         nameLength={nameLength}
         onNameLengthChange={setNameLength}
+        siblingSetMode={siblingSetMode}
+        onSiblingSetModeChange={setSiblingSetMode}
+        followPattern={followPattern}
+        onFollowPatternChange={setFollowPattern}
+        includeEnglishName={includeEnglishName}
+        onIncludeEnglishNameChange={setIncludeEnglishName}
+        suggestNicknames={suggestNicknames}
+        onSuggestNicknamesChange={setSuggestNicknames}
       />
 
       <SubmitButton isLoading={isLoading} />

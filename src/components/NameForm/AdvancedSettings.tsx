@@ -10,9 +10,35 @@ interface AdvancedSettingsProps {
   onNameCountChange: (count: number) => void
   nameLength: number
   onNameLengthChange: (length: number) => void
+  siblingSetMode: boolean
+  onSiblingSetModeChange: (v: boolean) => void
+  followPattern: boolean
+  onFollowPatternChange: (v: boolean) => void
+  includeEnglishName: boolean
+  onIncludeEnglishNameChange: (v: boolean) => void
+  suggestNicknames: boolean
+  onSuggestNicknamesChange: (v: boolean) => void
 }
 
 let nextId = 1
+
+function ToggleSwitch({ value, onChange, label }: { value: boolean; onChange: (v: boolean) => void; label: string }) {
+  return (
+    <label className="flex items-center gap-3 cursor-pointer group">
+      <div className="relative">
+        <input
+          type="checkbox"
+          checked={value}
+          onChange={(e) => onChange(e.target.checked)}
+          className="sr-only peer"
+        />
+        <div className="w-9 h-5 rounded-full bg-gray-200 peer-checked:bg-purple-600 transition-colors" />
+        <div className="absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-white shadow-sm peer-checked:translate-x-4 transition-transform" />
+      </div>
+      <span className="text-sm text-gray-700 group-hover:text-purple-700 transition-colors">{label}</span>
+    </label>
+  )
+}
 
 export function AdvancedSettings({
   familyMembers,
@@ -21,6 +47,14 @@ export function AdvancedSettings({
   onNameCountChange,
   nameLength,
   onNameLengthChange,
+  siblingSetMode,
+  onSiblingSetModeChange,
+  followPattern,
+  onFollowPatternChange,
+  includeEnglishName,
+  onIncludeEnglishNameChange,
+  suggestNicknames,
+  onSuggestNicknamesChange,
 }: AdvancedSettingsProps) {
   const { t } = useTranslation()
   const [open, setOpen] = useState(false)
@@ -57,6 +91,7 @@ export function AdvancedSettings({
       <button
         type="button"
         onClick={() => setOpen(!open)}
+        data-tour="advanced-settings"
         className={`flex items-center gap-2 text-sm font-medium transition-colors ${
           open || hasMembers ? 'text-purple-600' : 'text-gray-500 hover:text-purple-600'
         }`}
@@ -112,6 +147,14 @@ export function AdvancedSettings({
                 </button>
               ))}
             </div>
+          </div>
+
+          <div className="space-y-3 border-t border-purple-200 pt-3">
+            <p className="text-xs font-semibold text-purple-700 uppercase tracking-wide">Tính năng mở rộng</p>
+            <ToggleSwitch value={siblingSetMode} onChange={onSiblingSetModeChange} label={t.form.siblingSetMode} />
+            <ToggleSwitch value={followPattern} onChange={onFollowPatternChange} label={t.form.followPattern} />
+            <ToggleSwitch value={includeEnglishName} onChange={onIncludeEnglishNameChange} label={t.form.includeEnglishName} />
+            <ToggleSwitch value={suggestNicknames} onChange={onSuggestNicknamesChange} label={t.form.suggestNicknames} />
           </div>
 
           <div className="space-y-3">
